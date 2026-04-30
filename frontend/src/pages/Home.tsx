@@ -23,9 +23,9 @@ export default function Home() {
   const navLinks = [
     { href: '/', label: 'Home', internal: true },
     { href: '/faq', label: 'FAQ', internal: true },
-    { href: 'https://discord.gg/wesoftcorp', label: 'Community', internal: false },
-    { href: 'https://wesoftcorp.com/roadmap', label: 'Roadmap', internal: false },
-    { href: 'https://docs.wesoftcorp.com', label: 'Docs', internal: false },
+    { href: 'https://discord.gg/tradeboard', label: 'Community', internal: false },
+    { href: 'https://tradeboard.com/roadmap', label: 'Roadmap', internal: false },
+    { href: 'https://docs.tradeboard.com', label: 'Docs', internal: false },
   ]
 
   return (
@@ -86,7 +86,7 @@ export default function Home() {
                     Download
                   </Link>
                   <a
-                    href="https://discord.gg/wesoftcorp"
+                    href="https://discord.gg/tradeboard"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-accent"
@@ -95,7 +95,7 @@ export default function Home() {
                     Community
                   </a>
                   <a
-                    href="https://wesoftcorp.com/roadmap"
+                    href="https://tradeboard.com/roadmap"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-accent"
@@ -104,7 +104,7 @@ export default function Home() {
                     Roadmap
                   </a>
                   <a
-                    href="https://docs.wesoftcorp.com"
+                    href="https://docs.tradeboard.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-accent"

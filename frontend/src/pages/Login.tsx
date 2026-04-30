@@ -253,7 +253,7 @@ export default function Login() {
             <div className="flex justify-center lg:justify-start gap-4">
               <Button variant="outline" asChild>
                 <a
-                  href="https://github.com/wesoftcorp/tradeboard"
+                  href="https://github.com/tradeboard/tradeboard"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"
@@ -264,7 +264,7 @@ export default function Login() {
               </Button>
               <Button variant="outline" asChild>
                 <a
-                  href="https://discord.gg/wesoftcorp"
+                  href="https://discord.gg/tradeboard"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"

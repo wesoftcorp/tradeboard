@@ -234,17 +234,17 @@ echo.
 REM ========================================
 REM Step 4: Update Python dependencies
 REM ========================================
-echo [Step 4/5] Updating Python dependencies with uv...
-
-%UV_CMD% sync
-if errorlevel 1 (
-    echo.
-    echo [ERROR] Failed to update Python dependencies.
-    echo Try running manually: uv sync
-    popd
-    pause
-    exit /b 1
-)
+echo   [NOTE] Skipping automatic dependency sync to prevent unwanted .venv creation.
+echo   To update dependencies manually, run: uv pip install -r requirements.txt
+REM %UV_CMD% sync
+REM if errorlevel 1 (
+REM     echo.
+REM     echo [ERROR] Failed to update Python dependencies.
+REM     echo Try running manually: uv sync
+REM     popd
+REM     pause
+REM     exit /b 1
+REM )
 
 echo   [OK] Dependencies updated successfully.
 echo.

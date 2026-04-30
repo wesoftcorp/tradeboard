@@ -13,7 +13,7 @@ GoCharting is a professional HTML5 charting platform optimized for Indian market
 - Subscribe at [GoCharting](https://gocharting.com) to access webhook features
 
 ### 2. Tradeboard Setup
-- Tradeboard instance running and accessible
+- Tradeboard Instance running and accessible
 - API key configured in Tradeboard
 - Broker connected and authenticated
 
@@ -528,12 +528,12 @@ If you hit rate limits:
 ## Support & Resources
 
 ### Documentation
-- Tradeboard Docs: https://docs.Tradeboard.in
+- Tradeboard Docs: https://docs.wesoftcorp.com
 - GoCharting Help: https://gocharting.com/help
 
 ### Community
-- Tradeboard GitHub: https://github.com/marketcalls/Tradeboard
-- Report Issues: https://github.com/marketcalls/Tradeboard/issues
+- Tradeboard GitHub: https://github.com/wesoftcorp/tradeboard
+- Report Issues: https://github.com/wesoftcorp/tradeboard/issues
 
 ### Video Tutorials
 - Check Tradeboard YouTube channel for video guides

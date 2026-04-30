@@ -431,10 +431,10 @@ if [ "$SERVER_MODE" = true ]; then
         sudo $UV_CMD pip install --python "$VENV_PATH/bin/python" eventlet
     fi
 else
-    # Local mode: use uv sync (reads pyproject.toml)
+    # Local mode: dependencies should be managed manually to avoid unwanted .venv creation
     cd "$Tradeboard_PATH"
-    $UV_CMD sync
-    check_status "Failed to update Python dependencies"
+    log_message "Local mode: Skipping automatic dependency sync to prevent unwanted .venv creation." "$YELLOW"
+    log_message "To update dependencies, run: uv pip install -r requirements.txt" "$YELLOW"
 fi
 
 log_message "Dependencies updated successfully" "$GREEN"

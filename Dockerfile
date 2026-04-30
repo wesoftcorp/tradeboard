@@ -4,12 +4,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl build-essential && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY pyproject.toml .
-# create isolated virtual-env with uv, then add gunicorn and eventlet with compatible versions
+COPY requirements.txt .
+# create isolated virtual-env with uv, then add dependencies
 RUN pip install --no-cache-dir uv && \
     uv venv .venv && \
     uv pip install --upgrade pip && \
-    uv sync && \
+    uv pip install -r requirements.txt && \
     uv pip install "gunicorn>=25.0,<26" eventlet && \
     rm -rf /root/.cache
 

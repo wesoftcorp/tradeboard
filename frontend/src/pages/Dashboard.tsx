@@ -216,7 +216,7 @@ export default function Dashboard() {
       borderColor: 'border-violet-500/20 hover:border-violet-500/40',
     },
     {
-      href: 'https://docs.wesoftcorp.com',
+      href: 'https://docs.tradeboard.com',
       label: 'Documentation',
       description: 'Tutorials, API docs & features',
       icon: BookOpen,

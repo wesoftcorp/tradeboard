@@ -1,0 +1,32 @@
+line-length = 100
+target-version = "py312"
+exclude = [
+    ".venv",
+    "frontend",
+    "node_modules",
+    "__pycache__",
+    "*.pyc",
+    "db",
+    "log",
+    "strategies",
+]
+
+[lint]
+select = [
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "W",      # pycodestyle warnings
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "B008",   # function call in default argument
+    "E402",   # module level import not at top of file
+    "F401",   # imported but unused (sometimes intentional)
+]
+
+[lint.isort]
+known-first-party = ["broker", "blueprints", "database", "services", "utils", "restx_api", "extensions", "limiter", "cors", "csp"]

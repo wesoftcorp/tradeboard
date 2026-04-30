@@ -63,7 +63,7 @@ export default function TelegramUsers() {
       const filtered = users.filter(
         (user) =>
           user.telegram_username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.Tradeboard_username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.tradeboard_username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.first_name?.toLowerCase().includes(searchQuery.toLowerCase())
       )
       setFilteredUsers(filtered)
@@ -192,7 +192,7 @@ export default function TelegramUsers() {
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold">{users.filter((u) => u.Tradeboard_username).length}</p>
+            <p className="text-2xl font-bold">{users.filter((u) => u.tradeboard_username).length}</p>
             <p className="text-sm text-muted-foreground">Linked Accounts</p>
           </CardContent>
         </Card>
@@ -258,8 +258,8 @@ export default function TelegramUsers() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {user.Tradeboard_username ? (
-                          <Badge variant="outline">{user.Tradeboard_username}</Badge>
+                        {user.tradeboard_username ? (
+                          <Badge variant="outline">{user.tradeboard_username}</Badge>
                         ) : (
                           <span className="text-muted-foreground">Not linked</span>
                         )}

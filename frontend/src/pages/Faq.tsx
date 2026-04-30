@@ -360,7 +360,7 @@ export default function Faq() {
                   </p>
                   <Button variant="outline" asChild>
                     <a
-                      href="https://github.com/wesoftcorp/tradeboard"
+                      href="https://github.com/tradeboard/tradeboard"
                       target="_blank"
                       rel="noopener noreferrer"
                     >

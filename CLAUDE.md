@@ -22,45 +22,43 @@ Tradeboard is a production-ready algorithmic trading platform built with Flask (
 ## Development Environment Setup
 
 ### Prerequisites
-- Python 3.12+ (required per pyproject.toml)
+- Python 3.12+ (standard installation)
 - Node.js 20/22/24 for React frontend development
-- **uv package manager (required)** - Never use global Python
+- **uv package manager (optional but recommended)** - Use for fast dependency installation.
 
 ### Initial Setup
 
 ```bash
-# Install uv package manager (required)
-pip install uv
+# Install dependencies (choose one)
+uv pip install -r requirements.txt  # Fast
+pip install -r requirements.txt     # Standard
 
 # Configure environment
 cp .sample.env .env
 
 # Generate new APP_KEY and API_KEY_PEPPER:
-uv run python -c "import secrets; print(secrets.token_hex(32))"
+python -c "import secrets; print(secrets.token_hex(32))"
 
 # Build React frontend (required - not tracked in git)
 cd frontend && npm install && npm run build && cd ..
 
-# Run application (uv automatically handles virtual env and dependencies)
-uv run app.py
+# Run application (without creating a local .venv folder)
+uv run --with-requirements requirements.txt app.py
+
+# Or install dependencies once and run with standard python
+# pip install -r requirements.txt
+# python app.py
 ```
 
-### Important: Always Use UV
+### Dependency Management
 
-**Never use global Python or manually manage virtual environments.** Always prefix Python commands with `uv run`:
+To avoid cluttering the project root with a `.venv` folder, the `pyproject.toml` file has been removed. You can now manage dependencies using `requirements.txt`:
 
 ```bash
-# Running the app
-uv run app.py
-
-# Running any Python script
-uv run python script.py
-
-# Installing a new package (adds to pyproject.toml)
-uv add package_name
-
-# Syncing dependencies after pulling changes
-uv sync
+# Install a new package
+uv pip install package_name
+# Then record it
+pip freeze > requirements.txt
 ```
 
 ### React Frontend Development
