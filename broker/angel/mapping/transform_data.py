@@ -1,4 +1,4 @@
-# Mapping OpenAlgo API Request https://openalgo.in/docs
+# Mapping Tradeboard API Request https://Tradeboard.in/docs
 # Mapping Angel Broking Parameters https://smartapi.angelbroking.com/docs/Orders
 
 from database.token_db import get_br_symbol

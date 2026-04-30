@@ -1,4 +1,4 @@
-﻿# Mapping OpenAlgo API Request to Delta Exchange API Parameters
+# Mapping Tradeboard API Request to Delta Exchange API Parameters
 # Delta Exchange API docs: https://docs.delta.exchange
 
 from database.token_db import get_br_symbol, get_symbol_info, get_token
@@ -29,7 +29,7 @@ def _order_size(quantity, symbol, exchange):
 
 def transform_data(data, token):
     """
-    Transforms the OpenAlgo API request structure to Delta Exchange POST /v2/orders payload.
+    Transforms the Tradeboard API request structure to Delta Exchange POST /v2/orders payload.
 
     Delta Exchange order parameters:
         product_id           (int)  - Contract identifier (= token from master contract DB)
@@ -103,7 +103,7 @@ def transform_data(data, token):
     if data.get("client_order_id"):
         transformed["client_order_id"] = str(data["client_order_id"])
 
-    # Bracket order fields — forward any that are present
+    # Bracket order fields � forward any that are present
     bracket_fields = (
         "bracket_stop_loss_price",
         "bracket_stop_loss_limit_price",
@@ -122,7 +122,7 @@ def transform_data(data, token):
 
 def transform_modify_order_data(data):
     """
-    Transforms OpenAlgo modify order data to Delta Exchange PUT /v2/orders payload.
+    Transforms Tradeboard modify order data to Delta Exchange PUT /v2/orders payload.
 
     Delta Exchange modify fields:
         id           (int) - Order ID (extracted from composite "{product_id}:{order_id}")
@@ -131,10 +131,10 @@ def transform_modify_order_data(data):
         limit_price  (str) - New limit price (use "0" for market/stop-market orders)
         stop_price   (str) - Stop trigger price (for SL / SL-M orders only)
 
-    OpenAlgo pricetype mapping:
-        MARKET / LIMIT  → no stop_price
-        SL              → limit_price = price, stop_price = trigger_price
-        SL-M            → limit_price = "0",  stop_price = trigger_price
+    Tradeboard pricetype mapping:
+        MARKET / LIMIT  ? no stop_price
+        SL              ? limit_price = price, stop_price = trigger_price
+        SL-M            ? limit_price = "0",  stop_price = trigger_price
     """
     orderid = data["orderid"]
     # Composite ID format: "{product_id}:{order_id}"
@@ -149,7 +149,7 @@ def transform_modify_order_data(data):
     pricetype = str(data.get("pricetype", "")).upper()
     is_stop_order = pricetype in ("SL", "SL-M")
 
-    # For stop-market (SL-M) orders the limit_price is irrelevant — use "0".
+    # For stop-market (SL-M) orders the limit_price is irrelevant � use "0".
     # For stop-limit (SL) orders the limit_price is the limit leg.
     if pricetype == "SL-M":
         limit_price = "0"
@@ -175,7 +175,7 @@ def transform_modify_order_data(data):
 
 
 def map_order_type(pricetype):
-    """Maps OpenAlgo pricetype to Delta Exchange order_type string."""
+    """Maps Tradeboard pricetype to Delta Exchange order_type string."""
     mapping = {
         "MARKET": "market_order",
         "LIMIT": "limit_order",
@@ -195,7 +195,7 @@ def map_product_type(product):
 
 def reverse_map_product_type(br_product):
     """
-    Maps Delta Exchange position category back to OpenAlgo product type.
+    Maps Delta Exchange position category back to Tradeboard product type.
     All crypto futures/options map to NRML.
     """
     return "NRML"
@@ -203,7 +203,7 @@ def reverse_map_product_type(br_product):
 
 def map_exchange(br_exchange):
     """
-    Maps a Delta Exchange broker exchange field back to OpenAlgo exchange code.
+    Maps a Delta Exchange broker exchange field back to Tradeboard exchange code.
     Delta Exchange is a single crypto derivatives exchange.
     """
     return "CRYPTO"
@@ -211,7 +211,7 @@ def map_exchange(br_exchange):
 
 def map_exchange_type(exchange):
     """
-    Maps an OpenAlgo exchange code to the Delta Exchange context.
+    Maps an Tradeboard exchange code to the Delta Exchange context.
     All contracts on Delta Exchange are under a single platform.
     """
     return "CRYPTO"

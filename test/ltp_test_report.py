@@ -16,9 +16,9 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from openalgo import api
+    from Tradeboard import api
 except ImportError:
-    print("Error: Could not import openalgo. Make sure you're running from the correct directory.")
+    print("Error: Could not import Tradeboard. Make sure you're running from the correct directory.")
     sys.exit(1)
 
 

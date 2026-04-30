@@ -59,7 +59,7 @@ COPY --chown=appuser:appuser start.sh /app/start.sh
 RUN sed -i 's/\r$//' /app/start.sh && chmod +x /app/start.sh
 # ---- RUNTIME ENVS --------------------------------------------------------- #
 # Limit OpenBLAS/NumPy threads to prevent RLIMIT_NPROC exhaustion in Docker
-# See: https://github.com/marketcalls/openalgo/issues/822
+# See: https://github.com/marketcalls/Tradeboard/issues/822
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

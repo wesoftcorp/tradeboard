@@ -1,4 +1,4 @@
-# Mapping OpenAlgo API Request https://openalgo.in/docs
+# Mapping Tradeboard API Request https://Tradeboard.in/docs
 # Mapping Kotak Neo API Parameters
 
 import math
@@ -182,7 +182,7 @@ def map_variety(pricetype):
 
 def map_exchange(brexchange):
     """
-    Maps the Broker Exchange to the OpenAlgo Exchange.
+    Maps the Broker Exchange to the Tradeboard Exchange.
     """
 
     exchange_mapping = {
@@ -199,7 +199,7 @@ def map_exchange(brexchange):
 
 def reverse_map_exchange(exchange):
     """
-    Maps the Broker Exchange to the OpenAlgo Exchange.
+    Maps the Broker Exchange to the Tradeboard Exchange.
     """
 
     exchange_mapping = {

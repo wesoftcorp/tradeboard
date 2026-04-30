@@ -1,4 +1,4 @@
-from openalgo import api
+from Tradeboard import api
 
 # Initialize client
 client = api(

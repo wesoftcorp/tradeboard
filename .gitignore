@@ -1,7 +1,7 @@
-venopenalgo
+venTradeboard
 .venv/
 .env
-openalgo.db
+Tradeboard.db
 *.db-shm
 *.db-wal
 *.db-journal

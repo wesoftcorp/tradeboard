@@ -1,13 +1,13 @@
 # Utility
 
-## OpenAlgo Utility Indicators Documentation
+## Tradeboard Utility Indicators Documentation
 
 Utility indicators provide essential market analysis functions for signal detection, condition checking, and mathematical operations. These functions are fundamental building blocks for creating trading strategies and market analysis systems.
 
 ### Import Statement
 
 ```python
-from openalgo import ta, api
+from Tradeboard import ta, api
 ```
 
 ### Sample Data Setup
@@ -525,7 +525,7 @@ print(df[['close', 'Filtered_Buy', 'Last_Buy_Price', 'Profit_Potential']].tail()
 
 ```python
 import pandas as pd
-from openalgo import ta, api
+from Tradeboard import ta, api
 
 # Fetch data
 client = api(api_key='your_api_key_here', host='http://127.0.0.1:5000')
@@ -630,7 +630,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.openalgo.in/trading-platform/python/indicators/utility.md?ask=<question>
+GET https://docs.Tradeboard.in/trading-platform/python/indicators/utility.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

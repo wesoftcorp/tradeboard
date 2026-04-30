@@ -1,6 +1,6 @@
-# 02 - Why Build with OpenAlgo?
+# 02 - Why Build with Tradeboard?
 
-*"Why should I use OpenAlgo when I can just build my strategy directly on top of the broker's SDK or API?"*
+*"Why should I use Tradeboard when I can just build my strategy directly on top of the broker's SDK or API?"*
 
 It's a common question. Many start with broker SDKs because it feels quick—just wire your signals and send orders. But soon, the pain points show up:
 
@@ -12,17 +12,17 @@ It's a common question. Many start with broker SDKs because it feels quick—jus
 
 That's when you realize the SDK is not enough.
 
-**OpenAlgo takes care of the heavy lifting.**
+**Tradeboard takes care of the heavy lifting.**
 
 It's not just an API wrapper—it's a **full-stack, open-source trading automation framework** designed to host strategies, manage brokers, and scale securely.
 
 ---
 
-## What Makes OpenAlgo Different?
+## What Makes Tradeboard Different?
 
 ### Strategy Management & Hosting
 
-Host your **Python strategies directly inside OpenAlgo**, alongside strategies from TradingView, Amibroker, ChartInk, MetaTrader, Excel, or custom webhooks. Start, pause, schedule, monitor, and analyze—all from a central control plane.
+Host your **Python strategies directly inside Tradeboard**, alongside strategies from TradingView, Amibroker, ChartInk, MetaTrader, Excel, or custom webhooks. Start, pause, schedule, monitor, and analyze—all from a central control plane.
 
 | Capability | Description |
 |------------|-------------|
@@ -56,7 +56,7 @@ The **Analyzer Mode** works like a local sandbox—test your signals, APIs, and 
 
 ### Multi-Broker, Multi-Platform
 
-OpenAlgo supports **29 Indian brokers** via a **unified API and WebSocket layer**. Write your strategy once, and run it across Zerodha, Angel One, Dhan, Upstox, Fyers, Flattrade, Firstock, and more—without rewriting code.
+Tradeboard supports **29 Indian brokers** via a **unified API and WebSocket layer**. Write your strategy once, and run it across Zerodha, Angel One, Dhan, Upstox, Fyers, Flattrade, Firstock, and more—without rewriting code.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -66,7 +66,7 @@ OpenAlgo supports **29 Indian brokers** via a **unified API and WebSocket layer*
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                   OpenAlgo Unified API                          │
+│                   Tradeboard Unified API                          │
 │              (Common Interface for All Brokers)                 │
 └───┬─────────┬─────────┬─────────┬─────────┬─────────┬──────────┘
     │         │         │         │         │         │
@@ -78,9 +78,9 @@ OpenAlgo supports **29 Indian brokers** via a **unified API and WebSocket layer*
 
 ### Unified Symbol & Contract Management
 
-With OpenAlgo's **Common Symbol Format**, you don't have to worry about broker-specific quirks. Contracts, expiries, and lot sizes are maintained automatically.
+With Tradeboard's **Common Symbol Format**, you don't have to worry about broker-specific quirks. Contracts, expiries, and lot sizes are maintained automatically.
 
-| Broker | Their Format | OpenAlgo Format |
+| Broker | Their Format | Tradeboard Format |
 |--------|--------------|-----------------|
 | Zerodha | `SBIN` | `SBIN` |
 | Angel | `SBIN-EQ` | `SBIN` |
@@ -122,7 +122,7 @@ With OpenAlgo's **Common Symbol Format**, you don't have to worry about broker-s
 
 ## Security by Default
 
-OpenAlgo is production-tested with enterprise-grade security:
+Tradeboard is production-tested with enterprise-grade security:
 
 | Security Feature | Description |
 |------------------|-------------|
@@ -145,7 +145,7 @@ Deploy locally, in **Docker**, or on cloud servers—secure out of the box.
 
 | Language | Package |
 |----------|---------|
-| **Python** | `openalgo` on PyPI |
+| **Python** | `Tradeboard` on PyPI |
 | **Node.js** | REST API integration |
 | **Go** | REST API integration |
 
@@ -175,7 +175,7 @@ Deploy locally, in **Docker**, or on cloud servers—secure out of the box.
 
 With direct broker APIs, you'd have to build:
 
-| Component | What You'd Build | OpenAlgo Provides |
+| Component | What You'd Build | Tradeboard Provides |
 |-----------|------------------|-------------------|
 | **Strategy Hosting** | Process management, scheduling | Built-in with Python hosting |
 | **Testing Environment** | Sandbox, mock broker | Analyzer Mode with ₹1 Cr capital |
@@ -188,13 +188,13 @@ With direct broker APIs, you'd have to build:
 | **Security Layer** | Auth, rate limiting, CSRF | Enterprise security included |
 | **Notifications** | Telegram, alerts | Telegram bot integrated |
 
-OpenAlgo ships with all this—**pre-wired, tested, and open source**.
+Tradeboard ships with all this—**pre-wired, tested, and open source**.
 
 ---
 
 ## Open Source Freedom
 
-Licensed under **AGPL**, OpenAlgo gives you:
+Licensed under **AGPL**, Tradeboard gives you:
 
 | Freedom | Description |
 |---------|-------------|
@@ -209,7 +209,7 @@ Licensed under **AGPL**, OpenAlgo gives you:
 
 ## The Bottom Line
 
-| Aspect | Broker APIs | OpenAlgo |
+| Aspect | Broker APIs | Tradeboard |
 |--------|-------------|----------|
 | **Setup Time** | Weeks of development | Hours to deploy |
 | **Broker Switching** | Rewrite everything | Change one config |
@@ -220,14 +220,14 @@ Licensed under **AGPL**, OpenAlgo gives you:
 | **Cost** | Your development time | Free and open source |
 
 **Broker APIs give you *access*.**
-**OpenAlgo gives you *infrastructure*.**
+**Tradeboard gives you *infrastructure*.**
 
 It doesn't replace your strategy logic—it **amplifies** it with the ecosystem you need to operate, monitor, test, and scale confidently.
 
-And when you're ready to switch brokers or expand to multi-broker setups, you'll already be on **OpenAlgo's unified, broker-agnostic foundation**.
+And when you're ready to switch brokers or expand to multi-broker setups, you'll already be on **Tradeboard's unified, broker-agnostic foundation**.
 
 ---
 
-**Previous**: [01 - What is OpenAlgo](../01-what-is-openalgo/README.md)
+**Previous**: [01 - What is Tradeboard](../01-what-is-Tradeboard/README.md)
 
 **Next**: [03 - Key Concepts](../03-key-concepts/README.md)

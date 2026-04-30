@@ -1,27 +1,27 @@
 # Python
 
-To install the OpenAlgo Python library, use pip:
+To install the Tradeboard Python library, use pip:
 
 ```bash
 # Trading API only  
-pip install openalgo 
+pip install Tradeboard 
 
 # JIT-accelerated indicators                                                                 
-pip install openalgo[indicators]  
+pip install Tradeboard[indicators]  
 ```
 
-### Get the OpenAlgo apikey
+### Get the Tradeboard apikey
 
-Make Sure that your OpenAlgo Application is running. Login to OpenAlgo Application with valid credentials and get the OpenAlgo apikey
+Make Sure that your Tradeboard Application is running. Login to Tradeboard Application with valid credentials and get the Tradeboard apikey
 
-For detailed function parameters refer to the [API Documentation](https://docs.openalgo.in/api-documentation/v1)
+For detailed function parameters refer to the [API Documentation](https://docs.Tradeboard.in/api-documentation/v1)
 
-### Getting Started with OpenAlgo
+### Getting Started with Tradeboard
 
-First, import the `api` class from the OpenAlgo library and initialize it with your API key:
+First, import the `api` class from the Tradeboard library and initialize it with your API key:
 
 ```python
-from openalgo import api
+from Tradeboard import api
 
 # Replace 'your_api_key_here' with your actual API key
 # Specify the host URL with your hosted domain or ngrok domain. 
@@ -30,16 +30,16 @@ client = api(api_key='your_api_key_here', host='http://127.0.0.1:5000')
 
 ```
 
-### Check OpenAlgo Version
+### Check Tradeboard Version
 
 ```python
-import openalgo 
-openalgo.__version__
+import Tradeboard 
+Tradeboard.__version__
 ```
 
 ### Examples
 
-Please refer to the documentation on [order constants](https://docs.openalgo.in/api-documentation/v1/order-constants), and consult the API reference for details on optional parameters
+Please refer to the documentation on [order constants](https://docs.Tradeboard.in/api-documentation/v1/order-constants), and consult the API reference for details on optional parameters
 
 ### PlaceOrder example
 
@@ -1398,7 +1398,7 @@ Instruments **Response**
 
 ```python
 response = client.telegram(
-      username="<openalgo_loginid>",
+      username="<Tradeboard_loginid>",
       message="NIFTY crossed 26000!"
   )
 
@@ -1759,12 +1759,12 @@ Analyzer Toggle Response
 ### LTP Data (Streaming Websocket)
 
 ```python
-from openalgo import api
+from Tradeboard import api
 import time
 
-# Initialize OpenAlgo client
+# Initialize Tradeboard client
 client = api(
-    api_key="your_api_key",                  # Replace with your actual OpenAlgo API key
+    api_key="your_api_key",                  # Replace with your actual Tradeboard API key
     host="http://127.0.0.1:5000",            # REST API host
     ws_url="ws://127.0.0.1:8765"             # WebSocket host
 )
@@ -1796,12 +1796,12 @@ finally:
 ### Quotes (Streaming Websocket)
 
 ```python
-from openalgo import api
+from Tradeboard import api
 import time
 
-# Initialize OpenAlgo client
+# Initialize Tradeboard client
 client = api(
-    api_key="your_api_key",                  # Replace with your actual OpenAlgo API key
+    api_key="your_api_key",                  # Replace with your actual Tradeboard API key
     host="http://127.0.0.1:5000",            # REST API host
     ws_url="ws://127.0.0.1:8765"             # WebSocket host
 )
@@ -1833,12 +1833,12 @@ finally:
 ### Depth (Streaming Websocket)
 
 ```python
-from openalgo import api
+from Tradeboard import api
 import time
 
-# Initialize OpenAlgo client
+# Initialize Tradeboard client
 client = api(
-    api_key="your_api_key",                  # Replace with your actual OpenAlgo API key
+    api_key="your_api_key",                  # Replace with your actual Tradeboard API key
     host="http://127.0.0.1:5000",            # REST API host
     ws_url="ws://127.0.0.1:8765"             # WebSocket host
 )
@@ -1877,7 +1877,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.openalgo.in/trading-platform/python.md?ask=<question>
+GET https://docs.Tradeboard.in/trading-platform/python.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

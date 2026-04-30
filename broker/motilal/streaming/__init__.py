@@ -1,8 +1,8 @@
 """
-Motilal Oswal WebSocket streaming module for OpenAlgo.
+Motilal Oswal WebSocket streaming module for Tradeboard.
 
 This module provides WebSocket streaming functionality for Motilal Oswal broker,
-integrating with OpenAlgo's WebSocket proxy infrastructure.
+integrating with Tradeboard's WebSocket proxy infrastructure.
 """
 
 from .motilal_adapter import MotilalWebSocketAdapter

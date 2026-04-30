@@ -1,13 +1,13 @@
 """
 Mapping utilities for Dhan broker integration.
-Provides exchange code mappings between OpenAlgo and Dhan formats.
+Provides exchange code mappings between Tradeboard and Dhan formats.
 """
 
 from typing import Dict
 
 # Exchange code mappings
-# OpenAlgo exchange code -> Dhan exchange code
-OPENALGO_TO_DHAN_EXCHANGE = {
+# Tradeboard exchange code -> Dhan exchange code
+Tradeboard_TO_DHAN_EXCHANGE = {
     "NSE": "NSE_EQ",
     "BSE": "BSE_EQ",
     "NFO": "NSE_FNO",
@@ -19,31 +19,31 @@ OPENALGO_TO_DHAN_EXCHANGE = {
     "BSE_INDEX": "IDX_I",
 }
 
-# Dhan exchange code -> OpenAlgo exchange code
-DHAN_TO_OPENALGO_EXCHANGE = {v: k for k, v in OPENALGO_TO_DHAN_EXCHANGE.items()}
+# Dhan exchange code -> Tradeboard exchange code
+DHAN_TO_Tradeboard_EXCHANGE = {v: k for k, v in Tradeboard_TO_DHAN_EXCHANGE.items()}
 
 
-def get_dhan_exchange(openalgo_exchange: str) -> str:
+def get_dhan_exchange(Tradeboard_exchange: str) -> str:
     """
-    Convert OpenAlgo exchange code to Dhan exchange code.
+    Convert Tradeboard exchange code to Dhan exchange code.
 
     Args:
-        openalgo_exchange (str): Exchange code in OpenAlgo format
+        Tradeboard_exchange (str): Exchange code in Tradeboard format
 
     Returns:
         str: Exchange code in Dhan format
     """
-    return OPENALGO_TO_DHAN_EXCHANGE.get(openalgo_exchange, openalgo_exchange)
+    return Tradeboard_TO_DHAN_EXCHANGE.get(Tradeboard_exchange, Tradeboard_exchange)
 
 
-def get_openalgo_exchange(dhan_exchange: str) -> str:
+def get_Tradeboard_exchange(dhan_exchange: str) -> str:
     """
-    Convert Dhan exchange code to OpenAlgo exchange code.
+    Convert Dhan exchange code to Tradeboard exchange code.
 
     Args:
         dhan_exchange (str): Exchange code in Dhan format
 
     Returns:
-        str: Exchange code in OpenAlgo format
+        str: Exchange code in Tradeboard format
     """
-    return DHAN_TO_OPENALGO_EXCHANGE.get(dhan_exchange, dhan_exchange)
+    return DHAN_TO_Tradeboard_EXCHANGE.get(dhan_exchange, dhan_exchange)

@@ -1,4 +1,4 @@
-tunnel: openalgo
+tunnel: Tradeboard
 credentials-file: <ABSOLUTE_PATH_TO_JSON>
 
 ingress:

@@ -1,4 +1,4 @@
-# Mapping OpenAlgo API Request https://openalgo.in/docs
+# Mapping Tradeboard API Request https://Tradeboard.in/docs
 # Mapping Shoonya GetBasketMargin API
 
 from broker.shoonya.mapping.transform_data import map_order_type, map_product_type

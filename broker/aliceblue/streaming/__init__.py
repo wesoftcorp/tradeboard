@@ -1,12 +1,12 @@
 """
-AliceBlue WebSocket streaming module for OpenAlgo
+AliceBlue WebSocket streaming module for Tradeboard
 
 This module provides WebSocket streaming capabilities for AliceBlue broker integration.
 It includes:
 - AliceBlue WebSocket client wrapper
 - Message mapping and parsing utilities
 - Exchange and capability mappings
-- Main adapter for integration with OpenAlgo WebSocket proxy
+- Main adapter for integration with Tradeboard WebSocket proxy
 """
 
 from .aliceblue_adapter import AliceblueWebSocketAdapter

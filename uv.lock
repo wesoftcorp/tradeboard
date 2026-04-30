@@ -1519,7 +1519,7 @@ wheels = [
 ]
 
 [[package]]
-name = "openalgo"
+name = "Tradeboard"
 version = "1.0.49"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
@@ -1528,13 +1528,13 @@ dependencies = [
     { name = "pandas" },
     { name = "websocket-client" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/55/bb/382ed877c314f7c659e8cfb918c4a43337d3045f0dbf5c1b0fc1ee70bab6/openalgo-1.0.49.tar.gz", hash = "sha256:e5b13f40e707f420ddd675b90894feea076b3eecee168c3c6980ba78ff75391e", size = 124803, upload-time = "2026-04-24T22:08:08.077Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/55/bb/382ed877c314f7c659e8cfb918c4a43337d3045f0dbf5c1b0fc1ee70bab6/Tradeboard-1.0.49.tar.gz", hash = "sha256:e5b13f40e707f420ddd675b90894feea076b3eecee168c3c6980ba78ff75391e", size = 124803, upload-time = "2026-04-24T22:08:08.077Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4e/e0/7cc15333cae2473274d7c8cb2c8c54a778a377103d9a8eaa71e8dab65ee2/openalgo-1.0.49-py3-none-any.whl", hash = "sha256:e693936a51dd2848048e2331cfaecab7f3e580563a1326a4952d45f84e6bb107", size = 117985, upload-time = "2026-04-24T22:08:06.533Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/e0/7cc15333cae2473274d7c8cb2c8c54a778a377103d9a8eaa71e8dab65ee2/Tradeboard-1.0.49-py3-none-any.whl", hash = "sha256:e693936a51dd2848048e2331cfaecab7f3e580563a1326a4952d45f84e6bb107", size = 117985, upload-time = "2026-04-24T22:08:06.533Z" },
 ]
 
 [[package]]
-name = "openalgoui"
+name = "Tradeboardui"
 version = "2.0.0.6"
 source = { editable = "." }
 dependencies = [
@@ -1613,7 +1613,7 @@ dependencies = [
     { name = "nbformat" },
     { name = "nest-asyncio" },
     { name = "numpy" },
-    { name = "openalgo" },
+    { name = "Tradeboard" },
     { name = "ordered-set" },
     { name = "orjson" },
     { name = "packaging" },
@@ -1772,7 +1772,7 @@ requires-dist = [
     { name = "nbformat", specifier = "==5.10.4" },
     { name = "nest-asyncio", specifier = "==1.6.0" },
     { name = "numpy", specifier = "==2.4.4" },
-    { name = "openalgo", specifier = "==1.0.49" },
+    { name = "Tradeboard", specifier = "==1.0.49" },
     { name = "ordered-set", specifier = "==4.1.0" },
     { name = "orjson", specifier = "==3.11.8" },
     { name = "packaging", specifier = "==24.1" },

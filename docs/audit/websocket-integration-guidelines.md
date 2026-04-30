@@ -1,6 +1,6 @@
 # WebSocket Integration Guidelines
 
-## Developer Guide for Real-Time Data in OpenAlgo React Frontend
+## Developer Guide for Real-Time Data in Tradeboard React Frontend
 
 This document provides guidelines for creating new pages that require real-time market data streaming with proper fallback mechanisms.
 

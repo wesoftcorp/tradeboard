@@ -4,15 +4,15 @@ from datetime import datetime, timedelta
 
 import numpy as np
 import pandas as pd
-from openalgo import api
+from Tradeboard import api
 
-# Get API key from openalgo portal
-api_key = "your-openalgo-api-key"
+# Get API key from Tradeboard portal
+api_key = "your-Tradeboard-api-key"
 
 
 # Set the strategy details and trading parameters
 strategy = "EMA Crossover Python"
-symbol = "BHEL"  # OpenAlgo Symbol
+symbol = "BHEL"  # Tradeboard Symbol
 exchange = "NSE"
 product = "MIS"
 quantity = 1
@@ -74,7 +74,7 @@ def ema_strategy():
             end_date = datetime.now().strftime("%Y-%m-%d")
             start_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
 
-            # Fetch 1-minute historical data using OpenAlgo
+            # Fetch 1-minute historical data using Tradeboard
             df = client.history(
                 symbol=symbol,
                 exchange=exchange,

@@ -1,10 +1,10 @@
 """
-OpenAlgo WebSocket Market Depth Example
+Tradeboard WebSocket Market Depth Example
 """
 
 import time
 
-from openalgo import api
+from Tradeboard import api
 
 # Initialize feed client with explicit parameters
 client = api(

@@ -1,11 +1,11 @@
 # Trend
 
-Trend indicators help identify the direction and strength of market trends. All examples use real market data fetched via OpenAlgo API.
+Trend indicators help identify the direction and strength of market trends. All examples use real market data fetched via Tradeboard API.
 
 ### Data Setup
 
 ```python
-from openalgo import api, ta
+from Tradeboard import api, ta
 import pandas as pd
 
 # Initialize API client
@@ -424,7 +424,7 @@ print(peak_periods[['close', 'EMA_20', 'DEMA_20', 'TEMA_20']].tail())
 ### Complete Trading Analysis Example
 
 ```python
-from openalgo import api, ta
+from Tradeboard import api, ta
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -490,7 +490,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-This documentation demonstrates how to use OpenAlgo trend indicators with real market data fetched via the OpenAlgo API, maintaining pandas DataFrame structure throughout the analysis process.
+This documentation demonstrates how to use Tradeboard trend indicators with real market data fetched via the Tradeboard API, maintaining pandas DataFrame structure throughout the analysis process.
 
 
 ---
@@ -502,7 +502,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.openalgo.in/trading-platform/python/indicators/trend.md?ask=<question>
+GET https://docs.Tradeboard.in/trading-platform/python/indicators/trend.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

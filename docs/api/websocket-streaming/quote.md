@@ -58,7 +58,7 @@ Custom Host  :  ws://<your-host>:8765
 ## Python SDK Example
 
 ```python
-from openalgo import api
+from Tradeboard import api
 import time
 
 # Initialize client with WebSocket

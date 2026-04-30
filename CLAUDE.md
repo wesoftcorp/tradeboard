@@ -4,17 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-OpenAlgo is a production-ready algorithmic trading platform built with Flask (backend) and React 19 (frontend). It provides a unified API layer across 24+ Indian brokers, enabling seamless integration with TradingView, Amibroker, Excel, Python, and AI agents.
+Tradeboard is a production-ready algorithmic trading platform built with Flask (backend) and React 19 (frontend). It provides a unified API layer across 24+ Indian brokers, enabling seamless integration with TradingView, Amibroker, Excel, Python, and AI agents.
 
-**Repository**: https://github.com/marketcalls/openalgo
-**Documentation**: https://docs.openalgo.in
+**Repository**: https://github.com/marketcalls/Tradeboard
+**Documentation**: https://docs.Tradeboard.in
 
 ## Security and Deployment Model
 
 - **Single user per deployment** — no multi-user, no privilege escalation. One user, one broker session per instance.
 - **Self-hosted on user's own server** — server access = full control. No SaaS component.
 - All official install scripts (`install.sh`, `install-docker.sh`, `install-multi.sh`, `docker-run.sh`, `docker-run.bat`, `start.sh`) auto-generate unique `APP_KEY` and `API_KEY_PEPPER` via `secrets.token_hex(32)`.
-- **SEBI static IP mandate** (effective April 1, 2026): All transactional API orders require broker-side static IP whitelisting. Delta Exchange (crypto) also enforces this. Stolen broker credentials CANNOT be used from an attacker's machine — the broker rejects requests from non-registered IPs. However, attacks routed THROUGH the OpenAlgo server (which has the registered IP) are still viable.
+- **SEBI static IP mandate** (effective April 1, 2026): All transactional API orders require broker-side static IP whitelisting. Delta Exchange (crypto) also enforces this. Stolen broker credentials CANNOT be used from an attacker's machine — the broker rejects requests from non-registered IPs. However, attacks routed THROUGH the Tradeboard server (which has the registered IP) are still viable.
 - External platforms (TradingView, GoCharting, Chartink) send API keys in JSON body or URL query params — they cannot set custom HTTP headers. This is an accepted architectural trade-off.
 - The MCP server (`mcp/mcpserver.py`) is local-only, communicates via stdio with Claude Desktop/Cursor/Windsurf. It is NOT remotely exposed.
 - Indian broker tokens expire daily at ~3:00 AM IST. Session management is aligned to this schedule.
@@ -107,9 +107,9 @@ npm run format
 
 ### Database Architecture
 
-OpenAlgo uses **6 separate databases** for isolation:
+Tradeboard uses **6 separate databases** for isolation:
 
-- `db/openalgo.db` - Main database (users, orders, positions, settings)
+- `db/Tradeboard.db` - Main database (users, orders, positions, settings)
 - `db/logs.db` - Traffic and API logs
 - `db/latency.db` - Latency monitoring data
 - `db/health.db` - Health monitoring data
@@ -140,7 +140,7 @@ All 24+ brokers follow a standardized structure in `broker/{broker_name}/`:
 2. `api/order_api.py` - Place, modify, cancel orders
 3. `api/data.py` - Quotes, depth, historical data
 4. `api/funds.py` - Account balance and margins
-5. `mapping/` - Transform OpenAlgo format ↔ broker format
+5. `mapping/` - Transform Tradeboard format ↔ broker format
 6. `streaming/` - WebSocket adapter for real-time data
 7. `database/master_contract_db.py` - Symbol mapping
 8. `plugin.json` - Broker metadata
@@ -151,7 +151,7 @@ Reference implementations: `/broker/zerodha/`, `/broker/dhan/`, `/broker/angel/`
 
 Real-time market data flows through a three-layer pipeline:
 
-1. **Broker WebSocket Adapters** (`broker/*/streaming/`): Each broker has a WebSocket adapter that connects to the broker's proprietary feed and normalizes data into OpenAlgo's internal format. Connection pooling is per-broker: `MAX_SYMBOLS_PER_WEBSOCKET` (default: 1000) x `MAX_WEBSOCKET_CONNECTIONS` (default: 3) = 3000 symbols max.
+1. **Broker WebSocket Adapters** (`broker/*/streaming/`): Each broker has a WebSocket adapter that connects to the broker's proprietary feed and normalizes data into Tradeboard's internal format. Connection pooling is per-broker: `MAX_SYMBOLS_PER_WEBSOCKET` (default: 1000) x `MAX_WEBSOCKET_CONNECTIONS` (default: 3) = 3000 symbols max.
 
 2. **ZeroMQ Message Bus** (port 5555): Broker adapters publish normalized tick data to a ZeroMQ PUB socket. This decouples the broker feed from client delivery — the broker adapter runs independently and never blocks on slow clients.
 
@@ -300,7 +300,7 @@ Separate database (`sandbox.db`) with ₹1 Crore virtual capital:
 
 ### Real-Time Communication (Event-Driven Architecture)
 
-OpenAlgo uses an event-driven architecture where state changes are broadcast to the UI in real-time:
+Tradeboard uses an event-driven architecture where state changes are broadcast to the UI in real-time:
 
 1. **Flask-SocketIO events**: Order placement, modification, cancellation, position updates, and analyzer results all emit SocketIO events (e.g., `order_update`, `analyzer_update`, `cache_loaded`). The React frontend subscribes to these events for live dashboard updates without polling.
 
@@ -364,7 +364,7 @@ API keys are generated at `/apikey` and hashed with pepper before storage.
 
 ### Symbol Format
 
-OpenAlgo uses a standardized symbol format across all 24+ brokers. Broker-specific symbols are mapped via `broker/*/mapping/` modules and stored in the `SymToken` table.
+Tradeboard uses a standardized symbol format across all 24+ brokers. Broker-specific symbols are mapped via `broker/*/mapping/` modules and stored in the `SymToken` table.
 
 **Equity:** Just the base symbol — `INFY`, `SBIN`, `TATAMOTORS`
 
@@ -379,7 +379,7 @@ OpenAlgo uses a standardized symbol format across all 24+ brokers. Broker-specif
 - **Price type:** `MARKET`, `LIMIT`, `SL` (stop-loss limit), `SL-M` (stop-loss market)
 - **Action:** `BUY`, `SELL`
 
-**Database schema (`SymToken`):** `symbol` (OpenAlgo format), `brsymbol` (broker format), `exchange`, `brexchange`, `token` (broker instrument token), `expiry`, `strike`, `lotsize`, `instrumenttype`, `tick_size`
+**Database schema (`SymToken`):** `symbol` (Tradeboard format), `brsymbol` (broker format), `exchange`, `brexchange`, `token` (broker instrument token), `expiry`, `strike`, `lotsize`, `instrumenttype`, `tick_size`
 
 ### Database Queries
 
@@ -427,7 +427,7 @@ All logging flows through Python's standard `logging` module, configured in `set
 **Three output handlers (all share the same `SensitiveDataFilter` to redact API keys/tokens):**
 
 1. **Console** (always active): Colored output via `ColoredFormatter`, level controlled by `LOG_LEVEL` env var.
-2. **File** (if `LOG_TO_FILE=True`): Daily-rotated text logs in `log/openalgo_YYYY-MM-DD.log`, retained for `LOG_RETENTION` days.
+2. **File** (if `LOG_TO_FILE=True`): Daily-rotated text logs in `log/Tradeboard_YYYY-MM-DD.log`, retained for `LOG_RETENTION` days.
 3. **JSON error log** (always active): `log/errors.jsonl` — structured JSON Lines, ERROR+ only.
 
 ### Error Log for Debugging

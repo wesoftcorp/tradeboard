@@ -1,30 +1,30 @@
-# OpenAlgo - Open Source Algorithmic Trading Platform
+# Tradeboard - Open Source Algorithmic Trading Platform
 
 <div align="center">
 
-[![PyPI Downloads](https://static.pepy.tech/badge/openalgo)](https://pepy.tech/projects/openalgo)
-[![PyPI Downloads](https://static.pepy.tech/badge/openalgo/month)](https://pepy.tech/projects/openalgo)
-[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/openalgoHQ)](https://twitter.com/openalgoHQ)
-[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCw7eVneIEyiTApy4RtxrJsQ)](https://www.youtube.com/@openalgo)
+[![PyPI Downloads](https://static.pepy.tech/badge/Tradeboard)](https://pepy.tech/projects/Tradeboard)
+[![PyPI Downloads](https://static.pepy.tech/badge/Tradeboard/month)](https://pepy.tech/projects/Tradeboard)
+[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/TradeboardHQ)](https://twitter.com/TradeboardHQ)
+[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCw7eVneIEyiTApy4RtxrJsQ)](https://www.youtube.com/@Tradeboard)
 [![Discord](https://img.shields.io/discord/1219847221055455263)](https://discord.com/invite/UPh7QPsNhP)
 
 </div>
 
-## What is OpenAlgo?
-OpenAlgo is a free, open source, self hosted algorithmic trading platform that bridges your trading ideas with real execution. Built with Python Flask and a modern React frontend, it provides a unified API layer across 30+ Indian brokers, enabling seamless automation from Amibroker, TradingView, GoCharting, N8N, Python, Java, Go, .NET, Node.js, ChartInk, MetaTrader, Excel, and Google Sheets. Traders can also receive strategy alerts directly on Telegram, ensuring real time visibility and control.
+## What is Tradeboard?
+Tradeboard is a free, open source, self hosted algorithmic trading platform that bridges your trading ideas with real execution. Built with Python Flask and a modern React frontend, it provides a unified API layer across 30+ Indian brokers, enabling seamless automation from Amibroker, TradingView, GoCharting, N8N, Python, Java, Go, .NET, Node.js, ChartInk, MetaTrader, Excel, and Google Sheets. Traders can also receive strategy alerts directly on Telegram, ensuring real time visibility and control.
 
-Beyond execution, OpenAlgo empowers traders to completely own their trading infrastructure. Traders can effortlessly build algorithmic strategies, indicators, and custom trading dashboards using AI agentic coding tools, connect with their favorite trading platforms, and deploy strategies without being tied to any single broker or vendor. By standardizing broker APIs into one consistent trading layer, OpenAlgo allows strategies to work the same way across brokers, making automation faster, scalable, and fully under the trader’s control.
+Beyond execution, Tradeboard empowers traders to completely own their trading infrastructure. Traders can effortlessly build algorithmic strategies, indicators, and custom trading dashboards using AI agentic coding tools, connect with their favorite trading platforms, and deploy strategies without being tied to any single broker or vendor. By standardizing broker APIs into one consistent trading layer, Tradeboard allows strategies to work the same way across brokers, making automation faster, scalable, and fully under the trader’s control.
 
 ## Video Tutorial
 
-[![What is OpenAlgo](https://img.youtube.com/vi/LhbXWlUtCcM/0.jpg)](https://www.youtube.com/watch?v=LhbXWlUtCcM)
+[![What is Tradeboard](https://img.youtube.com/vi/LhbXWlUtCcM/0.jpg)](https://www.youtube.com/watch?v=LhbXWlUtCcM)
 
 ## Quick Links
 
-- **Documentation**: [docs.openalgo.in](https://docs.openalgo.in)
-- **Installation Guide**: [Getting Started](https://docs.openalgo.in/installation-guidelines/getting-started)
-- **Upgrade Guide**: [Upgrade Instructions](https://docs.openalgo.in/installation-guidelines/getting-started/upgrade)
-- **Why OpenAlgo**: [Why Build with OpenAlgo](https://docs.openalgo.in/why-to-build-with-openalgo)
+- **Documentation**: [docs.Tradeboard.in](https://docs.Tradeboard.in)
+- **Installation Guide**: [Getting Started](https://docs.Tradeboard.in/installation-guidelines/getting-started)
+- **Upgrade Guide**: [Upgrade Instructions](https://docs.Tradeboard.in/installation-guidelines/getting-started/upgrade)
+- **Why Tradeboard**: [Why Build with Tradeboard](https://docs.Tradeboard.in/why-to-build-with-Tradeboard)
 
 
 ## Python Compatibility
@@ -124,7 +124,7 @@ Complete testing environment with ₹1 Crore virtual capital:
 - Auto square-off at exchange timings
 - Separate database for complete isolation
 
-[API Analyzer Documentation](https://docs.openalgo.in/new-features/api-analyzer)
+[API Analyzer Documentation](https://docs.Tradeboard.in/new-features/api-analyzer)
 
 ### Action Center
 Order approval workflow for manual control:
@@ -133,10 +133,10 @@ Order approval workflow for manual control:
 - Complete audit trail with IST timestamps
 - Approve individual orders or bulk approve all
 
-[Action Center Documentation](https://docs.openalgo.in/new-features/action-center)
+[Action Center Documentation](https://docs.Tradeboard.in/new-features/action-center)
 
 ### Python Strategy Manager
-Host and run Python strategies directly on OpenAlgo:
+Host and run Python strategies directly on Tradeboard:
 - Built-in code editor powered by **CodeMirror** with Python syntax highlighting
 - Run multiple strategies in parallel with process isolation
 - Automated scheduling with IST-based start/stop times
@@ -156,7 +156,7 @@ Connect AI assistants for natural language trading:
 - Compatible with Claude Desktop, Cursor, Windsurf, ChatGPT
 - Execute trades using natural language commands
 - Full trading capabilities: orders, positions, market data
-- Local and secure integration with your OpenAlgo instance
+- Local and secure integration with your Tradeboard instance
 
 ### Telegram Bot Integration
 Real-time notifications and command execution:
@@ -174,9 +174,9 @@ Real-time notifications and command execution:
 
 **PnL Tracker**: Real-time profit/loss with interactive charts powered by TradingView Lightweight Charts
 
-[PnL Tracker Documentation](https://docs.openalgo.in/new-features/pnl-tracker)
+[PnL Tracker Documentation](https://docs.Tradeboard.in/new-features/pnl-tracker)
 
-[Traffic & Latency Monitor Documentation](https://docs.openalgo.in/new-features/traffic-latency-monitor)
+[Traffic & Latency Monitor Documentation](https://docs.Tradeboard.in/new-features/traffic-latency-monitor)
 
 ### Enterprise-Grade Security
 **Password Security**: Argon2 hashing (Password Hashing Competition winner)
@@ -262,22 +262,22 @@ Receive your strategy alerts directly to **Telegram** for all platforms.
 
 ## Official SDKs
 
-OpenAlgo provides officially supported client libraries for application development and system-level integrations:
+Tradeboard provides officially supported client libraries for application development and system-level integrations:
 
 | Language / Platform | Repository |
 |---------------------|------------|
-| Python | [openalgo-python-library](https://github.com/marketcalls/openalgo-python-library) |
-| Node.js | [openalgo-node](https://github.com/marketcalls/openalgo-node) |
-| Java | [openalgo-java](https://github.com/marketcalls/openalgo-java) |
-| Rust | [openalgo-rust](https://github.com/marketcalls/openalgo-rust) |
-| .NET / C# | [openalgo.NET](https://github.com/marketcalls/openalgo.NET) |
-| Go | [openalgo-go](https://github.com/marketcalls/openalgo-go) |
+| Python | [Tradeboard-python-library](https://github.com/marketcalls/Tradeboard-python-library) |
+| Node.js | [Tradeboard-node](https://github.com/marketcalls/Tradeboard-node) |
+| Java | [Tradeboard-java](https://github.com/marketcalls/Tradeboard-java) |
+| Rust | [Tradeboard-rust](https://github.com/marketcalls/Tradeboard-rust) |
+| .NET / C# | [Tradeboard.NET](https://github.com/marketcalls/Tradeboard.NET) |
+| Go | [Tradeboard-go](https://github.com/marketcalls/Tradeboard-go) |
 
-## OpenAlgo FOSS Ecosystem
+## Tradeboard FOSS Ecosystem
 
-OpenAlgo is part of a larger open-source trading ecosystem:
+Tradeboard is part of a larger open-source trading ecosystem:
 
-- **OpenAlgo Core**: This repository (Python Flask + React)
+- **Tradeboard Core**: This repository (Python Flask + React)
 - **Historify**: Stock market data management platform
 - **Official SDKs**: Python, Node.js, Java, Rust, .NET, Go (see above)
 - **Excel Add-in**: Direct Excel integration
@@ -285,7 +285,7 @@ OpenAlgo is part of a larger open-source trading ecosystem:
 - **Chrome Plugin**: Browser-based tools
 - **Fast Scalper**: High-performance trading (Rust + Tauri)
 - **Web Portal**: Modern UI (NextJS + ShadcnUI)
-- **Documentation**: Comprehensive guides on [Gitbook](https://docs.openalgo.in/mini-foss-universe)
+- **Documentation**: Comprehensive guides on [Gitbook](https://docs.Tradeboard.in/mini-foss-universe)
 
 ## Installation
 
@@ -298,12 +298,12 @@ OpenAlgo is part of a larger open-source trading ecosystem:
 
 ### Quick Start with UV
 
-OpenAlgo uses the modern `uv` package manager for faster, more reliable installations:
+Tradeboard uses the modern `uv` package manager for faster, more reliable installations:
 
 ```bash
 # Clone the repository
-git clone https://github.com/marketcalls/openalgo.git
-cd openalgo
+git clone https://github.com/marketcalls/Tradeboard.git
+cd Tradeboard
 
 # Install UV package manager
 pip install uv
@@ -318,13 +318,13 @@ uv run app.py
 
 The application will be available at `http://127.0.0.1:5000`
 
-For detailed installation instructions, deployment options (Docker, AWS, etc.), and configuration guides, visit [docs.openalgo.in/installation-guidelines/getting-started](https://docs.openalgo.in/installation-guidelines/getting-started)
+For detailed installation instructions, deployment options (Docker, AWS, etc.), and configuration guides, visit [docs.Tradeboard.in/installation-guidelines/getting-started](https://docs.Tradeboard.in/installation-guidelines/getting-started)
 
 ## API Documentation
 
 Complete API reference and examples:
-- **API Documentation**: [docs.openalgo.in/api-documentation/v1](https://docs.openalgo.in/api-documentation/v1)
-- **Symbol Format**: [docs.openalgo.in/symbol-format](https://docs.openalgo.in/symbol-format)
+- **API Documentation**: [docs.Tradeboard.in/api-documentation/v1](https://docs.Tradeboard.in/api-documentation/v1)
+- **Symbol Format**: [docs.Tradeboard.in/symbol-format](https://docs.Tradeboard.in/symbol-format)
 
 ## Key Benefits
 
@@ -342,7 +342,7 @@ Complete API reference and examples:
 
 ## Documentation
 
-Comprehensive documentation is available at [docs.openalgo.in](https://docs.openalgo.in):
+Comprehensive documentation is available at [docs.Tradeboard.in](https://docs.Tradeboard.in):
 - API Reference with examples
 - Broker-specific guides
 - Security best practices
@@ -362,18 +362,18 @@ We welcome contributions! To contribute:
 
 ## Community & Support
 
-- **Discord**: [Join our community](https://www.openalgo.in/discord)
-- **Twitter/X**: [@openalgoHQ](https://twitter.com/openalgoHQ)
-- **YouTube**: [@openalgo](https://www.youtube.com/@openalgo)
-- **GitHub Issues**: [Report bugs or request features](https://github.com/marketcalls/openalgo/issues)
+- **Discord**: [Join our community](https://www.Tradeboard.in/discord)
+- **Twitter/X**: [@TradeboardHQ](https://twitter.com/TradeboardHQ)
+- **YouTube**: [@Tradeboard](https://www.youtube.com/@Tradeboard)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/marketcalls/Tradeboard/issues)
 
 ## License
 
-OpenAlgo is released under the **AGPL V3.0 License**. See [LICENSE](LICENSE) for details.
+Tradeboard is released under the **AGPL V3.0 License**. See [LICENSE](LICENSE) for details.
 
 ## Credits & Acknowledgments
 
-OpenAlgo is built upon the shoulders of giants. We extend our gratitude to all the open-source projects that make this platform possible.
+Tradeboard is built upon the shoulders of giants. We extend our gratitude to all the open-source projects that make this platform possible.
 
 ### Core Framework
 - **[Flask](https://flask.palletsprojects.com)** - BSD License - Python web microframework

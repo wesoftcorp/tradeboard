@@ -5,7 +5,7 @@ Momentum indicators measure the speed and strength of price movements, helping i
 ### Import Statement
 
 ```python
-from openalgo import ta
+from Tradeboard import ta
 ```
 
 ### Available Momentum Indicators
@@ -34,7 +34,7 @@ rsi_result = ta.rsi(data, period=14)
 #### Example
 
 ```python
-from openalgo import api, ta
+from Tradeboard import api, ta
 
 # Get market data
 client = api(api_key='your_api_key_here', host='http://127.0.0.1:5000')
@@ -341,7 +341,7 @@ print(df[['close', 'CRSI', 'CRSI_Custom']].tail())
 ### Complete Example: Multiple Momentum Indicators
 
 ```python
-from openalgo import api, ta
+from Tradeboard import api, ta
 import pandas as pd
 
 # Get market data
@@ -456,7 +456,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.openalgo.in/trading-platform/python/indicators/momentum.md?ask=<question>
+GET https://docs.Tradeboard.in/trading-platform/python/indicators/momentum.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

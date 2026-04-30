@@ -27,24 +27,24 @@ const faqData = [
     category: 'General',
     questions: [
       {
-        question: 'What is OpenAlgo?',
+        question: 'What is Tradeboard?',
         answer:
-          'OpenAlgo is an open-source algorithmic trading platform that provides a unified API layer across 24+ Indian brokers. It enables seamless integration with TradingView, Amibroker, Excel, Python, and AI agents, allowing traders to automate their trading strategies without being locked into a single broker.',
+          'Tradeboard is an open-source algorithmic trading platform that provides a unified API layer across 24+ Indian brokers. It enables seamless integration with TradingView, Amibroker, Excel, Python, and AI agents, allowing traders to automate their trading strategies without being locked into a single broker.',
       },
       {
         question: 'Which brokers are supported?',
         answer:
-          'OpenAlgo supports 24+ Indian brokers including Zerodha, Angel One, Dhan, Fyers, ICICI Direct, HDFC Securities, Kotak Securities, Upstox, 5paisa, Alice Blue, Firstock, Flattrade, IIFL, Jainam, Mastertrust, Motilal Oswal, Nuvama, Paytm Money, Rupeezy, Samco, Shoonya (Finvasia), and more. New brokers are being added regularly.',
+          'Tradeboard supports 24+ Indian brokers including Zerodha, Angel One, Dhan, Fyers, ICICI Direct, HDFC Securities, Kotak Securities, Upstox, 5paisa, Alice Blue, Firstock, Flattrade, IIFL, Jainam, Mastertrust, Motilal Oswal, Nuvama, Paytm Money, Rupeezy, Samco, Shoonya (Finvasia), and more. New brokers are being added regularly.',
       },
       {
         question: 'What are the system requirements?',
         answer:
-          'OpenAlgo requires Python 3.12 or higher and Node.js 20+ for the frontend. It runs on Windows, macOS, and Linux. For optimal performance, we recommend at least 4GB RAM and a stable internet connection. The application uses SQLite by default, making it lightweight and easy to deploy.',
+          'Tradeboard requires Python 3.12 or higher and Node.js 20+ for the frontend. It runs on Windows, macOS, and Linux. For optimal performance, we recommend at least 4GB RAM and a stable internet connection. The application uses SQLite by default, making it lightweight and easy to deploy.',
       },
       {
-        question: 'Where can I host OpenAlgo?',
+        question: 'Where can I host Tradeboard?',
         answer:
-          'OpenAlgo can be hosted locally on your personal computer, on a VPS (Virtual Private Server), or in the cloud. Popular options include AWS, Google Cloud, DigitalOcean, or any Linux VPS provider. For Indian traders, hosting on an Indian VPS ensures low latency connections to broker servers.',
+          'Tradeboard can be hosted locally on your personal computer, on a VPS (Virtual Private Server), or in the cloud. Popular options include AWS, Google Cloud, DigitalOcean, or any Linux VPS provider. For Indian traders, hosting on an Indian VPS ensures low latency connections to broker servers.',
       },
     ],
   },
@@ -54,17 +54,17 @@ const faqData = [
       {
         question: 'What are the costs involved?',
         answer:
-          'OpenAlgo is completely free and open-source under the AGPL license. There are no licensing fees, subscription costs, or hidden charges. You only pay for your hosting infrastructure (if using cloud/VPS) and standard brokerage charges from your broker. Self-hosting on your own computer is completely free.',
+          'Tradeboard is completely free and open-source under the AGPL license. There are no licensing fees, subscription costs, or hidden charges. You only pay for your hosting infrastructure (if using cloud/VPS) and standard brokerage charges from your broker. Self-hosting on your own computer is completely free.',
       },
       {
-        question: 'How secure is OpenAlgo?',
+        question: 'How secure is Tradeboard?',
         answer:
-          'Security is a top priority. OpenAlgo stores API credentials locally on your machine with encryption. It uses HTTPS for all communications, implements CSRF protection, rate limiting, and secure session management. Since it runs on your own infrastructure, you have complete control over your data. We recommend using strong passwords and enabling 2FA where available.',
+          'Security is a top priority. Tradeboard stores API credentials locally on your machine with encryption. It uses HTTPS for all communications, implements CSRF protection, rate limiting, and secure session management. Since it runs on your own infrastructure, you have complete control over your data. We recommend using strong passwords and enabling 2FA where available.',
       },
       {
         question: 'Why do I need to login daily?',
         answer:
-          'Daily login is required by Indian brokers for security compliance. Broker sessions typically expire at the end of each trading day or after a set period (usually around 3 AM IST). This is a regulatory requirement, not an OpenAlgo limitation. The platform makes re-authentication quick and easy with TOTP support for most brokers.',
+          'Daily login is required by Indian brokers for security compliance. Broker sessions typically expire at the end of each trading day or after a set period (usually around 3 AM IST). This is a regulatory requirement, not an Tradeboard limitation. The platform makes re-authentication quick and easy with TOTP support for most brokers.',
       },
     ],
   },
@@ -72,24 +72,24 @@ const faqData = [
     category: 'Features & Integration',
     questions: [
       {
-        question: 'Which platforms can I integrate with OpenAlgo?',
+        question: 'Which platforms can I integrate with Tradeboard?',
         answer:
-          'OpenAlgo integrates with TradingView (via webhooks), Amibroker (via AFL), GoCharting, ChartInk, MetaTrader, Excel, Google Sheets, Python, Node.js, Go, N8N, and any platform that can send HTTP webhooks. You can also use the REST API directly from any programming language.',
+          'Tradeboard integrates with TradingView (via webhooks), Amibroker (via AFL), GoCharting, ChartInk, MetaTrader, Excel, Google Sheets, Python, Node.js, Go, N8N, and any platform that can send HTTP webhooks. You can also use the REST API directly from any programming language.',
       },
       {
-        question: 'Does OpenAlgo support paper trading?',
+        question: 'Does Tradeboard support paper trading?',
         answer:
-          'Yes! OpenAlgo includes an Analyzer/Sandbox mode with virtual capital of Rs. 1 Crore. This allows you to test strategies in a realistic environment with proper margin calculations, auto square-off at exchange timings, and complete isolation from live trading. Perfect for testing before going live.',
+          'Yes! Tradeboard includes an Analyzer/Sandbox mode with virtual capital of Rs. 1 Crore. This allows you to test strategies in a realistic environment with proper margin calculations, auto square-off at exchange timings, and complete isolation from live trading. Perfect for testing before going live.',
       },
       {
         question: 'Can I run multiple strategies simultaneously?',
         answer:
-          'Yes, OpenAlgo supports running multiple strategies simultaneously. You can create different webhook endpoints for different strategies, manage them independently, and monitor their performance through the dashboard. The Action Center allows you to control execution modes for each strategy.',
+          'Yes, Tradeboard supports running multiple strategies simultaneously. You can create different webhook endpoints for different strategies, manage them independently, and monitor their performance through the dashboard. The Action Center allows you to control execution modes for each strategy.',
       },
       {
-        question: 'Does OpenAlgo provide real-time market data?',
+        question: 'Does Tradeboard provide real-time market data?',
         answer:
-          'Yes, OpenAlgo includes a unified WebSocket server that streams real-time market data from your broker. This data is used for live position tracking, P&L updates, and can be accessed by your strategies. The data is normalized across all brokers for consistent handling.',
+          'Yes, Tradeboard includes a unified WebSocket server that streams real-time market data from your broker. This data is used for live position tracking, P&L updates, and can be accessed by your strategies. The data is normalized across all brokers for consistent handling.',
       },
     ],
   },
@@ -97,24 +97,24 @@ const faqData = [
     category: 'Licensing & Usage',
     questions: [
       {
-        question: 'Can I use OpenAlgo for my proprietary trading strategies?',
+        question: 'Can I use Tradeboard for my proprietary trading strategies?',
         answer:
-          'Yes, you can use OpenAlgo for your personal or proprietary trading strategies. The AGPL license allows free use for personal trading. However, if you modify OpenAlgo and provide it as a service to others, you must make your modifications open source.',
+          'Yes, you can use Tradeboard for your personal or proprietary trading strategies. The AGPL license allows free use for personal trading. However, if you modify Tradeboard and provide it as a service to others, you must make your modifications open source.',
       },
       {
-        question: 'Can I rebrand OpenAlgo for commercial use?',
+        question: 'Can I rebrand Tradeboard for commercial use?',
         answer:
-          'Under the AGPL license, you can modify OpenAlgo, but any derivative work must also be open source and credit the original project. For commercial licensing options that allow rebranding without open-source requirements, please contact the OpenAlgo team.',
+          'Under the AGPL license, you can modify Tradeboard, but any derivative work must also be open source and credit the original project. For commercial licensing options that allow rebranding without open-source requirements, please contact the Tradeboard team.',
       },
       {
-        question: 'Can I charge others for using my OpenAlgo setup?',
+        question: 'Can I charge others for using my Tradeboard setup?',
         answer:
-          'If you provide OpenAlgo as a service to others (even if modified), the AGPL license requires you to share your source code. For commercial service offerings without this requirement, commercial licensing options are available.',
+          'If you provide Tradeboard as a service to others (even if modified), the AGPL license requires you to share your source code. For commercial service offerings without this requirement, commercial licensing options are available.',
       },
       {
-        question: 'Can I integrate OpenAlgo with GPT/AI assistants?',
+        question: 'Can I integrate Tradeboard with GPT/AI assistants?',
         answer:
-          'Yes! OpenAlgo provides REST APIs that can be called from AI assistants, chatbots, or any automated system. You can build AI-powered trading assistants that use OpenAlgo to execute trades based on natural language commands or AI analysis.',
+          'Yes! Tradeboard provides REST APIs that can be called from AI assistants, chatbots, or any automated system. You can build AI-powered trading assistants that use Tradeboard to execute trades based on natural language commands or AI analysis.',
       },
     ],
   },
@@ -127,9 +127,9 @@ export default function Faq() {
   const navLinks = [
     { href: '/', label: 'Home', internal: true },
     { href: '/faq', label: 'FAQ', internal: true },
-    { href: 'https://openalgo.in/discord', label: 'Community', internal: false },
-    { href: 'https://openalgo.in/roadmap', label: 'Roadmap', internal: false },
-    { href: 'https://docs.openalgo.in', label: 'Docs', internal: false },
+    { href: 'https://Tradeboard.in/discord', label: 'Community', internal: false },
+    { href: 'https://Tradeboard.in/roadmap', label: 'Roadmap', internal: false },
+    { href: 'https://docs.Tradeboard.in', label: 'Docs', internal: false },
   ]
 
   return (
@@ -148,8 +148,8 @@ export default function Faq() {
               </SheetTrigger>
               <SheetContent side="left" className="w-80">
                 <div className="flex items-center gap-2 mb-8">
-                  <img src="/logo.png" alt="OpenAlgo" className="h-8 w-8" />
-                  <span className="text-xl font-semibold">OpenAlgo</span>
+                  <img src="/logo.png" alt="Tradeboard" className="h-8 w-8" />
+                  <span className="text-xl font-semibold">Tradeboard</span>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Link
@@ -190,7 +190,7 @@ export default function Faq() {
                     Download
                   </Link>
                   <a
-                    href="https://openalgo.in/discord"
+                    href="https://Tradeboard.in/discord"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-accent"
@@ -199,7 +199,7 @@ export default function Faq() {
                     Community
                   </a>
                   <a
-                    href="https://openalgo.in/roadmap"
+                    href="https://Tradeboard.in/roadmap"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-accent"
@@ -208,7 +208,7 @@ export default function Faq() {
                     Roadmap
                   </a>
                   <a
-                    href="https://docs.openalgo.in"
+                    href="https://docs.Tradeboard.in"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-accent"
@@ -221,8 +221,8 @@ export default function Faq() {
             </Sheet>
 
             <Link to="/" className="flex items-center gap-2">
-              <img src="/logo.png" alt="OpenAlgo" className="h-8 w-8" />
-              <span className="text-xl font-bold hidden sm:inline">OpenAlgo</span>
+              <img src="/logo.png" alt="Tradeboard" className="h-8 w-8" />
+              <span className="text-xl font-bold hidden sm:inline">Tradeboard</span>
             </Link>
           </div>
 
@@ -269,7 +269,7 @@ export default function Faq() {
           <div className="text-center mb-12">
             <h1 className="text-4xl lg:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Find answers to common questions about OpenAlgo, its features, security, and licensing.
+              Find answers to common questions about Tradeboard, its features, security, and licensing.
             </p>
           </div>
 
@@ -280,7 +280,7 @@ export default function Faq() {
                 <CardHeader>
                   <CardTitle>{category.category}</CardTitle>
                   <CardDescription>
-                    {category.category === 'General' && 'Basic information about OpenAlgo'}
+                    {category.category === 'General' && 'Basic information about Tradeboard'}
                     {category.category === 'Costs & Security' &&
                       'Pricing, security, and compliance details'}
                     {category.category === 'Features & Integration' &&
@@ -319,7 +319,7 @@ export default function Faq() {
                     Comprehensive guides and API references
                   </p>
                   <Button variant="outline" asChild>
-                    <a href="https://docs.openalgo.in" target="_blank" rel="noopener noreferrer">
+                    <a href="https://docs.Tradeboard.in" target="_blank" rel="noopener noreferrer">
                       Read Docs
                     </a>
                   </Button>
@@ -336,7 +336,7 @@ export default function Faq() {
                     Join our active community for support
                   </p>
                   <Button variant="outline" asChild>
-                    <a href="https://openalgo.in/discord" target="_blank" rel="noopener noreferrer">
+                    <a href="https://Tradeboard.in/discord" target="_blank" rel="noopener noreferrer">
                       Join Discord
                     </a>
                   </Button>
@@ -360,7 +360,7 @@ export default function Faq() {
                   </p>
                   <Button variant="outline" asChild>
                     <a
-                      href="https://github.com/marketcalls/openalgo"
+                      href="https://github.com/wesoftcorp/tradeboard"
                       target="_blank"
                       rel="noopener noreferrer"
                     >

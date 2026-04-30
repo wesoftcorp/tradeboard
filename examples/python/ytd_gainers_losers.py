@@ -1,11 +1,11 @@
 # ---------------------------------------------------
 # YTD 2026 Gainers & Losers for NIFTY 50
 # Baseline: close on 2025-12-31 (last trading day of 2025)
-# Data source: OpenAlgo Historify local DuckDB (source='db')
+# Data source: Tradeboard Historify local DuckDB (source='db')
 # ---------------------------------------------------
 
 import pandas as pd
-from openalgo import api
+from Tradeboard import api
 
 client = api(
     api_key="afd010bd748c9129d71901c53c1efb327c822fa5264e31959506d7aede79a336",

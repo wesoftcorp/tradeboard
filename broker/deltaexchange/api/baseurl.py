@@ -79,7 +79,7 @@ def get_auth_headers(
         "api-key": key,
         "timestamp": timestamp,
         "signature": signature,
-        "User-Agent": "openalgo-python-client",
+        "User-Agent": "Tradeboard-python-client",
         "Content-Type": "application/json",
         "Accept": "application/json",
     }

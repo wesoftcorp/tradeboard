@@ -297,7 +297,7 @@ def download_data(
         interval: Time interval - only '1m' or 'D' allowed
         start_date: Start date in YYYY-MM-DD format
         end_date: End date in YYYY-MM-DD format
-        api_key: OpenAlgo API key
+        api_key: Tradeboard API key
 
     Returns:
         Tuple of (success, response_data, status_code)
@@ -385,7 +385,7 @@ def download_watchlist_data(
         interval: Time interval
         start_date: Start date in YYYY-MM-DD format
         end_date: End date in YYYY-MM-DD format
-        api_key: OpenAlgo API key
+        api_key: Tradeboard API key
 
     Returns:
         Tuple of (success, response_data, status_code)
@@ -720,7 +720,7 @@ def get_supported_timeframes(api_key: str) -> tuple[bool, dict[str, Any], int]:
     Get supported timeframes from the connected broker.
 
     Args:
-        api_key: OpenAlgo API key
+        api_key: Tradeboard API key
 
     Returns:
         Tuple of (success, response_data, status_code)
@@ -1364,7 +1364,7 @@ def create_and_start_job(
         interval: Time interval for download
         start_date: Start date (YYYY-MM-DD)
         end_date: End date (YYYY-MM-DD)
-        api_key: OpenAlgo API key
+        api_key: Tradeboard API key
         config: Optional configuration dict
         incremental: If True, only download data after last available timestamp
 
@@ -2000,7 +2000,7 @@ def retry_failed_items(job_id: str, api_key: str) -> tuple[bool, dict[str, Any],
 
     Args:
         job_id: Job identifier
-        api_key: OpenAlgo API key
+        api_key: Tradeboard API key
 
     Returns:
         Tuple of (success, response_data, status_code)

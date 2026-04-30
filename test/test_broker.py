@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-OpenAlgo – New Broker Integration Test
+Tradeboard – New Broker Integration Test
 • Stage‑by‑stage progress output
 • Immediate reporting of any failing symbol / order‑id
 • Final green / red roll‑up
@@ -21,9 +21,9 @@ colorama_init(autoreset=True)
 
 # ───────────────── CONFIG ─────────────────
 API_KEY = os.getenv(
-    "OPENALGO_API_KEY", "3bb8d260915ff680a7258108c0483b9eb7675ced31309a36f5846366943ee9fa"
+    "Tradeboard_API_KEY", "3bb8d260915ff680a7258108c0483b9eb7675ced31309a36f5846366943ee9fa"
 )
-HOST = os.getenv("OPENALGO_HOST", "http://127.0.0.1:5000")
+HOST = os.getenv("Tradeboard_HOST", "http://127.0.0.1:5000")
 
 NSE_INDICES = ["NIFTY", "BANKNIFTY", "FINNIFTY", "NIFTYNXT50", "MIDCPNIFTY", "INDIAVIX"]
 BSE_INDICES = ["SENSEX", "BANKEX", "SENSEX50"]
@@ -367,9 +367,9 @@ class Tester:
 # ─────────────────── main ───────────────────
 if __name__ == "__main__":
     try:
-        from openalgo import api as OAClient
+        from Tradeboard import api as OAClient
     except ImportError:
-        print(red("openalgo SDK missing – pip install openalgo"))
+        print(red("Tradeboard SDK missing – pip install Tradeboard"))
         sys.exit(1)
 
     client = OAClient(api_key=API_KEY, host=HOST)

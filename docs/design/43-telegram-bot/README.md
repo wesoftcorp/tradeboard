@@ -2,7 +2,7 @@
 
 ## Overview
 
-OpenAlgo integrates with Telegram to provide real-time trading notifications, account information, and bot commands. Users can configure their Telegram bot to receive order alerts, position updates, and execute queries.
+Tradeboard integrates with Telegram to provide real-time trading notifications, account information, and bot commands. Users can configure their Telegram bot to receive order alerts, position updates, and execute queries.
 
 ## Architecture Diagram
 
@@ -31,7 +31,7 @@ OpenAlgo integrates with Telegram to provide real-time trading notifications, ac
                              │
                              ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        OpenAlgo Backend                                      │
+│                        Tradeboard Backend                                      │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │                    Telegram Blueprint                                │   │
@@ -87,7 +87,7 @@ OpenAlgo integrates with Telegram to provide real-time trading notifications, ac
 │ Column           │ Type         │ Description                  │
 ├──────────────────┼──────────────┼──────────────────────────────┤
 │ id               │ INTEGER PK   │ Auto-increment               │
-│ user_id          │ VARCHAR(255) │ OpenAlgo user ID             │
+│ user_id          │ VARCHAR(255) │ Tradeboard user ID             │
 │ telegram_id      │ BIGINT       │ Telegram chat ID             │
 │ username         │ VARCHAR(255) │ Telegram username            │
 │ first_name       │ VARCHAR(255) │ User's first name            │
@@ -106,7 +106,7 @@ OpenAlgo integrates with Telegram to provide real-time trading notifications, ac
 │ Column           │ Type         │ Description                  │
 ├──────────────────┼──────────────┼──────────────────────────────┤
 │ id               │ INTEGER PK   │ Auto-increment               │
-│ user_id          │ VARCHAR(255) │ OpenAlgo user ID (unique)    │
+│ user_id          │ VARCHAR(255) │ Tradeboard user ID (unique)    │
 │ bot_token        │ TEXT         │ Encrypted bot token          │
 │ webhook_url      │ VARCHAR(500) │ Webhook endpoint             │
 │ is_enabled       │ BOOLEAN      │ Bot enabled status           │
@@ -186,7 +186,7 @@ OpenAlgo integrates with Telegram to provide real-time trading notifications, ac
 │           └──► Receive bot token                                           │
 │                       │                                                     │
 │                       ▼                                                     │
-│  2. Configure in OpenAlgo ─────────────────────────────────────────────►   │
+│  2. Configure in Tradeboard ─────────────────────────────────────────────►   │
 │           │                                                                 │
 │           ├──► Go to Settings > Telegram                                   │
 │           ├──► Enter bot token                                             │

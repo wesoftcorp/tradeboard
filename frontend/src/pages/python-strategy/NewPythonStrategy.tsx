@@ -12,16 +12,16 @@ import { Label } from '@/components/ui/label'
 import { CRYPTO_EXCHANGE_VALUE, SCHEDULE_DAYS, STRATEGY_EXCHANGES } from '@/types/python-strategy'
 
 const EXAMPLE_STRATEGY = `"""
-Example OpenAlgo Strategy
-This is a minimal example showing how to use the OpenAlgo Python SDK.
+Example Tradeboard Strategy
+This is a minimal example showing how to use the Tradeboard Python SDK.
 """
 
 import os
 import time
-from openalgo import api
+from Tradeboard import api
 
 # Get API key from environment variable
-API_KEY = os.getenv('OPENALGO_API_KEY')
+API_KEY = os.getenv('Tradeboard_API_KEY')
 
 # Initialize the API client
 client = api(
@@ -204,8 +204,8 @@ export default function NewPythonStrategy() {
       <Alert>
         <Info className="h-4 w-4" />
         <AlertDescription>
-          Your Python script should use the <code className="bg-muted px-1 rounded">openalgo</code>{' '}
-          SDK. Install it with: <code className="bg-muted px-1 rounded">pip install openalgo</code>
+          Your Python script should use the <code className="bg-muted px-1 rounded">Tradeboard</code>{' '}
+          SDK. Install it with: <code className="bg-muted px-1 rounded">pip install Tradeboard</code>
         </AlertDescription>
       </Alert>
 

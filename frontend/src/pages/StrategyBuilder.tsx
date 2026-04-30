@@ -48,7 +48,7 @@ import { useAuthStore } from '@/stores/authStore'
 import type { OptionChainResponse } from '@/types/option-chain'
 import { showToast } from '@/utils/toast'
 
-// Convert DD-MMM-YYYY (API-returned expiry) to DDMMMYY (OpenAlgo symbol format).
+// Convert DD-MMM-YYYY (API-returned expiry) to DDMMMYY (Tradeboard symbol format).
 function convertExpiryForSymbol(expiry: string): string {
   if (!expiry) return ''
   const parts = expiry.split('-')
@@ -155,7 +155,7 @@ export default function StrategyBuilder() {
   // Basket execution dialog
   const [executeDialogOpen, setExecuteDialogOpen] = useState(false)
 
-  // OpenAlgo-symbol → tick size map, built from the live option chain.
+  // Tradeboard-symbol → tick size map, built from the live option chain.
   // Powers per-leg price snapping in the Execute Basket dialog so options
   // priced in 0.05 ticks never leak floating-point drift into the order,
   // and crypto legs with 0.0001 / 0.5 ticks are respected too.
@@ -256,7 +256,7 @@ export default function StrategyBuilder() {
   }, [selectedExchange, defaultUnderlyings])
 
   // Load expiries (options + futures — different calendars on MCX/CDS especially).
-  // Expiries are normalised to the OpenAlgo DDMMMYY format at the source so that
+  // Expiries are normalised to the Tradeboard DDMMMYY format at the source so that
   // every downstream component (header, dialogs, symbol builders) sees a single
   // consistent string — otherwise the Edit dialog can't match leg.expiry
   // ("21APR26") against the raw API value ("21-APR-2026") and the field blanks.
@@ -899,7 +899,7 @@ export default function StrategyBuilder() {
   }, [])
   const saveEditedLeg = useCallback(
     (updated: StrategyLeg) => {
-      // Normalise expiry to the OpenAlgo DDMMMYY format — the dropdown may
+      // Normalise expiry to the Tradeboard DDMMMYY format — the dropdown may
       // have supplied an API-format value like "21-APR-26" which would wreck
       // symbol construction and leg-row rendering otherwise.
       const normalisedExpiry = convertExpiryForSymbol(updated.expiry)

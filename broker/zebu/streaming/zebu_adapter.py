@@ -1,5 +1,5 @@
 """
-Zebu WebSocket Adapter for OpenAlgo
+Zebu WebSocket Adapter for Tradeboard
 Handles market data streaming from Zebu broker
 """
 

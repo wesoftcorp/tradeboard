@@ -1,12 +1,12 @@
 """
-OpenAlgo WebSocket 20-Level Market Depth Example
+Tradeboard WebSocket 20-Level Market Depth Example
 For brokers that support 20-level depth (Dhan NSE/NFO)
 """
 
 import logging
 import time
 
-from openalgo import api
+from Tradeboard import api
 
 # Configure logging to see WebSocket debug output
 logging.basicConfig(

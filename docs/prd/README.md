@@ -1,8 +1,8 @@
-# Product Requirements Document - OpenAlgo
+# Product Requirements Document - Tradeboard
 
 ## Product Overview
 
-**Product Name:** OpenAlgo
+**Product Name:** Tradeboard
 **Version:** 2.0
 **Type:** Open-source algorithmic trading platform
 

@@ -1,6 +1,6 @@
 """
 Constants used throughout the application.
-Reference: https://docs.openalgo.in/api-documentation/v1/order-constants
+Reference: https://docs.Tradeboard.in/api-documentation/v1/order-constants
 """
 
 # Exchange Types

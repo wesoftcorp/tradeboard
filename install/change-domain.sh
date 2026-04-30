@@ -7,7 +7,7 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# OpenAlgo Domain Change Banner
+# Tradeboard Domain Change Banner
 echo -e "${BLUE}"
 echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
 echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
@@ -18,8 +18,8 @@ echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  �
 echo "                      DOMAIN  CHANGE  SCRIPT                             "
 echo -e "${NC}"
 
-# OpenAlgo Domain Change Script
-# Changes the domain for an existing OpenAlgo server deployment.
+# Tradeboard Domain Change Script
+# Changes the domain for an existing Tradeboard server deployment.
 # Updates .env, Nginx config, and obtains a new SSL certificate.
 
 # Create logs directory if it doesn't exist
@@ -47,7 +47,7 @@ check_status() {
 }
 
 # Start logging
-log_message "Starting OpenAlgo domain change log at: $LOG_FILE" "$BLUE"
+log_message "Starting Tradeboard domain change log at: $LOG_FILE" "$BLUE"
 log_message "----------------------------------------" "$BLUE"
 
 # ============================================
@@ -93,10 +93,10 @@ log_message "Detected OS: $OS_TYPE" "$GREEN"
 # ============================================
 # Step 2: Discover existing deployments
 # ============================================
-DEPLOY_BASE="/var/python/openalgo-flask"
+DEPLOY_BASE="/var/python/Tradeboard-flask"
 
 if [ ! -d "$DEPLOY_BASE" ]; then
-    log_message "Error: No OpenAlgo deployment directory found at $DEPLOY_BASE" "$RED"
+    log_message "Error: No Tradeboard deployment directory found at $DEPLOY_BASE" "$RED"
     log_message "This script is for server deployments installed via install.sh" "$YELLOW"
     exit 1
 fi
@@ -104,14 +104,14 @@ fi
 # Find all deployments
 DEPLOYMENTS=()
 for dir in "$DEPLOY_BASE"/*/; do
-    if [ -d "${dir}openalgo" ] && [ -f "${dir}openalgo/.env" ]; then
+    if [ -d "${dir}Tradeboard" ] && [ -f "${dir}Tradeboard/.env" ]; then
         deploy_name=$(basename "$dir")
         DEPLOYMENTS+=("$deploy_name")
     fi
 done
 
 if [ ${#DEPLOYMENTS[@]} -eq 0 ]; then
-    log_message "Error: No OpenAlgo deployments found in $DEPLOY_BASE" "$RED"
+    log_message "Error: No Tradeboard deployments found in $DEPLOY_BASE" "$RED"
     exit 1
 fi
 
@@ -138,10 +138,10 @@ fi
 
 # Derive paths
 BASE_PATH="$DEPLOY_BASE/$SELECTED_DEPLOY"
-OPENALGO_PATH="$BASE_PATH/openalgo"
-SOCKET_FILE="$BASE_PATH/openalgo.sock"
-SERVICE_NAME="openalgo-$SELECTED_DEPLOY"
-ENV_FILE="$OPENALGO_PATH/.env"
+Tradeboard_PATH="$BASE_PATH/Tradeboard"
+SOCKET_FILE="$BASE_PATH/Tradeboard.sock"
+SERVICE_NAME="Tradeboard-$SELECTED_DEPLOY"
+ENV_FILE="$Tradeboard_PATH/.env"
 
 # ============================================
 # Step 3: Extract current domain from .env
@@ -200,7 +200,7 @@ log_message "  Current Deployment Configuration" "$YELLOW"
 log_message "========================================" "$YELLOW"
 log_message "" ""
 log_message "Deployment Name:    $SELECTED_DEPLOY" "$BLUE"
-log_message "Install Path:       $OPENALGO_PATH" "$BLUE"
+log_message "Install Path:       $Tradeboard_PATH" "$BLUE"
 log_message "Service Name:       $SERVICE_NAME" "$BLUE"
 log_message "Socket File:        $SOCKET_FILE" "$BLUE"
 log_message "" ""
@@ -348,7 +348,7 @@ fi
 # ============================================
 log_message "\n[Step 2/6] Backing up current configuration..." "$BLUE"
 
-BACKUP_DIR="$OPENALGO_PATH/db/domain_change_backup_${TIMESTAMP}"
+BACKUP_DIR="$Tradeboard_PATH/db/domain_change_backup_${TIMESTAMP}"
 sudo mkdir -p "$BACKUP_DIR"
 
 # Backup .env
@@ -677,7 +677,7 @@ if [ -n "$BROKER_NAME" ]; then
     log_message "" ""
 fi
 
-log_message "Your OpenAlgo instance is now available at:" "$GREEN"
+log_message "Your Tradeboard instance is now available at:" "$GREEN"
 log_message "  https://$NEW_DOMAIN" "$GREEN"
 log_message "" ""
 

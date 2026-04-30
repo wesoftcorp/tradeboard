@@ -1,4 +1,4 @@
-# Mapping OpenAlgo API Request https://openalgo.in/docs
+# Mapping Tradeboard API Request https://Tradeboard.in/docs
 # Mapping Fyers Margin API
 
 from broker.fyers.mapping.transform_data import map_action, map_order_type, map_product_type
@@ -10,9 +10,9 @@ logger = get_logger(__name__)
 
 def transform_margin_positions(positions):
     """
-    Transform OpenAlgo margin position format to Fyers margin format.
+    Transform Tradeboard margin position format to Fyers margin format.
 
-    OpenAlgo Format:
+    Tradeboard Format:
     {
         "symbol": "NIFTY",
         "exchange": "NSE",
@@ -38,7 +38,7 @@ def transform_margin_positions(positions):
     }
 
     Args:
-        positions: List of positions in OpenAlgo format
+        positions: List of positions in Tradeboard format
 
     Returns:
         List of positions in Fyers format
@@ -108,7 +108,7 @@ def transform_margin_positions(positions):
 
 def parse_margin_response(response_data):
     """
-    Parse Fyers margin response to OpenAlgo standard format.
+    Parse Fyers margin response to Tradeboard standard format.
 
     Fyers API returns total margin only, without detailed breakdown:
     - margin_avail: Available margin in account
@@ -134,7 +134,7 @@ def parse_margin_response(response_data):
     }
 
     Returns:
-        Standardized margin response matching OpenAlgo format:
+        Standardized margin response matching Tradeboard format:
         {
             "status": "success",
             "data": {
@@ -182,7 +182,7 @@ def parse_margin_response(response_data):
         logger.warning("⚠ Using margin_new_order as total_margin_required")
         logger.info("=" * 80)
 
-        # Return standardized format matching OpenAlgo specification
+        # Return standardized format matching Tradeboard specification
         # Note: Fyers doesn't provide span_margin and exposure_margin breakdown
         # We use margin_new_order as the total margin required
         return {

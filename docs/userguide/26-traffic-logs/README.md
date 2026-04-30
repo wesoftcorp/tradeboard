@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Traffic Logs in OpenAlgo provide a detailed record of all API requests, webhooks, and system interactions. This is essential for debugging, auditing, and understanding your trading system's behavior.
+Traffic Logs in Tradeboard provide a detailed record of all API requests, webhooks, and system interactions. This is essential for debugging, auditing, and understanding your trading system's behavior.
 
 ## Accessing Traffic Logs
 
@@ -125,7 +125,7 @@ Click on any log entry to see full details:
 │  REQUEST HEADERS                                                            │
 │  ─────────────────                                                          │
 │  Content-Type: application/json                                             │
-│  Host: your-openalgo-url.com                                               │
+│  Host: your-Tradeboard-url.com                                               │
 │                                                                              │
 │  REQUEST BODY                                                               │
 │  ────────────                                                               │

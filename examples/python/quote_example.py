@@ -1,10 +1,10 @@
 """
-OpenAlgo WebSocket Quote Feed Example
+Tradeboard WebSocket Quote Feed Example
 """
 
 import time
 
-from openalgo import api
+from Tradeboard import api
 
 # Initialize feed client with explicit parameters
 client = api(

@@ -1,7 +1,7 @@
-# services/flow_openalgo_client.py
+# services/flow_tradeboard_client.py
 """
-OpenAlgo Client Wrapper for Flow
-Provides SDK-like interface using internal OpenAlgo services
+Tradeboard Client Wrapper for Flow
+Provides SDK-like interface using internal Tradeboard services
 """
 
 import logging
@@ -10,9 +10,9 @@ from typing import Any, Dict, List, Optional, Tuple
 logger = logging.getLogger(__name__)
 
 
-class FlowOpenAlgoClient:
+class FlowTradeboardClient:
     """
-    Client wrapper that provides SDK-like interface to OpenAlgo services.
+    Client wrapper that provides SDK-like interface to Tradeboard services.
     Used by Flow workflow executor to interact with trading functionality.
     """
 
@@ -21,7 +21,7 @@ class FlowOpenAlgoClient:
         Initialize the client with an API key.
 
         Args:
-            api_key: The OpenAlgo API key for authentication
+            api_key: The Tradeboard API key for authentication
         """
         self.api_key = api_key
 
@@ -324,7 +324,7 @@ class FlowOpenAlgoClient:
         self, symbol: str, exchange: str, product_type: str = None
     ) -> dict[str, Any]:
         """Get open position for a specific symbol.
-        Returns quantity matching standard OpenAlgo API response.
+        Returns quantity matching standard Tradeboard API response.
         """
         result = self.positionbook()
         if result.get("status") != "success":
@@ -651,14 +651,14 @@ class FlowOpenAlgoClient:
         return self._handle_response(success, response, status_code)
 
 
-def get_flow_client(api_key: str) -> FlowOpenAlgoClient:
+def get_flow_client(api_key: str) -> FlowTradeboardClient:
     """
-    Factory function to create a Flow OpenAlgo client.
+    Factory function to create a Flow Tradeboard client.
 
     Args:
-        api_key: The OpenAlgo API key
+        api_key: The Tradeboard API key
 
     Returns:
-        FlowOpenAlgoClient instance
+        FlowTradeboardClient instance
     """
-    return FlowOpenAlgoClient(api_key)
+    return FlowTradeboardClient(api_key)

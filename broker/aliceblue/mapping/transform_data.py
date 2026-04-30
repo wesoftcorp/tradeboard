@@ -1,14 +1,14 @@
-# Mapping OpenAlgo API Request https://openalgo.in/docs
+# Mapping Tradeboard API Request https://Tradeboard.in/docs
 # Mapping AliceBlue V2 API Parameters
 
 from database.token_db import get_br_symbol, get_token
 
 
-# ─── Product / Order type mappings (OpenAlgo ↔ AliceBlue V2) ──────────────────
+# ─── Product / Order type mappings (Tradeboard ↔ AliceBlue V2) ──────────────────
 
 
 def map_product_type(product):
-    """Map OpenAlgo product type to AliceBlue V2 product type."""
+    """Map Tradeboard product type to AliceBlue V2 product type."""
     mapping = {
         "CNC": "LONGTERM",
         "NRML": "NRML",
@@ -18,7 +18,7 @@ def map_product_type(product):
 
 
 def reverse_map_product_type(product):
-    """Map AliceBlue V2 product type back to OpenAlgo product type."""
+    """Map AliceBlue V2 product type back to Tradeboard product type."""
     mapping = {
         "LONGTERM": "CNC",
         "NRML": "NRML",
@@ -32,7 +32,7 @@ def reverse_map_product_type(product):
 
 
 def map_order_type(pricetype):
-    """Map OpenAlgo price type to AliceBlue V2 order type."""
+    """Map Tradeboard price type to AliceBlue V2 order type."""
     mapping = {
         "MARKET": "MARKET",
         "LIMIT": "LIMIT",
@@ -43,7 +43,7 @@ def map_order_type(pricetype):
 
 
 def reverse_map_order_type(order_type):
-    """Map AliceBlue V2 order type back to OpenAlgo price type."""
+    """Map AliceBlue V2 order type back to Tradeboard price type."""
     mapping = {
         "MARKET": "MARKET",
         "LIMIT": "LIMIT",
@@ -53,12 +53,12 @@ def reverse_map_order_type(order_type):
     return mapping.get(order_type, "MARKET")
 
 
-# ─── Payload builders (OpenAlgo request → AliceBlue V2 API payload) ──────────
+# ─── Payload builders (Tradeboard request → AliceBlue V2 API payload) ──────────
 
 
 def transform_data(data):
     """
-    Transform an OpenAlgo place-order request into an AliceBlue V2 API payload item.
+    Transform an Tradeboard place-order request into an AliceBlue V2 API payload item.
     """
     symbol = get_br_symbol(data["symbol"], data["exchange"])
     token = get_token(data["symbol"], data["exchange"])
@@ -82,13 +82,13 @@ def transform_data(data):
         "trailingSlAmount": "",
         "apiOrderSource": "",
         "algoId": "",
-        "orderTag": "openalgo",
+        "orderTag": "Tradeboard",
     }
 
 
 def transform_modify_order_data(data):
     """
-    Transform an OpenAlgo modify-order request into an AliceBlue V2 API modify payload.
+    Transform an Tradeboard modify-order request into an AliceBlue V2 API modify payload.
     """
     return {
         "brokerOrderId": str(data.get("orderid")),

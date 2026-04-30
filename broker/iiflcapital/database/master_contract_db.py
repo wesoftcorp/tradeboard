@@ -69,7 +69,7 @@ SEGMENTS = [
 
 
 # Common NSE/BSE series suffixes used in broker tradingsymbols.
-# OpenAlgo cash-equity symbol should be base symbol (e.g., INFY, RELIANCE).
+# Tradeboard cash-equity symbol should be base symbol (e.g., INFY, RELIANCE).
 _CASH_SERIES_SUFFIX_RE = re.compile(
     r"-(EQ|BE|BZ|BL|BT|SM|ST|TS|TB|T0|T1|T2|T3|T4)$", re.IGNORECASE
 )
@@ -483,7 +483,7 @@ def _extract_token(row, lower_row, segment, brsymbol):
 
 def _normalize_cash_equity_symbol(symbol: str, exchange: str) -> str:
     """
-    Normalize cash-equity symbol to OpenAlgo format.
+    Normalize cash-equity symbol to Tradeboard format.
 
     Example:
     - INFY-EQ -> INFY
@@ -644,7 +644,7 @@ def _strip_derivative_contract_suffix(
 
 
 def _normalize_instrument_type(raw_instrument_type: str, option_type: str, exchange: str) -> str:
-    """Normalize instrument type values to OpenAlgo standard."""
+    """Normalize instrument type values to Tradeboard standard."""
     instrument = _clean_text(raw_instrument_type).upper()
     option = _clean_text(option_type).upper()
 
@@ -700,7 +700,7 @@ def _extract_underlying_symbol(row, lower_row, brsymbol, name, expiry, strike, i
     return name or brsymbol
 
 
-def _build_openalgo_symbol(
+def _build_Tradeboard_symbol(
     exchange: str,
     instrument_type: str,
     base_symbol: str,
@@ -825,7 +825,7 @@ def _parse_segment_data(segment, rows):
             strike=strike,
             instrument_type=instrument_type,
         )
-        normalized_symbol = _build_openalgo_symbol(
+        normalized_symbol = _build_Tradeboard_symbol(
             exchange=exchange,
             instrument_type=instrument_type,
             base_symbol=base_symbol,

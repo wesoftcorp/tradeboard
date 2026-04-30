@@ -5,9 +5,9 @@ Hybrid indicators combine multiple analytical approaches to provide comprehensiv
 ### Import Statement
 
 ```python
-from openalgo import api, ta
+from Tradeboard import api, ta
 
-# Get data using OpenAlgo API
+# Get data using Tradeboard API
 client = api(api_key='your_api_key_here', host='http://127.0.0.1:5000')
 df = client.history(symbol="SBIN", exchange="NSE", interval="5m", 
                    start_date="2025-04-01", end_date="2025-04-08")
@@ -341,7 +341,7 @@ print(df[['close', 'RWI_High', 'RWI_Low', 'RWI_Signal', 'Trend_Strength_RWI']].t
 
 ```python
 import pandas as pd
-from openalgo import api, ta
+from Tradeboard import api, ta
 
 # Get market data
 client = api(api_key='your_api_key_here', host='http://127.0.0.1:5000')
@@ -521,7 +521,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.openalgo.in/trading-platform/python/indicators/hybrid.md?ask=<question>
+GET https://docs.Tradeboard.in/trading-platform/python/indicators/hybrid.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.
