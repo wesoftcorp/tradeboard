@@ -5,14 +5,16 @@ Tradeboard is a production-ready algorithmic trading platform providing a unifie
 ## Quick Start
 
 ### Windows
+
 ```powershell
-curl.exe -O https://raw.githubusercontent.com/marketcalls/Tradeboard/main/install/docker-run.bat
+curl.exe -O https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/install/docker-run.bat
 docker-run.bat
 ```
 
 ### macOS / Linux
+
 ```bash
-curl -O https://raw.githubusercontent.com/marketcalls/Tradeboard/main/install/docker-run.sh
+curl -O https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/install/docker-run.sh
 chmod +x docker-run.sh
 ./docker-run.sh
 ```
@@ -50,6 +52,7 @@ docker-run.bat status     # Check status
 ## Data Persistence
 
 All data is stored locally in the script directory:
+
 - `db/` - SQLite databases
 - `strategies/` - Python strategy scripts
 - `log/` - Application and strategy logs
@@ -57,15 +60,15 @@ All data is stored locally in the script directory:
 
 ## Documentation
 
-- **Full Docs**: https://docs.Tradeboard.in
-- **Installation Guide**: https://github.com/marketcalls/Tradeboard/blob/main/install/Docker-install-readme.md
-- **GitHub**: https://github.com/marketcalls/Tradeboard
+- **Full Docs**: https://docs.tradeboard.in
+- **Installation Guide**: https://github.com/wesoftcorp/tradeboard/blob/main/install/Docker-install-readme.md
+- **GitHub**: https://github.com/wesoftcorp/tradeboard
 
 ## Community
 
 - **Discord**: https://discord.com/invite/UPh7QPsNhP
 - **YouTube**: https://youtube.com/@TradeboardHQ
-- **Website**: https://Tradeboard.in
+- **Website**: https://tradeboard.in
 
 ## License
 
