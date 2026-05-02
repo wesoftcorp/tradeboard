@@ -349,13 +349,13 @@ log "Config: shm=${SHM_SIZE_MB}MB, threads=${THREAD_LIMIT}, strategy_mem=${STRAT
 log "\n=== Creating Docker Compose Configuration ===" "$BLUE"
 $SUDO tee docker-compose.yaml > /dev/null << EOF
 services:
-  Tradeboard:
-    image: Tradeboard:latest
+  tradeboard:
+    image: tradeboard:latest
     build:
       context: .
       dockerfile: Dockerfile
 
-    container_name: Tradeboard-web
+    container_name: tradeboard-web
 
     ports:
       - "127.0.0.1:5000:5000"
@@ -363,11 +363,11 @@ services:
 
     # Use named volumes to avoid permission issues with non-root container user
     volumes:
-      - Tradeboard_db:/app/db
-      - Tradeboard_log:/app/log
-      - Tradeboard_strategies:/app/strategies
-      - Tradeboard_keys:/app/keys
-      - Tradeboard_tmp:/app/tmp
+      - tradeboard_db:/app/db
+      - tradeboard_log:/app/log
+      - tradeboard_strategies:/app/strategies
+      - tradeboard_keys:/app/keys
+      - tradeboard_tmp:/app/tmp
       - ./.env:/app/.env:ro
 
     environment:
@@ -398,15 +398,15 @@ services:
 
 # Named volumes for data persistence with proper permissions
 volumes:
-  Tradeboard_db:
+  tradeboard_db:
     driver: local
-  Tradeboard_log:
+  tradeboard_log:
     driver: local
-  Tradeboard_strategies:
+  tradeboard_strategies:
     driver: local
-  Tradeboard_keys:
+  tradeboard_keys:
     driver: local
-  Tradeboard_tmp:
+  tradeboard_tmp:
     driver: local
 EOF
 
@@ -684,7 +684,7 @@ log "\nWaiting for container to be healthy..." "$YELLOW"
 sleep 10
 
 # Check container status
-CONTAINER_STATUS=$(sudo docker ps --filter "name=Tradeboard-web" --format "{{.Status}}")
+CONTAINER_STATUS=$(sudo docker ps --filter "name=tradeboard-web" --format "{{.Status}}")
 if [[ $CONTAINER_STATUS == *"Up"* ]]; then
     log "Container started successfully!" "$GREEN"
 else
@@ -703,10 +703,10 @@ echo "Tradeboard Status"
 echo "=========================================="
 echo ""
 echo "Container Status:"
-sudo docker ps --filter "name=Tradeboard-web" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+sudo docker ps --filter "name=tradeboard-web" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 echo ""
 echo "Container Health:"
-sudo docker inspect Tradeboard-web --format='{{.State.Health.Status}}' 2>/dev/null || echo "Container not found"
+sudo docker inspect tradeboard-web --format='{{.State.Health.Status}}' 2>/dev/null || echo "Container not found"
 echo ""
 echo "Recent Logs:"
 sudo docker compose -f /opt/Tradeboard/docker-compose.yaml logs --tail=30
@@ -722,7 +722,7 @@ cd /opt/Tradeboard
 sudo docker compose restart
 sleep 10
 echo "Container Status:"
-sudo docker ps --filter "name=Tradeboard-web"
+sudo docker ps --filter "name=tradeboard-web"
 EOFSCRIPT
 
 $SUDO chmod +x /usr/local/bin/Tradeboard-restart
@@ -754,8 +754,8 @@ sudo docker compose stop
 TEMP_DIR=$(mktemp -d)
 
 # Export data from Docker volumes
-sudo docker run --rm -v Tradeboard_db:/data -v $TEMP_DIR:/backup alpine tar -czf /backup/db.tar.gz -C /data . 2>/dev/null
-sudo docker run --rm -v Tradeboard_strategies:/data -v $TEMP_DIR:/backup alpine tar -czf /backup/strategies.tar.gz -C /data . 2>/dev/null
+sudo docker run --rm -v tradeboard_db:/data -v $TEMP_DIR:/backup alpine tar -czf /backup/db.tar.gz -C /data . 2>/dev/null
+sudo docker run --rm -v tradeboard_strategies:/data -v $TEMP_DIR:/backup alpine tar -czf /backup/strategies.tar.gz -C /data . 2>/dev/null
 
 # Create final backup
 sudo tar -czf $BACKUP_FILE .env -C $TEMP_DIR db.tar.gz strategies.tar.gz 2>/dev/null
