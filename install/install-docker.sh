@@ -12,13 +12,15 @@ NC='\033[0m' # No Color
 
 # Tradeboard Banner
 echo -e "${BLUE}"
-echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
-echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
-echo " ██║   ██║██████╔╝███████╗██╔██╗ ██║███████║██║     ██║  ███╗██║   ██║"
-echo " ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══██║██║     ██║   ██║██║   ██║"
-echo " ╚██████╔╝██╗     ███████╗██║ ╚████║██║  ██║███████╗╚██████╔╝╚██████╔╝"
-echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ "      
-echo "                    DOCKER INSTALLATION                                 "
+echo " ████████╗██████╗  █████╗ ██████╗ ███████╗██████╗  ██████╗  █████╗ ██████╗ ██████╗ "
+echo "    ██╔══╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔══██╗"
+echo "    ██║   ██████╔╝███████║██║  ██║█████╗  ██████╔╝██║   ██║███████║██████╔╝██║  ██║"
+echo "    ██║   ██╔══██╗██╔══██║██║  ██║██╔══╝  ██╔══██╗██║   ██║██╔══██║██╔══██╗██║  ██║"
+echo "    ██║   ██║  ██║██║  ██║██████╔╝███████╗██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝"
+echo "    ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ "
+echo "                                                                                      "
+echo "                  Tradeboard -- Installation & Configuration Script                  "
+echo "                       Repository: wesoftcorp/tradeboard                             "
 echo -e "${NC}"
 
 # Function to log messages
@@ -810,8 +812,6 @@ log "Restart:      cd $INSTALL_PATH && sudo docker compose restart" "$BLUE"
 log "Stop:         cd $INSTALL_PATH && sudo docker compose stop" "$BLUE"
 log "Start:        cd $INSTALL_PATH && sudo docker compose start" "$BLUE"
 log "Rebuild:      cd $INSTALL_PATH && sudo docker compose down && sudo docker compose build --no-cache && sudo docker compose up -d" "$BLUE"
-
-log "\nFor support, visit: https://discord.com/invite/UPh7QPsNhP" "$BLUE"
 
 log "\n============================================" "$GREEN"
 log "Installation completed successfully!" "$GREEN"
