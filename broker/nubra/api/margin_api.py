@@ -16,7 +16,7 @@ def calculate_margin_api(positions, auth):
     API: POST /orders/v2/margin_required
 
     Args:
-        positions: List of positions in OpenAlgo format
+        positions: List of positions in Tradeboard format
         auth: Authentication token (session_token) for Nubra
 
     Returns:

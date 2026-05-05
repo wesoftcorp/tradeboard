@@ -2,13 +2,13 @@
 
 ## Introduction
 
-Security is critical when dealing with automated trading systems. OpenAlgo provides multiple layers of security to protect your account, API keys, and trading activities.
+Security is critical when dealing with automated trading systems. Tradeboard provides multiple layers of security to protect your account, API keys, and trading activities.
 
 ## Security Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        OpenAlgo Security Layers                             │
+│                        Tradeboard Security Layers                             │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │  Layer 1: Authentication                                             │   │
@@ -46,7 +46,7 @@ Security is critical when dealing with automated trading systems. OpenAlgo provi
 
 ## Accessing Security Settings
 
-Navigate to **Settings** → **Security** in OpenAlgo.
+Navigate to **Settings** → **Security** in Tradeboard.
 
 ## Password Security
 
@@ -265,7 +265,7 @@ Broker credentials are:
 
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   OpenAlgo  │────▶│   Broker    │────▶│  Exchange   │
+│   Tradeboard  │────▶│   Broker    │────▶│  Exchange   │
 │             │     │   OAuth     │     │             │
 └─────────────┘     └─────────────┘     └─────────────┘
        │                   │
@@ -385,7 +385,7 @@ If this wasn't you, please:
 
 ### 5. Keep Updated
 
-- Update OpenAlgo regularly
+- Update Tradeboard regularly
 - Apply security patches
 - Follow security advisories
 

@@ -21,7 +21,7 @@ def calculate_margin_api(positions, auth):
     - orders: Individual order margins
 
     Args:
-        positions: List of positions in OpenAlgo format
+        positions: List of positions in Tradeboard format
         auth: Authentication token for Zerodha (format: api_key:access_token)
 
     Returns:
@@ -95,7 +95,7 @@ def calculate_margin_api(positions, auth):
         logger.info(f"Full Response: {json.dumps(response_data, indent=2)}")
         logger.info("=" * 80)
 
-        # Parse and standardize the response to OpenAlgo format
+        # Parse and standardize the response to Tradeboard format
         standardized_response = parse_margin_response(response_data)
 
         # Log the standardized response

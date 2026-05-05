@@ -3,9 +3,9 @@ Shoonya-specific mapping utilities for the WebSocket adapter
 """
 
 class ShoonyaExchangeMapper:
-    """Maps between OpenAlgo exchange names and Shoonya exchange codes"""
+    """Maps between Tradeboard exchange names and Shoonya exchange codes"""
 
-    # OpenAlgo to Shoonya exchange mapping
+    # Tradeboard to Shoonya exchange mapping
     EXCHANGE_MAP = {
         "NSE": "NSE",
         "BSE": "BSE",
@@ -31,10 +31,10 @@ class ShoonyaExchangeMapper:
 
     @classmethod
     def to_shoonya_exchange(cls, oa_exchange: str) -> str | None:
-        """Convert OpenAlgo exchange to Shoonya exchange format"""
+        """Convert Tradeboard exchange to Shoonya exchange format"""
         return cls.EXCHANGE_MAP.get(oa_exchange.upper())
 
     @classmethod
     def to_oa_exchange(cls, shoonya_exchange: str) -> str | None:
-        """Convert Shoonya exchange to OpenAlgo exchange format"""
+        """Convert Shoonya exchange to Tradeboard exchange format"""
         return cls.SHOONYA_TO_OPENALGO.get(shoonya_exchange.upper())

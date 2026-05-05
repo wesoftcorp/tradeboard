@@ -49,7 +49,7 @@ def get_margin_data(auth_token):
     if margin_data.get("port_funds_and_margin"):
         data = margin_data["port_funds_and_margin"]
 
-        # Map Nubra fields to OpenAlgo standard format
+        # Map Nubra fields to Tradeboard standard format
         try:
             # Nubra API returns values in paise, convert to rupees by dividing by 100
             

@@ -1,5 +1,5 @@
 {
-  "name": "openalgo",
+  "name": "tradeboard",
   "version": "1",
   "items": [
     {
@@ -565,7 +565,7 @@
   "environments": [],
   "brunoConfig": {
     "version": "1",
-    "name": "openalgo",
+    "name": "tradeboard",
     "type": "collection",
     "ignore": [
       "node_modules",

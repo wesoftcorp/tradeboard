@@ -2,7 +2,7 @@
 
 ## Overview
 
-OpenAlgo logs all HTTP traffic for monitoring, debugging, and security analysis. Traffic logs capture request/response metadata without sensitive data.
+Tradeboard logs all HTTP traffic for monitoring, debugging, and security analysis. Traffic logs capture request/response metadata without sensitive data.
 
 ## Architecture Diagram
 

@@ -1,4 +1,4 @@
-# Mapping OpenAlgo API Request https://openalgo.in/docs
+# Mapping Tradeboard API Request https://wesoftcorp.com/docs
 # Mapping Zebu Broking Parameters
 
 from broker.zebu.api.data import BrokerData

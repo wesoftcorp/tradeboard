@@ -4,7 +4,7 @@
 
 **Major Feature Release: Remote MCP — Self-Hosted OAuth 2.1 + MCP HTTP/SSE Server for ChatGPT, Claude.ai, and Claude Mobile, Plus Per-Purpose 2FA Enforcement, Symbol Search Expansion, Admin Diagnostics, and Zerodha NCO/GLOBAL\_INDEX Support**
 
-This is the biggest release in the 2.0.x line, covering **20+ commits** since v2.0.0.9. The headline change is **Remote MCP** — a self-hosted OAuth 2.1 + Model Context Protocol HTTP/SSE transport that lets hosted AI clients (ChatGPT.com, Claude.ai, Claude iOS / Android) connect to your OpenAlgo install over HTTPS with the same 40 tools the local stdio MCP already exposes. The local stdio MCP (Claude Desktop, Cursor, Windsurf) is **untouched** — Remote MCP is a parallel, opt-in transport, off by default, that ships behind two enabler scripts (one for native Ubuntu, one for Docker) and a full admin operations console at `/admin/remote-mcp`. Alongside Remote MCP, this release lands per-purpose TOTP enforcement (login / MCP / password reset), a multi-exchange Symbol Search expansion (issue #1326), an admin Diagnostics page with downloadable system reports, and Zerodha NCO + GLOBAL\_INDEX exchange support.
+This is the biggest release in the 2.0.x line, covering **20+ commits** since v2.0.0.9. The headline change is **Remote MCP** — a self-hosted OAuth 2.1 + Model Context Protocol HTTP/SSE transport that lets hosted AI clients (ChatGPT.com, Claude.ai, Claude iOS / Android) connect to your Tradeboard install over HTTPS with the same 40 tools the local stdio MCP already exposes. The local stdio MCP (Claude Desktop, Cursor, Windsurf) is **untouched** — Remote MCP is a parallel, opt-in transport, off by default, that ships behind two enabler scripts (one for native Ubuntu, one for Docker) and a full admin operations console at `/admin/remote-mcp`. Alongside Remote MCP, this release lands per-purpose TOTP enforcement (login / MCP / password reset), a multi-exchange Symbol Search expansion (issue #1326), an admin Diagnostics page with downloadable system reports, and Zerodha NCO + GLOBAL\_INDEX exchange support.
 
 ***
 
@@ -23,7 +23,7 @@ This is the biggest release in the 2.0.x line, covering **20+ commits** since v2
 
 **Remote MCP — feature deep dive**
 
-Remote MCP brings the OpenAlgo MCP toolset to **hosted AI clients** over the public internet. Same 40 tools as the local stdio integration, exposed at `https://yourdomain.com/mcp` with full OAuth 2.1.
+Remote MCP brings the Tradeboard MCP toolset to **hosted AI clients** over the public internet. Same 40 tools as the local stdio integration, exposed at `https://yourdomain.com/mcp` with full OAuth 2.1.
 
 **Architecture in one sentence:** the hosted client (ChatGPT / Claude.ai) only ever holds an OAuth Bearer JWT signed by your server's RS256 keypair; tool dispatch on the server side reuses your existing `/api/v1/*` API key (looked up server-side at boot) over loopback. The hosted client never sees your API key or your broker tokens.
 
@@ -55,8 +55,8 @@ Remote MCP brings the OpenAlgo MCP toolset to **hosted AI clients** over the pub
 
 **Install integration (Phase 4)** — `b36637b5e`, `90897a550`:
 
-* `install/enable-remote-mcp.sh` — native Ubuntu enabler. Detects all `openalgo-*` systemd services, refuses if `FLASK_DEBUG=True`, backs up `.env`, sets the four MCP keys, runs `upgrade/migrate_all.py`, restarts the service, and probes the discovery / JWKS / `/mcp/healthz` endpoints to confirm boot.
-* `install/enable-remote-mcp-docker.sh` — Docker enabler. Walks `/opt/openalgo/*/docker-compose.yaml`, picks a stack, backs up the bind-mounted `.env`, updates keys, restarts the container (whose `start.sh` runs migrations automatically), and runs the same smoke probe.
+* `install/enable-remote-mcp.sh` — native Ubuntu enabler. Detects all `tradeboard-*` systemd services, refuses if `FLASK_DEBUG=True`, backs up `.env`, sets the four MCP keys, runs `upgrade/migrate_all.py`, restarts the service, and probes the discovery / JWKS / `/mcp/healthz` endpoints to confirm boot.
+* `install/enable-remote-mcp-docker.sh` — Docker enabler. Walks `/opt/tradeboard/*/docker-compose.yaml`, picks a stack, backs up the bind-mounted `.env`, updates keys, restarts the container (whose `start.sh` runs migrations automatically), and runs the same smoke probe.
 * `install/Remote-MCP-readme.md` — operator-focused install guide with same-domain Mode 1 (automated) and subdomain Mode 2 (manual nginx + certbot recipe), threat model, and disabling instructions.
 * New `docs/userguide/remote-mcp.md` — end-user guide for connecting ChatGPT (Settings → Apps → New App BETA → Advanced OAuth → DCR) and Claude.ai (Settings → Connectors → + → Add custom connector).
 
@@ -171,7 +171,7 @@ The "virtual / paper trading" rename only touched display strings — the databa
 **For existing installs (Native Ubuntu):**
 
 ```bash
-cd /var/python/openalgo-flask/<deploy-name>/openalgo
+cd /var/python/tradeboard-flask/<deploy-name>/tradeboard
 sudo ./install/update.sh
 # update.sh runs migrate_all.py — schema changes for the OAuth + 2FA columns
 # are applied automatically. Remote MCP stays disabled by default.
@@ -180,7 +180,7 @@ sudo ./install/update.sh
 **For existing installs (Docker):**
 
 ```bash
-cd /opt/openalgo/<domain>
+cd /opt/tradeboard/<domain>
 sudo docker compose pull
 sudo docker compose up -d
 # The container's start.sh runs migrate_all.py before gunicorn boots.
@@ -218,12 +218,12 @@ uv run app.py
 
 **Links**
 
-* **Repository**: <https://github.com/marketcalls/openalgo>
-* **Documentation**: <https://docs.openalgo.in>
-* **Remote MCP guide**: <https://docs.openalgo.in/mcp/remote-mcp>
-* **Discord**: <https://www.openalgo.in/discord>
-* **YouTube**: <https://www.youtube.com/@openalgo>
-* **Issue tracker**: <https://github.com/marketcalls/openalgo/issues>
+* **Repository**: <https://github.com/wesoftcorp/tradeboard>
+* **Documentation**: <https://docs.wesoftcorp.com>
+* **Remote MCP guide**: <https://docs.wesoftcorp.com/mcp/remote-mcp>
+* **Discord**: <https://www.wesoftcorp.com/discord>
+* **YouTube**: <https://www.youtube.com/@tradeboard>
+* **Issue tracker**: <https://github.com/wesoftcorp/tradeboard/issues>
 
 ***
 
@@ -237,7 +237,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.openalgo.in/change-log/release/version-2.0.1.0-released.md?ask=<question>
+GET https://docs.wesoftcorp.com/change-log/release/version-2.0.1.0-released.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

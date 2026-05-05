@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# OpenAlgo Docker Multi-Instance Installation with Custom SSL
+# Tradeboard Docker Multi-Instance Installation with Custom SSL
 # Supports deploying multiple instances with existing SSL certificates (including Wildcards)
 
 # Colors for output
@@ -11,19 +11,21 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Base Configuration
-INSTALL_BASE="/opt/openalgo"
+INSTALL_BASE="/opt/tradeboard"
 START_FLASK_PORT=5000
 START_WS_PORT=8765
 
-# Script Banner
+# Tradeboard Installation Banner
 echo -e "${BLUE}"
-echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
-echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
-echo " ██║   ██║██████╔╝███████╗██╔██╗ ██║███████║██║     ██║  ███╗██║   ██║"
-echo " ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══██║██║     ██║   ██║██║   ██║"
-echo " ╚██████╔╝██╗     ███████╗██║ ╚████║██║  ██║███████╗╚██████╔╝╚██████╔╝"
-echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ "
-echo "             MULTI-INSTANCE DOCKER + CUSTOM SSL INSTALLER               "
+echo " ████████╗██████╗  █████╗ ██████╗ ███████╗██████╗  ██████╗  █████╗ ██████╗ ██████╗ "
+echo "    ██╔══╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔══██╗"
+echo "    ██║   ██████╔╝███████║██║  ██║█████╗  ██████╔╝██║   ██║███████║██████╔╝██║  ██║"
+echo "    ██║   ██╔══██╗██╔══██║██║  ██║██╔══╝  ██╔══██╗██║   ██║██╔══██║██╔══██╗██║  ██║"
+echo "    ██║   ██║  ██║██║  ██║██████╔╝███████╗██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝"
+echo "    ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ "
+echo "                                                                                      "
+echo "                  Tradeboard -- Installation & Configuration Script                  "
+echo "                       Repository: wesoftcorp/tradeboard                             "
 echo -e "${NC}"
 
 # -----------------
@@ -164,7 +166,7 @@ fi
 log "\n=== Configuration ===" "$BLUE"
 
 # 0. Git Repository Selection
-DEFAULT_REPO="https://github.com/marketcalls/openalgo.git"
+DEFAULT_REPO="https://github.com/wesoftcorp/tradeboard.git"
 read -p "Enter Git Repository URL [Default: $DEFAULT_REPO]: " REPO_URL
 REPO_URL=${REPO_URL:-$DEFAULT_REPO}
 log "Using Repository: $REPO_URL" "$GREEN"
@@ -722,7 +724,7 @@ for i in "${!CONF_DOMAINS[@]}"; do
     FLASK_PORT=${PORTS[0]}
     WS_PORT=${PORTS[1]}
     SANITIZED_NAME=$(sanitize_domain "$DOMAIN")
-    PROJECT_NAME="openalgo-${SANITIZED_NAME}"
+    PROJECT_NAME="tradeboard-${SANITIZED_NAME}"
 
     log " -> Ports: Flask=$FLASK_PORT, WS=$WS_PORT" "$GREEN"
     log " -> Dir: $INSTANCE_DIR" "$GREEN"
@@ -809,7 +811,7 @@ for i in "${!CONF_DOMAINS[@]}"; do
         fi
         
         # CSP: Add domain if not already present (delete-and-append avoids sed regex issues with nested quotes)
-        # See: https://github.com/marketcalls/openalgo/issues/938
+        # See: https://github.com/wesoftcorp/tradeboard/issues/938
         if ! grep "CSP_CONNECT_SRC" "$ENV_FILE" | grep -q "https://$DOMAIN"; then
             CURRENT_CSP=$(grep "^CSP_CONNECT_SRC" "$ENV_FILE" | sed 's/^CSP_CONNECT_SRC *= *//; s/^"//; s/"$//')
             if [ -n "$CURRENT_CSP" ] && ! echo "$CURRENT_CSP" | grep -q "https://$DOMAIN"; then
@@ -831,8 +833,8 @@ for i in "${!CONF_DOMAINS[@]}"; do
         sed -i "s|YOUR_BROKER_API_SECRET|$API_SECRET|g" "$ENV_FILE"
         sed -i "s|http://127.0.0.1:5000|https://$DOMAIN|g" "$ENV_FILE"
         sed -i "s|<broker>|$BROKER|g" "$ENV_FILE"
-        sed -i "s|OPENALGO_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$APP_KEY|g" "$ENV_FILE"
-        sed -i "s|OPENALGO_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$PEPPER|g" "$ENV_FILE"
+        sed -i "s|TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$APP_KEY|g" "$ENV_FILE"
+        sed -i "s|TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$PEPPER|g" "$ENV_FILE"
         # Each instance is published only on 127.0.0.1 with nginx in front;
         # trust the proxy's X-Forwarded-For / X-Real-IP.
         sed -i "s|TRUST_PROXY_HEADERS = 'FALSE'|TRUST_PROXY_HEADERS = 'TRUE'|g" "$ENV_FILE"
@@ -859,7 +861,7 @@ for i in "${!CONF_DOMAINS[@]}"; do
         # Exposing it would leak the raw tick feed.
         sed -i "s|CORS_ALLOWED_ORIGINS = '.*'|CORS_ALLOWED_ORIGINS = 'https://$DOMAIN'|g" "$ENV_FILE"
         # CSP: Set connect sources with domain (delete-and-append avoids sed regex issues with nested quotes)
-        # See: https://github.com/marketcalls/openalgo/issues/938
+        # See: https://github.com/wesoftcorp/tradeboard/issues/938
         sed -i '/^CSP_CONNECT_SRC/d' "$ENV_FILE"
         echo "CSP_CONNECT_SRC = \"'self' wss://$DOMAIN https://$DOMAIN wss: ws: https://cdn.socket.io\"" >> "$ENV_FILE"
         
@@ -869,7 +871,7 @@ for i in "${!CONF_DOMAINS[@]}"; do
     # 6. Docker Compose
     cat <<EOF > "$INSTANCE_DIR/docker-compose.yaml"
 services:
-  openalgo:
+  tradeboard:
     image: ${PROJECT_NAME}:latest
     build:
       context: .
@@ -879,11 +881,11 @@ services:
       - "127.0.0.1:${FLASK_PORT}:5000"
       - "127.0.0.1:${WS_PORT}:8765"
     volumes:
-      - openalgo_db:/app/db
-      - openalgo_log:/app/log
-      - openalgo_strategies:/app/strategies
-      - openalgo_keys:/app/keys
-      - openalgo_tmp:/app/tmp
+      - tradeboard_db:/app/db
+      - tradeboard_log:/app/log
+      - tradeboard_strategies:/app/strategies
+      - tradeboard_keys:/app/keys
+      - tradeboard_tmp:/app/tmp
       - ./.env:/app/.env
     environment:
       - FLASK_ENV=production
@@ -891,7 +893,7 @@ services:
       - APP_MODE=standalone
       - TZ=Asia/Kolkata
       # Resource limits auto-calculated for multi-instance deployment
-      # See: https://github.com/marketcalls/openalgo/issues/822
+      # See: https://github.com/wesoftcorp/tradeboard/issues/822
       - OPENBLAS_NUM_THREADS=${THREAD_LIMIT}
       - OMP_NUM_THREADS=${THREAD_LIMIT}
       - MKL_NUM_THREADS=${THREAD_LIMIT}
@@ -908,26 +910,26 @@ services:
     restart: unless-stopped
 
 volumes:
-  openalgo_db:
+  tradeboard_db:
     driver: local
-  openalgo_log:
+  tradeboard_log:
     driver: local
-  openalgo_strategies:
+  tradeboard_strategies:
     driver: local
-  openalgo_keys:
+  tradeboard_keys:
     driver: local
-  openalgo_tmp:
+  tradeboard_tmp:
     driver: local
 EOF
 
     # 7. Nginx Config
     cat <<EOF > "/etc/nginx/sites-available/$DOMAIN"
-upstream openalgo_flask_${SANITIZED_NAME} {
+upstream tradeboard_flask_${SANITIZED_NAME} {
     server 127.0.0.1:${FLASK_PORT};
     keepalive 64;
 }
 
-upstream openalgo_websocket_${SANITIZED_NAME} {
+upstream tradeboard_websocket_${SANITIZED_NAME} {
     server 127.0.0.1:${WS_PORT};
     keepalive 64;
 }
@@ -961,7 +963,7 @@ server {
 
     # Logic: WebSocket
     location = /ws {
-        proxy_pass http://openalgo_websocket_${SANITIZED_NAME};
+        proxy_pass http://tradeboard_websocket_${SANITIZED_NAME};
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -969,7 +971,7 @@ server {
         proxy_read_timeout 86400s;
     }
     location /ws/ {
-        proxy_pass http://openalgo_websocket_${SANITIZED_NAME}/;
+        proxy_pass http://tradeboard_websocket_${SANITIZED_NAME}/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -979,7 +981,7 @@ server {
 
     # Logic: Socket.IO (Flask-SocketIO real-time events)
     location /socket.io/ {
-        proxy_pass http://openalgo_flask_${SANITIZED_NAME}/socket.io/;
+        proxy_pass http://tradeboard_flask_${SANITIZED_NAME}/socket.io/;
         proxy_http_version 1.1;
         proxy_read_timeout 86400s;
         proxy_send_timeout 86400s;
@@ -994,7 +996,7 @@ server {
 
     # Logic: Main App
     location / {
-        proxy_pass http://openalgo_flask_${SANITIZED_NAME};
+        proxy_pass http://tradeboard_flask_${SANITIZED_NAME};
         proxy_http_version 1.1;
         proxy_read_timeout 300s;
         proxy_connect_timeout 300s;
@@ -1035,11 +1037,11 @@ check_status "Nginx reload failed"
 # Management Tool
 # -----------------
 
-cat <<'EOF' > /usr/local/bin/openalgo-ctl
+cat <<'EOF' > /usr/local/bin/tradeboard-ctl
 #!/bin/bash
-# OpenAlgo Manager
+# Tradeboard Manager
 
-INSTALL_BASE="/opt/openalgo"
+INSTALL_BASE="/opt/tradeboard"
 
 cmd=$1
 target=$2
@@ -1060,7 +1062,7 @@ list_instances() {
 }
 
 usage() {
-    echo "Usage: openalgo-ctl <command> [domain]"
+    echo "Usage: tradeboard-ctl <command> [domain]"
     echo "Commands:"
     echo "  list              - List all instances"
     echo "  restart <domain>  - Restart specific instance"
@@ -1107,16 +1109,16 @@ case "$cmd" in
 esac
 EOF
 
-chmod +x /usr/local/bin/openalgo-ctl
+chmod +x /usr/local/bin/tradeboard-ctl
 
 
 log "\n==============================================" "$GREEN"
 log " INSTALLATION COMPLETE" "$GREEN"
 log "==============================================" "$GREEN"
-log "Management Command: openalgo-ctl" "$BLUE"
-log "  openalgo-ctl list" "$BLUE"
-log "  openalgo-ctl restart <domain.com>" "$BLUE"
-log "  openalgo-ctl logs <domain.com>" "$BLUE"
+log "Management Command: tradeboard-ctl" "$BLUE"
+log "  tradeboard-ctl list" "$BLUE"
+log "  tradeboard-ctl restart <domain.com>" "$BLUE"
+log "  tradeboard-ctl logs <domain.com>" "$BLUE"
 
 log "\n[IMPORTANT] CLOUD FIREWALL SETTINGS:" "$YELLOW"
 log "Ensure the following Inbound Ports are OPEN in your Azure NSG / AWS Security Group:" "$RED"

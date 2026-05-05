@@ -170,7 +170,7 @@ export const useThemeStore = create<ThemeStore>()(
       },
     }),
     {
-      name: 'openalgo-theme',
+      name: 'tradeboard-theme',
       partialize: (state) => ({
         mode: state.mode,
         color: state.color,

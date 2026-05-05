@@ -79,8 +79,8 @@ export default function Home() {
                   <SheetDescription>Main navigation and quick access links</SheetDescription>
                 </SheetHeader>
                 <div className="flex items-center gap-2 mb-8">
-                  <img src="/logo.png" alt="OpenAlgo" className="h-8 w-8" />
-                  <span className="text-xl font-semibold">OpenAlgo</span>
+                  <img src="/logo.png" alt="Tradeboard" className="h-8 w-8" />
+                  <span className="text-xl font-semibold">Tradeboard</span>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Link
@@ -121,7 +121,7 @@ export default function Home() {
                     Download
                   </Link>
                   <a
-                    href="https://openalgo.in/discord"
+                    href="https://wesoftcorp.com/discord"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-accent"
@@ -130,7 +130,7 @@ export default function Home() {
                     Community
                   </a>
                   <a
-                    href="https://openalgo.in/roadmap"
+                    href="https://wesoftcorp.com/roadmap"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-accent"
@@ -139,7 +139,7 @@ export default function Home() {
                     Roadmap
                   </a>
                   <a
-                    href="https://docs.openalgo.in"
+                    href="https://docs.wesoftcorp.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 rounded-md hover:bg-accent"
@@ -152,8 +152,8 @@ export default function Home() {
             </Sheet>
 
             <Link to="/" className="flex items-center gap-2">
-              <img src="/logo.png" alt="OpenAlgo" className="h-8 w-8" />
-              <span className="text-xl font-bold hidden sm:inline">OpenAlgo</span>
+              <img src="/logo.png" alt="Tradeboard" className="h-8 w-8" />
+              <span className="text-xl font-bold hidden sm:inline">Tradeboard</span>
             </Link>
           </div>
 
@@ -278,7 +278,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold flex items-center gap-2">
-                      OpenAlgo MCP
+                      Tradeboard MCP
                       <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
                     </h3>
                     <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-1">
@@ -287,7 +287,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Connect your OpenAlgo account to Claude, Cursor, Windsurf, or ChatGPT. Place
+                  Connect your Tradeboard account to Claude, Cursor, Windsurf, or ChatGPT. Place
                   orders, check positions, and pull live prices by simply asking - no dashboards,
                   no clicks.
                 </p>
@@ -315,7 +315,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold flex items-center gap-2">
-                      OpenAlgo Skills
+                      Tradeboard Skills
                       <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
                     </h3>
                     <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-1">

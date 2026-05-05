@@ -11,7 +11,7 @@ import threading
 import time
 from datetime import datetime
 
-from openalgo import api
+from tradeboard import api
 
 # Initialize client
 client = api(

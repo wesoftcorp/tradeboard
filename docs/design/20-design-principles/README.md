@@ -2,13 +2,13 @@
 
 ## Overview
 
-OpenAlgo follows specific design patterns and architectural principles to maintain code quality, extensibility, and reliability across the trading platform.
+Tradeboard follows specific design patterns and architectural principles to maintain code quality, extensibility, and reliability across the trading platform.
 
 ## Core Design Principles
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                          OpenAlgo Design Principles                          │
+│                          Tradeboard Design Principles                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -293,7 +293,7 @@ class MarketDataService:
 ### Broker Mapping Pattern
 
 ```python
-# OpenAlgo → Broker format
+# Tradeboard → Broker format
 def transform_data(data):
     return {
         "tradingsymbol": get_broker_symbol(data['symbol']),
@@ -302,7 +302,7 @@ def transform_data(data):
         # ... more mappings
     }
 
-# Broker → OpenAlgo format
+# Broker → Tradeboard format
 def transform_response(response):
     return {
         "orderid": response['data']['order_id'],

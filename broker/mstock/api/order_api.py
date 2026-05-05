@@ -139,7 +139,7 @@ def get_open_position(tradingsymbol, exchange, producttype, auth):
     Get open position for a specific symbol and product type.
 
     Args:
-        tradingsymbol: OpenAlgo format symbol
+        tradingsymbol: Tradeboard format symbol
         exchange: Exchange name
         producttype: Product type (mapped to broker format)
         auth: Authentication token
@@ -182,7 +182,7 @@ def place_order_api(data, auth):
     Place a regular order on mStock Type B API.
 
     Args:
-        data: OpenAlgo order data
+        data: Tradeboard order data
         auth: Authentication token
 
     Returns:
@@ -251,7 +251,7 @@ def place_smartorder_api(data, auth):
     Place a smart order that adjusts based on current position.
 
     Args:
-        data: OpenAlgo order data with position_size
+        data: Tradeboard order data with position_size
         auth: Authentication token
 
     Returns:
@@ -388,7 +388,7 @@ def close_all_positions(current_api_key, auth):
                 elif exchange == "BSE":
                     lookup_exchange = "BFO"
 
-            # Get OpenAlgo symbol to send to placeorder function
+            # Get Tradeboard symbol to send to placeorder function
             symbol = get_symbol(position["symboltoken"], lookup_exchange)
 
             # Skip if symbol not found
@@ -498,9 +498,9 @@ def modify_order(data, auth):
     Modify an existing order on mStock Type B API.
 
     Args:
-        data: OpenAlgo modify order data with fields:
+        data: Tradeboard modify order data with fields:
             - orderid: Order ID to modify
-            - symbol: OpenAlgo symbol
+            - symbol: Tradeboard symbol
             - exchange: Exchange code
             - action: BUY/SELL
             - quantity: Order quantity

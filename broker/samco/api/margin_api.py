@@ -21,9 +21,9 @@ def calculate_margin_api(positions, auth, api_key=None):
     automatically calculates spread benefits.
 
     Args:
-        positions: List of positions in OpenAlgo format
+        positions: List of positions in Tradeboard format
         auth: Authentication token for Samco
-        api_key: OpenAlgo API key (optional, not used for Samco)
+        api_key: Tradeboard API key (optional, not used for Samco)
 
     Returns:
         Tuple of (response, response_data)

@@ -2,7 +2,7 @@
 
 ## Overview
 
-OpenAlgo provides comprehensive log viewing and management through the web interface, supporting both API order logs and general application logs.
+Tradeboard provides comprehensive log viewing and management through the web interface, supporting both API order logs and general application logs.
 
 ## Architecture Diagram
 
@@ -69,7 +69,7 @@ Logs from sandbox/sandbox trading mode.
 
 ### 3. Application Logs
 
-**Location:** `log/openalgo.log`
+**Location:** `log/tradeboard.log`
 
 File-based logs for debugging and monitoring.
 
@@ -270,13 +270,13 @@ LOG_RETENTION=14
 
 ```bash
 # View current log
-tail -f log/openalgo.log
+tail -f log/tradeboard.log
 
 # Search for errors
-grep ERROR log/openalgo.log
+grep ERROR log/tradeboard.log
 
 # View last 100 lines
-tail -100 log/openalgo.log
+tail -100 log/tradeboard.log
 ```
 
 ## Security Considerations

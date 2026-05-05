@@ -13,7 +13,7 @@ if __name__ == "__main__":
     _debug = os.getenv("FLASK_DEBUG", "False").lower() in ("true", "1", "t")
     _is_reloader_parent = _debug and os.environ.get("WERKZEUG_RUN_MAIN") != "true"
     if not _is_reloader_parent:
-        print("\033[93mStarting OpenAlgo...\033[0m", flush=True)
+        print("\033[93mStarting Tradeboard...\033[0m", flush=True)
 
 import mimetypes
 
@@ -299,12 +299,12 @@ def create_app():
                 "tokens become portable across instances."
             )
 
-        # Crucial ordering: set OPENALGO_MCP_HTTP_BOOT BEFORE importing the
+        # Crucial ordering: set TRADEBOARD_MCP_HTTP_BOOT BEFORE importing the
         # MCP HTTP blueprint. The blueprint transitively imports
         # mcp.mcpserver, which checks this env var to skip the stdio
         # argv requirement. Stdio launches never set this var, so their
         # behavior is unaffected.
-        os.environ["OPENALGO_MCP_HTTP_BOOT"] = "1"
+        os.environ["TRADEBOARD_MCP_HTTP_BOOT"] = "1"
 
         from blueprints.mcp_http import mcp_http_bp
         from blueprints.mcp_oauth import mcp_oauth_bp, mcp_wellknown_bp
@@ -323,13 +323,13 @@ def create_app():
 
         # Externally-facing OAuth endpoints and the MCP transport are
         # called by hosted clients (claude.ai etc.) that have NO
-        # OpenAlgo session cookie. Flask-WTF's global CSRFProtect would
+        # Tradeboard session cookie. Flask-WTF's global CSRFProtect would
         # 400 every request without these exemptions (security review
         # finding C-1). Authentication on these endpoints is via
         # Bearer token (transport) or client_secret + PKCE (token /
         # revoke) — CSRF cookie protection doesn't apply.
         # /oauth/authorize POST is intentionally NOT exempted: it's
-        # browser-driven from the OpenAlgo session and uses the
+        # browser-driven from the Tradeboard session and uses the
         # rendered consent form's csrf_token field.
         with app.app_context():
             for endpoint in (
@@ -908,11 +908,11 @@ if __name__ == "__main__":
                 _dip = "127.0.0.1"
         _wu = f"http://{_dip}:{port}"
         _wsu = f"ws://{_dip}:{os.getenv('WEBSOCKET_PORT', 8765)}"
-        _du = "https://docs.openalgo.in"
+        _du = "https://docs.wesoftcorp.com"
         G, C, M, W, Y, R, BD, DM = "\033[92m", "\033[96m", "\033[95m", "\033[97m", "\033[93m", "\033[0m", "\033[1m", "\033[2m"
         _ae = re.compile(r"\x1B\[[0-9;]*m")
         def _vl(t): return len(_ae.sub("", t))
-        _t = f" OpenAlgo v{_ver} "
+        _t = f" Tradeboard v{_ver} "
         _sl = "Your Personal Algo Trading Platform"
         _samps = ["", _sl, f"{W}{BD}Endpoints{R}", f"{W}Web App{R}    {C}{_wu}{R}", f"{W}WebSocket{R}  {M}{_wsu}{R}", f"{W}Docs{R}       {Y}{_du}{R}", f"{W}Status{R}     {G}{BD}Ready{R}"]
         _iw = max(50, max((_vl(s) for s in _samps), default=0))

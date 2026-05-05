@@ -2,7 +2,7 @@
 
 ## Overview
 
-OpenAlgo includes an MCP (Model Context Protocol) server that enables AI assistants like Claude, Cursor, and Windsurf to control trading operations through natural language commands.
+Tradeboard includes an MCP (Model Context Protocol) server that enables AI assistants like Claude, Cursor, and Windsurf to control trading operations through natural language commands.
 
 ## Architecture Diagram
 
@@ -44,12 +44,12 @@ OpenAlgo includes an MCP (Model Context Protocol) server that enables AI assista
 │  └─────────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────┘
                                  │
-                                 │ OpenAlgo Python Library
+                                 │ Tradeboard Python Library
                                  │ (openalgo==1.0.45)
                                  │
                                  ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       OpenAlgo REST API                                      │
+│                       Tradeboard REST API                                      │
 │                       /api/v1/*                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
                                  │
@@ -196,8 +196,8 @@ def get_synthetic_future(underlying, exchange, expiry):
 
 ```python
 @mcp.tool()
-def get_openalgo_version():
-    """Get OpenAlgo version"""
+def get_tradeboard_version():
+    """Get Tradeboard version"""
 
 @mcp.tool()
 def analyzer_status():
@@ -224,10 +224,10 @@ def get_timings(date):
 // ~/Library/Application Support/Claude/claude_desktop_config.json
 {
   "mcpServers": {
-    "openalgo": {
-      "command": "/path/to/openalgo/.venv/bin/python3",
+    "tradeboard": {
+      "command": "/path/to/tradeboard/.venv/bin/python3",
       "args": [
-        "/path/to/openalgo/mcp/mcpserver.py",
+        "/path/to/tradeboard/mcp/mcpserver.py",
         "YOUR_API_KEY",
         "http://127.0.0.1:5000"
       ]
@@ -242,10 +242,10 @@ def get_timings(date):
 // ~/.config/Cursor/User/settings.json (or %APPDATA%\Cursor\User\settings.json)
 {
   "mcpServers": {
-    "openalgo": {
+    "tradeboard": {
       "command": "python",
       "args": [
-        "path/to/openalgo/mcp/mcpserver.py",
+        "path/to/tradeboard/mcp/mcpserver.py",
         "YOUR_API_KEY",
         "http://127.0.0.1:5000"
       ]
@@ -260,10 +260,10 @@ def get_timings(date):
 // ~/.config/windsurf/mcp_config.json
 {
   "mcpServers": {
-    "openalgo": {
+    "tradeboard": {
       "command": "python",
       "args": [
-        "path/to/openalgo/mcp/mcpserver.py",
+        "path/to/tradeboard/mcp/mcpserver.py",
         "YOUR_API_KEY",
         "http://127.0.0.1:5000"
       ]
@@ -347,14 +347,14 @@ AI: [Calls get_quote tool]
 ### User Context
 
 - All operations tied to strategy name
-- Audit trail in OpenAlgo logs
+- Audit trail in Tradeboard logs
 - Rate limiting applied
 
 ## Dependencies
 
 ```
 mcp==1.23.0           # MCP framework
-openalgo==1.0.45      # OpenAlgo Python client
+openalgo==1.0.45      # Tradeboard Python client
 httpx[http2]==0.28.1  # HTTP client
 ```
 
@@ -366,13 +366,13 @@ httpx[http2]==0.28.1  # HTTP client
 # mcp/mcpserver.py
 
 from mcp.server.fastmcp import FastMCP
-from openalgo import api
+from tradeboard import api
 
-# Initialize OpenAlgo client
+# Initialize Tradeboard client
 client = api(api_key=sys.argv[1], host=sys.argv[2])
 
 # Initialize MCP server
-mcp = FastMCP("openalgo")
+mcp = FastMCP("tradeboard")
 
 # Register tools
 @mcp.tool()
@@ -389,4 +389,4 @@ mcp.run(transport='stdio')
 |------|---------|
 | `mcp/mcpserver.py` | MCP server with 50+ tools |
 | `mcp/README.md` | Setup documentation |
-| External: `openalgo` package | Python client library |
+| External: `tradeboard` package | Python client library |

@@ -1,22 +1,22 @@
-# OpenAlgo - Open Source Algorithmic Trading Platform
+# Tradeboard - Open Source Algorithmic Trading Platform
 
 <div align="center">
 
-[![PyPI Downloads](https://static.pepy.tech/badge/openalgo)](https://pepy.tech/projects/openalgo)
-[![PyPI Downloads](https://static.pepy.tech/badge/openalgo/month)](https://pepy.tech/projects/openalgo)
-[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/openalgoHQ)](https://twitter.com/openalgoHQ)
-[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCw7eVneIEyiTApy4RtxrJsQ)](https://www.youtube.com/@openalgo)
+[![PyPI Downloads](https://static.pepy.tech/badge/tradeboard)](https://pepy.tech/projects/tradeboard)
+[![PyPI Downloads](https://static.pepy.tech/badge/tradeboard/month)](https://pepy.tech/projects/tradeboard)
+[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/tradeboardHQ)](https://twitter.com/tradeboardHQ)
+[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCw7eVneIEyiTApy4RtxrJsQ)](https://www.youtube.com/@tradeboard)
 [![Discord](https://img.shields.io/discord/1219847221055455263)](https://discord.com/invite/UPh7QPsNhP)
 
 </div>
 
-## What is OpenAlgo?
+## What is Tradeboard?
 
-OpenAlgo is a free, open source, self-hosted **trading platform** — not just a broker bridge. Built on Python Flask + React 19, it gives traders a full-stack environment to **design, host, and execute strategies** across **30+ Indian brokers** through a single unified API. Whether you write Python, prefer drag-and-drop, or trade options exclusively, OpenAlgo gives you a first-class workflow without tying you to any single broker or vendor.
+Tradeboard is a free, open source, self-hosted **trading platform** — not just a broker bridge. Built on Python Flask + React 19, it gives traders a full-stack environment to **design, host, and execute strategies** across **30+ Indian brokers** through a single unified API. Whether you write Python, prefer drag-and-drop, or trade options exclusively, Tradeboard gives you a first-class workflow without tying you to any single broker or vendor.
 
-OpenAlgo is no longer just "an API layer in front of your broker." Today it is **four products in one self-hosted instance** — sharing one broker session, one WebSocket feed, and one database — covering the complete journey from idea → backtest → live trade.
+Tradeboard is no longer just "an API layer in front of your broker." Today it is **four products in one self-hosted instance** — sharing one broker session, one WebSocket feed, and one database — covering the complete journey from idea → backtest → live trade.
 
-## Four Ways to Trade with OpenAlgo
+## Four Ways to Trade with Tradeboard
 
 | Surface | Route | Who it's for |
 | --- | --- | --- |
@@ -29,14 +29,14 @@ Every surface above runs on the same Sandbox engine (₹1 Crore sandbox capital,
 
 ## Video Tutorial
 
-[![What is OpenAlgo](https://img.youtube.com/vi/S5myMo9WUdQ/0.jpg)](https://www.youtube.com/watch?v=S5myMo9WUdQ)
+[![What is Tradeboard](https://img.youtube.com/vi/S5myMo9WUdQ/0.jpg)](https://www.youtube.com/watch?v=S5myMo9WUdQ)
 
 ## Quick Links
 
-- **Documentation**: [docs.openalgo.in](https://docs.openalgo.in)
-- **Installation Guide**: [Getting Started](https://docs.openalgo.in/installation-guidelines/getting-started)
-- **Upgrade Guide**: [Upgrade Instructions](https://docs.openalgo.in/installation-guidelines/getting-started/upgrade)
-- **Why OpenAlgo**: [Why Build with OpenAlgo](https://docs.openalgo.in/why-to-build-with-openalgo)
+- **Documentation**: [docs.wesoftcorp.com](https://docs.wesoftcorp.com)
+- **Installation Guide**: [Getting Started](https://docs.wesoftcorp.com/installation-guidelines/getting-started)
+- **Upgrade Guide**: [Upgrade Instructions](https://docs.wesoftcorp.com/installation-guidelines/getting-started/upgrade)
+- **Why Tradeboard**: [Why Build with Tradeboard](https://docs.wesoftcorp.com/why-to-build-with-tradeboard)
 
 
 ## Python Compatibility
@@ -138,7 +138,7 @@ Complete testing environment with ₹1 Crore sandbox capital:
 - Auto square-off at exchange timings
 - Separate database for complete isolation
 
-[API Analyzer Documentation](https://docs.openalgo.in/new-features/api-analyzer)
+[API Analyzer Documentation](https://docs.wesoftcorp.com/new-features/api-analyzer)
 
 ### Action Center
 Order approval workflow for manual control:
@@ -147,10 +147,10 @@ Order approval workflow for manual control:
 - Complete audit trail with IST timestamps
 - Approve individual orders or bulk approve all
 
-[Action Center Documentation](https://docs.openalgo.in/new-features/action-center)
+[Action Center Documentation](https://docs.wesoftcorp.com/new-features/action-center)
 
 ### Python Strategy Host (`/python`)
-Host and run your Python strategies directly inside OpenAlgo — no separate VM, no cron, no Docker:
+Host and run your Python strategies directly inside Tradeboard — no separate VM, no cron, no Docker:
 - Built-in code editor powered by **CodeMirror** with Python syntax highlighting and themes
 - Run multiple strategies in parallel with **full process isolation**
 - Automated **IST-based scheduling** with start/stop times and per-day-of-week control
@@ -170,7 +170,7 @@ Connect AI assistants for natural language trading:
 - Compatible with Claude Desktop, Cursor, Windsurf, ChatGPT
 - Execute trades using natural language commands
 - Full trading capabilities: orders, positions, market data
-- Local and secure integration with your OpenAlgo instance
+- Local and secure integration with your Tradeboard instance
 
 ### Telegram Bot Integration
 Real-time notifications and command execution:
@@ -188,9 +188,9 @@ Real-time notifications and command execution:
 
 **PnL Tracker**: Real-time profit/loss with interactive charts powered by TradingView Lightweight Charts
 
-[PnL Tracker Documentation](https://docs.openalgo.in/new-features/pnl-tracker)
+[PnL Tracker Documentation](https://docs.wesoftcorp.com/new-features/pnl-tracker)
 
-[Traffic & Latency Monitor Documentation](https://docs.openalgo.in/new-features/traffic-latency-monitor)
+[Traffic & Latency Monitor Documentation](https://docs.wesoftcorp.com/new-features/traffic-latency-monitor)
 
 ### Enterprise-Grade Security
 **Password Security**: Argon2 hashing (Password Hashing Competition winner)
@@ -276,22 +276,22 @@ Receive your strategy alerts directly to **Telegram** for all platforms.
 
 ## Official SDKs
 
-OpenAlgo provides officially supported client libraries for application development and system-level integrations:
+Tradeboard provides officially supported client libraries for application development and system-level integrations:
 
 | Language / Platform | Repository |
 |---------------------|------------|
-| Python | [openalgo-python-library](https://github.com/marketcalls/openalgo-python-library) |
-| Node.js | [openalgo-node](https://github.com/marketcalls/openalgo-node) |
-| Java | [openalgo-java](https://github.com/marketcalls/openalgo-java) |
-| Rust | [openalgo-rust](https://github.com/marketcalls/openalgo-rust) |
-| .NET / C# | [openalgo.NET](https://github.com/marketcalls/openalgo.NET) |
-| Go | [openalgo-go](https://github.com/marketcalls/openalgo-go) |
+| Python | [tradeboard-python-library](https://github.com/wesoftcorp/tradeboard-python-library) |
+| Node.js | [tradeboard-node](https://github.com/wesoftcorp/tradeboard-node) |
+| Java | [tradeboard-java](https://github.com/wesoftcorp/tradeboard-java) |
+| Rust | [tradeboard-rust](https://github.com/wesoftcorp/tradeboard-rust) |
+| .NET / C# | [tradeboard.NET](https://github.com/wesoftcorp/tradeboard.NET) |
+| Go | [tradeboard-go](https://github.com/wesoftcorp/tradeboard-go) |
 
-## OpenAlgo FOSS Ecosystem
+## Tradeboard FOSS Ecosystem
 
-OpenAlgo is part of a larger open-source trading ecosystem:
+Tradeboard is part of a larger open-source trading ecosystem:
 
-- **OpenAlgo Core**: This repository (Python Flask + React)
+- **Tradeboard Core**: This repository (Python Flask + React)
 - **Historify**: Stock market data management platform
 - **Official SDKs**: Python, Node.js, Java, Rust, .NET, Go (see above)
 - **Excel Add-in**: Direct Excel integration
@@ -299,7 +299,7 @@ OpenAlgo is part of a larger open-source trading ecosystem:
 - **Chrome Plugin**: Browser-based tools
 - **Fast Scalper**: High-performance trading (Rust + Tauri)
 - **Web Portal**: Modern UI (NextJS + ShadcnUI)
-- **Documentation**: Comprehensive guides on [Gitbook](https://docs.openalgo.in/mini-foss-universe)
+- **Documentation**: Comprehensive guides on [Gitbook](https://docs.wesoftcorp.com/mini-foss-universe)
 
 ## Installation
 
@@ -312,12 +312,12 @@ OpenAlgo is part of a larger open-source trading ecosystem:
 
 ### Quick Start with UV
 
-OpenAlgo uses the modern `uv` package manager for faster, more reliable installations:
+Tradeboard uses the modern `uv` package manager for faster, more reliable installations:
 
 ```bash
 # Clone the repository
-git clone https://github.com/marketcalls/openalgo.git
-cd openalgo
+git clone https://github.com/wesoftcorp/tradeboard.git
+cd tradeboard
 
 # Install UV package manager
 pip install uv
@@ -332,13 +332,13 @@ uv run app.py
 
 The application will be available at `http://127.0.0.1:5000`
 
-For detailed installation instructions, deployment options (Docker, AWS, etc.), and configuration guides, visit [docs.openalgo.in/installation-guidelines/getting-started](https://docs.openalgo.in/installation-guidelines/getting-started)
+For detailed installation instructions, deployment options (Docker, AWS, etc.), and configuration guides, visit [docs.wesoftcorp.com/installation-guidelines/getting-started](https://docs.wesoftcorp.com/installation-guidelines/getting-started)
 
 ## API Documentation
 
 Complete API reference and examples:
-- **API Documentation**: [docs.openalgo.in/api-documentation/v1](https://docs.openalgo.in/api-documentation/v1)
-- **Symbol Format**: [docs.openalgo.in/symbol-format](https://docs.openalgo.in/symbol-format)
+- **API Documentation**: [docs.wesoftcorp.com/api-documentation/v1](https://docs.wesoftcorp.com/api-documentation/v1)
+- **Symbol Format**: [docs.wesoftcorp.com/symbol-format](https://docs.wesoftcorp.com/symbol-format)
 
 ## Key Benefits
 
@@ -356,7 +356,7 @@ Complete API reference and examples:
 
 ## Documentation
 
-Comprehensive documentation is available at [docs.openalgo.in](https://docs.openalgo.in):
+Comprehensive documentation is available at [docs.wesoftcorp.com](https://docs.wesoftcorp.com):
 - API Reference with examples
 - Broker-specific guides
 - Security best practices
@@ -376,18 +376,18 @@ We welcome contributions! To contribute:
 
 ## Community & Support
 
-- **Discord**: [Join our community](https://www.openalgo.in/discord)
-- **Twitter/X**: [@openalgoHQ](https://twitter.com/openalgoHQ)
-- **YouTube**: [@openalgo](https://www.youtube.com/@openalgo)
-- **GitHub Issues**: [Report bugs or request features](https://github.com/marketcalls/openalgo/issues)
+- **Discord**: [Join our community](https://www.wesoftcorp.com/discord)
+- **Twitter/X**: [@tradeboardHQ](https://twitter.com/tradeboardHQ)
+- **YouTube**: [@tradeboard](https://www.youtube.com/@tradeboard)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/wesoftcorp/tradeboard/issues)
 
 ## License
 
-OpenAlgo is released under the **AGPL V3.0 License**. See [LICENSE](LICENSE) for details.
+Tradeboard is released under the **AGPL V3.0 License**. See [LICENSE](LICENSE) for details.
 
 ## Credits & Acknowledgments
 
-OpenAlgo is built upon the shoulders of giants. We extend our gratitude to all the open-source projects that make this platform possible.
+Tradeboard is built upon the shoulders of giants. We extend our gratitude to all the open-source projects that make this platform possible.
 
 ### Core Framework
 - **[Flask](https://flask.palletsprojects.com)** - BSD License - Python web microframework
