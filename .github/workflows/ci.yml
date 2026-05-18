@@ -253,7 +253,7 @@ jobs:
         with:
           context: .
           platforms: ${{ matrix.platform }}
-          outputs: type=image,name=${{ secrets.DOCKERHUB_USERNAME }}/TradeBoard,push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ secrets.DOCKERHUB_USERNAME }}/tradeboard,push-by-digest=true,name-canonical=true,push=true
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=${{ matrix.suffix }}
           cache-to: type=gha,mode=max,scope=${{ matrix.suffix }}
@@ -340,16 +340,16 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ secrets.DOCKERHUB_USERNAME }}/TradeBoard@sha256:%s ' *)
+            $(printf '${{ secrets.DOCKERHUB_USERNAME }}/tradeboard@sha256:%s ' *)
 
       - name: Inspect assembled image
         run: |
-          docker buildx imagetools inspect ${{ secrets.DOCKERHUB_USERNAME }}/TradeBoard:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ secrets.DOCKERHUB_USERNAME }}/tradeboard:${{ steps.meta.outputs.version }}
 
       - name: Trivy vulnerability scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/TradeBoard:latest
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/tradeboard:latest
           exit-code: '0'
           severity: 'CRITICAL,HIGH'
           format: 'table'
