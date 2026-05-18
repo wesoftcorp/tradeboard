@@ -1,15 +1,5 @@
 ﻿# TradeBoard - Open Source Algorithmic Trading Platform
 
-<div align="center">
-
-[![PyPI Downloads](https://static.pepy.tech/badge/TradeBoard)](https://pepy.tech/projects/TradeBoard)
-[![PyPI Downloads](https://static.pepy.tech/badge/TradeBoard/month)](https://pepy.tech/projects/TradeBoard)
-[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/TradeBoardHQ)](https://twitter.com/TradeBoardHQ)
-[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCw7eVneIEyiTApy4RtxrJsQ)](https://www.youtube.com/@TradeBoard)
-[![Discord](https://img.shields.io/discord/1219847221055455263)](https://discord.com/invite/UPh7QPsNhP)
-
-</div>
-
 ## What is TradeBoard?
 
 TradeBoard is a free, open source, self-hosted **trading platform** — not just a broker bridge. Built on Python Flask + React 19, it gives traders a full-stack environment to **design, host, and execute strategies** across **30+ Indian brokers** through a single unified API. Whether you write Python, prefer drag-and-drop, or trade options exclusively, TradeBoard gives you a first-class workflow without tying you to any single broker or vendor.
@@ -26,10 +16,6 @@ TradeBoard is no longer just "an API layer in front of your broker." Today it is
 | **Options Trading Suite** | `/tools` | Options traders — twelve built-in analytical tools (Strategy Builder with payoff diagrams & live Greeks, Option Chain, IV Smile, Max Pain, Vol Surface, GEX dashboard, OI Tracker, OI Profile, Straddle Chart, Straddle PnL simulator, Option Greeks history). Each one streams from your connected broker. |
 
 Every surface above runs on the same Sandbox engine (₹1 Crore sandbox capital, exchange-aligned auto square-off) so you can sandbox-trade *any* of these flows before going live. Real-time dashboards, PnL tracker, latency monitor, Telegram alerts, and the AI / MCP server work uniformly across all four.
-
-## Video Tutorial
-
-[![What is TradeBoard](https://img.youtube.com/vi/S5myMo9WUdQ/0.jpg)](https://www.youtube.com/watch?v=S5myMo9WUdQ)
 
 ## Quick Links
 
@@ -436,10 +422,6 @@ TradeBoard is built upon the shoulders of giants. We extend our gratitude to all
 - **[next-themes](https://github.com/pacocoursey/next-themes)** - MIT License - Theme switching
 - **[react-resizable-panels](https://github.com/bvaughn/react-resizable-panels)** - MIT License - Resizable panel layouts
 - **[html2canvas-pro](https://html2canvas.hertzen.com)** - MIT License - Screenshot generation
-
-## Repo Activity
-
-![Alt](https://repobeats.axiom.co/api/embed/0b6b18194a3089cb47ab8ae588caabb14aa9972b.svg "Repobeats analytics image")
 
 ## Disclaimer
 
