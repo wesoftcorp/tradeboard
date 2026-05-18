@@ -1,4 +1,4 @@
-# Quotes
+﻿# Quotes
 
 Get real-time market quotes for a single symbol including OHLC, LTP, bid/ask, and volume.
 
@@ -54,7 +54,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/quotes \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | symbol | Trading symbol | Mandatory | - |
 | exchange | Exchange code: NSE, BSE, NFO, BFO, CDS, BCD, MCX | Mandatory | - |
 
@@ -81,7 +81,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/quotes \
 ## Notes
 
 - Quotes are **real-time** and refresh with each trade
-- For **F&O symbols**, use the Tradeboard standard format (e.g., NIFTY30JAN25FUT)
+- For **F&O symbols**, use the TradeBoard standard format (e.g., NIFTY30JAN25FUT)
 - For **multiple symbols**, use the [MultiQuotes](./multiquotes.md) endpoint
 - The **bid/ask** spread indicates liquidity
 

@@ -125,7 +125,7 @@ def get_order_book(auth):
         auth (str): Authentication token
 
     Returns:
-        dict: Order book data in Tradeboard format
+        dict: Order book data in TradeBoard format
     """
     try:
         # Get API key from environment
@@ -159,29 +159,29 @@ def get_order_book(auth):
 
         response.raise_for_status()
 
-        # Transform response data to Tradeboard format
+        # Transform response data to TradeBoard format
         response_data = response.json()
         logger.debug(f"get_order_book - Raw response data: {response_data}")
 
         if response_data["s"] == "ok":
             # print(f"[DEBUG] get_order_book - Found {len(response_data['d'])} orders")
-            # Transform each order to Tradeboard format
+            # Transform each order to TradeBoard format
             transformed_orders = []
             for order in response_data["d"]:
                 # logger.debug(f"[DEBUG] get_order_book - Processing order: {order}")
                 try:
-                    # Get Tradeboard symbol using symbol and exchange
-                    tradeboard_symbol = get_oa_symbol(order["sym"]["id"], order["sym"]["exch"])
-                    # print(f"[DEBUG] get_order_book - Tradeboard symbol lookup for symbol {order['sym']['sym']}: {tradeboard_symbol}")
+                    # Get TradeBoard symbol using symbol and exchange
+                    TradeBoard_symbol = get_oa_symbol(order["sym"]["id"], order["sym"]["exch"])
+                    # print(f"[DEBUG] get_order_book - TradeBoard symbol lookup for symbol {order['sym']['sym']}: {TradeBoard_symbol}")
 
                     transformed_order = {
-                        "stat": "Ok",  # Tradeboard expects 'stat' field
+                        "stat": "Ok",  # TradeBoard expects 'stat' field
                         "data": {
-                            "tradingsymbol": tradeboard_symbol
-                            if tradeboard_symbol
+                            "tradingsymbol": TradeBoard_symbol
+                            if TradeBoard_symbol
                             else order["sym"][
                                 "sym"
-                            ],  # Fallback to Tradejini symbol if Tradeboard not found
+                            ],  # Fallback to Tradejini symbol if TradeBoard not found
                             "exchange": order["sym"]["exch"],
                             "token": order["symId"],
                             "exch": order["sym"]["exch"],
@@ -230,7 +230,7 @@ def get_trade_book(auth):
         auth (str): Authentication token
 
     Returns:
-        dict: Trade book data in Tradeboard format {'data': [...], 'status': 'success'}
+        dict: Trade book data in TradeBoard format {'data': [...], 'status': 'success'}
     """
     try:
         # Get API key from environment
@@ -277,17 +277,17 @@ def get_trade_book(auth):
         trades_data = response_data.get("d", [])
         logger.info(f"get_trade_book - Found {len(trades_data)} trades")
 
-        # Transform trades directly to Tradeboard format
+        # Transform trades directly to TradeBoard format
         transformed_trades = []
         for trade in trades_data:
             try:
                 # Get symbol details
                 symbol = trade.get("sym", {})
 
-                # Get Tradeboard symbol
-                tradeboard_symbol = None
+                # Get TradeBoard symbol
+                TradeBoard_symbol = None
                 try:
-                    tradeboard_symbol = get_oa_symbol(symbol.get("id", ""), symbol.get("exch", ""))
+                    TradeBoard_symbol = get_oa_symbol(symbol.get("id", ""), symbol.get("exch", ""))
                 except Exception as e:
                     logger.warning(f"get_trade_book - Symbol lookup failed: {str(e)}")
 
@@ -308,13 +308,13 @@ def get_trade_book(auth):
                 side = trade.get("side", "").lower()
                 action = "BUY" if side == "buy" else "SELL"
 
-                # Create transformed trade - match Tradeboard format exactly
-                # Determine the symbol to use (Tradeboard symbol if available)
+                # Create transformed trade - match TradeBoard format exactly
+                # Determine the symbol to use (TradeBoard symbol if available)
                 final_symbol = ""
-                if tradeboard_symbol:
-                    final_symbol = tradeboard_symbol
+                if TradeBoard_symbol:
+                    final_symbol = TradeBoard_symbol
                 else:
-                    # Fallback to exchange symbol if Tradeboard symbol isn't available
+                    # Fallback to exchange symbol if TradeBoard symbol isn't available
                     final_symbol = symbol.get("sym", symbol.get("trdSym", ""))
 
                 transformed_trade = {
@@ -324,7 +324,7 @@ def get_trade_book(auth):
                     "orderid": str(trade.get("orderId", "")),
                     "product": product,
                     "quantity": int(trade.get("fillQty", 0)),
-                    "symbol": final_symbol,  # Using Tradeboard symbol here
+                    "symbol": final_symbol,  # Using TradeBoard symbol here
                     "timestamp": trade.get("time", ""),
                     "trade_value": float(trade.get("fillValue", 0.0)),
                 }
@@ -358,7 +358,7 @@ def get_positions(auth):
         auth (str): Authentication token
 
     Returns:
-        dict: Positions data in Tradeboard format
+        dict: Positions data in TradeBoard format
     """
     try:
         # Get API key from environment
@@ -415,42 +415,42 @@ def get_positions(auth):
                         f"Position data: symId={symbol_id}, tradingsymbol={tradingsymbol}, exchange={exchange}"
                     )
 
-                    # Get Tradeboard symbol - follow same approach as TradeBook implementation
-                    tradeboard_symbol = None
+                    # Get TradeBoard symbol - follow same approach as TradeBook implementation
+                    TradeBoard_symbol = None
                     try:
                         # First try with the symbol ID from sym object
                         symid_from_object = sym.get("id", "")
                         if symid_from_object:
-                            tradeboard_symbol = get_oa_symbol(symid_from_object, exchange)
+                            TradeBoard_symbol = get_oa_symbol(symid_from_object, exchange)
                             logger.info(
-                                f"Symbol lookup with sym.id: {symid_from_object} -> {tradeboard_symbol}"
+                                f"Symbol lookup with sym.id: {symid_from_object} -> {TradeBoard_symbol}"
                             )
 
                         # If not found and we have the position symId, try that
-                        if not tradeboard_symbol and symbol_id:
-                            tradeboard_symbol = get_oa_symbol(symbol_id, "")
+                        if not TradeBoard_symbol and symbol_id:
+                            TradeBoard_symbol = get_oa_symbol(symbol_id, "")
                             logger.info(
-                                f"Symbol lookup with position.symId: {symbol_id} -> {tradeboard_symbol}"
+                                f"Symbol lookup with position.symId: {symbol_id} -> {TradeBoard_symbol}"
                             )
 
                         # If still not found, try with exchange symbol
-                        if not tradeboard_symbol:
-                            tradeboard_symbol = get_oa_symbol(exchange_symbol, exchange)
+                        if not TradeBoard_symbol:
+                            TradeBoard_symbol = get_oa_symbol(exchange_symbol, exchange)
                             logger.info(
-                                f"Symbol lookup with exchange symbol: {exchange_symbol} -> {tradeboard_symbol}"
+                                f"Symbol lookup with exchange symbol: {exchange_symbol} -> {TradeBoard_symbol}"
                             )
 
                     except Exception as e:
                         logger.warning(f"Symbol lookup failed: {str(e)}")
-                        tradeboard_symbol = None
+                        TradeBoard_symbol = None
 
                     # Determine the final symbol to use
                     final_symbol = ""
-                    if tradeboard_symbol:
-                        final_symbol = tradeboard_symbol
-                        logger.info(f"Using Tradeboard symbol: {final_symbol}")
+                    if TradeBoard_symbol:
+                        final_symbol = TradeBoard_symbol
+                        logger.info(f"Using TradeBoard symbol: {final_symbol}")
                     else:
-                        # Fallback to exchange symbol if Tradeboard symbol isn't available
+                        # Fallback to exchange symbol if TradeBoard symbol isn't available
                         final_symbol = exchange_symbol
                         logger.info(f"Fallback to exchange symbol: {final_symbol}")
 
@@ -465,17 +465,17 @@ def get_positions(auth):
                     else:
                         mapped_product = "MIS"  # Default
 
-                    # Format the position data according to Tradeboard format
+                    # Format the position data according to TradeBoard format
                     # Removing tradingsymbol field as requested
                     transformed_position = {
-                        "symbol": final_symbol,  # Use final symbol (Tradeboard or fallback)
+                        "symbol": final_symbol,  # Use final symbol (TradeBoard or fallback)
                         "exchange": exchange,
                         "product": mapped_product,
                         "quantity": net_qty,
                         "average_price": str(round(float(position.get("netAvgPrice", 0.0)), 2)),
                     }
 
-                    logger.debug(f"Position transformed: {tradingsymbol} → {tradeboard_symbol}")
+                    logger.debug(f"Position transformed: {tradingsymbol} → {TradeBoard_symbol}")
 
                     positions_list.append(transformed_position)
                     logger.debug(f"Transformed position: {transformed_position}")
@@ -484,7 +484,7 @@ def get_positions(auth):
                     logger.error(f"Error transforming position: {str(e)}", exc_info=True)
                     continue
 
-            # Return in Tradeboard format - same pattern as orderbook and tradebook
+            # Return in TradeBoard format - same pattern as orderbook and tradebook
             return {"status": "success", "data": positions_list}
         else:
             error_msg = response_data.get("d", {}).get("message", "Unknown error")
@@ -517,7 +517,7 @@ def get_holdings(auth):
         auth (str): Authentication token
 
     Returns:
-        dict: Holdings data in Tradeboard format
+        dict: Holdings data in TradeBoard format
         {
             "data": {
                 "holdings": [
@@ -650,14 +650,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -725,9 +725,9 @@ def get_open_position(tradingsymbol, exchange, producttype, auth):
             logger.error(f"get_open_position - Invalid positions response: {positions_response}")
             return "0"
 
-        # Check if this is already in Tradeboard format
+        # Check if this is already in TradeBoard format
         if positions_response.get("status") == "success" and "data" in positions_response:
-            logger.info("get_open_position - Processing Tradeboard format positions")
+            logger.info("get_open_position - Processing TradeBoard format positions")
             positions = positions_response["data"]
 
             for position in positions:
@@ -739,17 +739,17 @@ def get_open_position(tradingsymbol, exchange, producttype, auth):
                 pos_qty = int(float(position.get("quantity", 0)))
 
                 logger.info(
-                    f"get_open_position - Checking Tradeboard position: {pos_symbol} on {pos_exch}, qty: {pos_qty}"
+                    f"get_open_position - Checking TradeBoard position: {pos_symbol} on {pos_exch}, qty: {pos_qty}"
                 )
 
                 if pos_exch == exchange and pos_symbol == tradingsymbol and pos_qty != 0:
                     logger.info(
-                        f"get_open_position - Found matching Tradeboard position: {pos_symbol} with quantity {pos_qty}"
+                        f"get_open_position - Found matching TradeBoard position: {pos_symbol} with quantity {pos_qty}"
                     )
                     return str(pos_qty)
 
             logger.info(
-                f"get_open_position - No matching Tradeboard position found for {tradingsymbol} on {exchange}"
+                f"get_open_position - No matching TradeBoard position found for {tradingsymbol} on {exchange}"
             )
             return "0"
 
@@ -1089,7 +1089,9 @@ def place_smartorder_api(data, auth):
                     original_qty = int(float(data.get("quantity", "0")))
                     if original_qty != 0:
                         original_action = data.get("action", "").upper()
-                        logger.info(f"place_smartorder_api - No position, pos_size=0: {original_action} {original_qty}")
+                        logger.info(
+                            f"place_smartorder_api - No position, pos_size=0: {original_action} {original_qty}"
+                        )
                         final_action = original_action
                         final_quantity = original_qty
                     else:
@@ -1164,7 +1166,7 @@ def place_smartorder_api(data, auth):
                     f"place_smartorder_api - place_order_api response - res: {res}, response: {response}, orderid: {orderid}"
                 )
 
-                # Format response to match Tradeboard's expected format
+                # Format response to match TradeBoard's expected format
                 if (
                     response
                     and isinstance(response, dict)
@@ -1172,7 +1174,9 @@ def place_smartorder_api(data, auth):
                     and orderid
                 ):
                     wrapped_response = {"status": "success", "orderid": str(orderid)}
-                    logger.info(f"place_smartorder_api - Order placed successfully: {wrapped_response}")
+                    logger.info(
+                        f"place_smartorder_api - Order placed successfully: {wrapped_response}"
+                    )
                     return res, wrapped_response, orderid
                 else:
                     error_msg = "Unknown error in order placement"
@@ -1210,7 +1214,7 @@ def close_all_positions(current_api_key, auth):
         auth (str): Authentication token
 
     Returns:
-        dict: Response with status and message in Tradeboard format
+        dict: Response with status and message in TradeBoard format
               {
                   'status': 'success' or 'error',
                   'message': 'Descriptive message'
@@ -1309,7 +1313,7 @@ def close_all_positions(current_api_key, auth):
                 )
                 failed_count += 1
 
-        # Prepare final response in Tradeboard format
+        # Prepare final response in TradeBoard format
         if success_count > 0 or failed_count == 0:
             message = (
                 "All Open Positions SquaredOff" if success_count > 0 else "No positions to close"

@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 from dotenv import load_dotenv
-from tradeboard import api
 from sqlalchemy import MetaData, create_engine
+from TradeBoard import api
 
 # Load environment variables
 load_dotenv()

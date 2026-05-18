@@ -1,7 +1,7 @@
 # services/flow_executor_service.py
 """
 Flow Workflow Executor Service
-Executes workflow nodes using internal Tradeboard services (synchronous Flask version)
+Executes workflow nodes using internal TradeBoard services (synchronous Flask version)
 """
 
 import json
@@ -19,7 +19,7 @@ from database.flow_db import (
     get_workflow,
     update_execution_status,
 )
-from services.flow_tradeboard_client import FlowTradeboardClient, get_flow_client
+from services.flow_TradeBoard_client import FlowTradeBoardClient, get_flow_client
 
 logger = logging.getLogger(__name__)
 
@@ -151,16 +151,14 @@ class WorkflowContext:
 class NodeExecutor:
     """Executes individual workflow nodes"""
 
-    def __init__(self, client: FlowTradeboardClient, context: WorkflowContext, logs: list):
+    def __init__(self, client: FlowTradeBoardClient, context: WorkflowContext, logs: list):
         self.client = client
         self.context = context
         self.logs = logs
 
     def log(self, message: str, level: str = "info"):
         """Add log entry"""
-        self.logs.append(
-            {"time": datetime.now().isoformat(), "message": message, "level": level}
-        )
+        self.logs.append({"time": datetime.now().isoformat(), "message": message, "level": level})
         if level == "error":
             logger.error(message)
         else:
@@ -751,7 +749,7 @@ class NodeExecutor:
         exchange = self.get_str(node_data, "exchange", "NSE")
         self.log(f"Getting depth for: {symbol}")
         result = self.client.get_depth(symbol=symbol, exchange=exchange)
-        self.log(f"Depth result received")
+        self.log("Depth result received")
         self.store_output(node_data, result)
         return result
 
@@ -792,7 +790,7 @@ class NodeExecutor:
             start_date=start_date,
             end_date=end_date,
         )
-        self.log(f"History data received")
+        self.log("History data received")
         self.store_output(node_data, result)
         return result
 
@@ -800,7 +798,7 @@ class NodeExecutor:
         """Execute OrderBook node"""
         self.log("Fetching order book")
         result = self.client.orderbook()
-        self.log(f"Order book received")
+        self.log("Order book received")
         self.store_output(node_data, result)
         return result
 
@@ -808,7 +806,7 @@ class NodeExecutor:
         """Execute TradeBook node"""
         self.log("Fetching trade book")
         result = self.client.tradebook()
-        self.log(f"Trade book received")
+        self.log("Trade book received")
         self.store_output(node_data, result)
         return result
 
@@ -816,7 +814,7 @@ class NodeExecutor:
         """Execute PositionBook node"""
         self.log("Fetching position book")
         result = self.client.positionbook()
-        self.log(f"Position book received")
+        self.log("Position book received")
         self.store_output(node_data, result)
         return result
 
@@ -824,7 +822,7 @@ class NodeExecutor:
         """Execute Holdings node"""
         self.log("Fetching holdings")
         result = self.client.holdings()
-        self.log(f"Holdings received")
+        self.log("Holdings received")
         self.store_output(node_data, result)
         return result
 
@@ -832,7 +830,7 @@ class NodeExecutor:
         """Execute Funds node"""
         self.log("Fetching funds")
         result = self.client.funds()
-        self.log(f"Funds received")
+        self.log("Funds received")
         self.store_output(node_data, result)
         return result
 
@@ -919,7 +917,7 @@ class NodeExecutor:
             expiry_date=expiry_date,
             strike_count=strike_count,
         )
-        self.log(f"Option chain result received")
+        self.log("Option chain result received")
         self.store_output(node_data, result)
         return result
 
@@ -943,7 +941,7 @@ class NodeExecutor:
         exchange = self.get_str(node_data, "exchange", "NSE")
         self.log(f"Fetching holidays for exchange: {exchange}")
         result = self.client.holidays(exchange=exchange)
-        self.log(f"Holidays result received")
+        self.log("Holidays result received")
         self.store_output(node_data, result)
         return result
 
@@ -1319,9 +1317,7 @@ class NodeExecutor:
         data = result.get("data", {}) or {}
         available = float(data.get("availablecash", 0) or 0)
         condition_met = available >= min_available
-        self.log(
-            f"Fund check: available={available} >= {min_available} = {condition_met}"
-        )
+        self.log(f"Fund check: available={available} >= {min_available} = {condition_met}")
         return {"status": "success", "condition": condition_met, "available": available}
 
     def execute_price_condition(self, node_data: dict) -> dict:
@@ -1357,9 +1353,7 @@ class NodeExecutor:
             field_value = float(data.get(field, 0) or 0)
 
         condition_met = self._compare(field_value, operator, threshold)
-        self.log(
-            f"Price check: {field}={field_value} {operator} {threshold} = {condition_met}"
-        )
+        self.log(f"Price check: {field}={field_value} {operator} {threshold} = {condition_met}")
         return {
             "status": "success",
             "condition": condition_met,
@@ -1374,12 +1368,18 @@ class NodeExecutor:
         >=, <=) used by the UI or word operators (gt, lt, eq, neq, gte, lte)
         used by some legacy node configs. Unknown operator → False."""
         ops = {
-            ">": left > right, "gt": left > right,
-            "<": left < right, "lt": left < right,
-            "==": left == right, "eq": left == right,
-            "!=": left != right, "neq": left != right,
-            ">=": left >= right, "gte": left >= right,
-            "<=": left <= right, "lte": left <= right,
+            ">": left > right,
+            "gt": left > right,
+            "<": left < right,
+            "lt": left < right,
+            "==": left == right,
+            "eq": left == right,
+            "!=": left != right,
+            "neq": left != right,
+            ">=": left >= right,
+            "gte": left >= right,
+            "<=": left <= right,
+            "lte": left <= right,
         }
         return ops.get(operator, False)
 
@@ -1587,7 +1587,7 @@ class NodeExecutor:
     def execute_subscribe_ltp(self, node_data: dict) -> dict:
         """Execute Subscribe LTP node - get real-time LTP via WebSocket
 
-        Connects to Tradeboard WebSocket server and subscribes to LTP updates.
+        Connects to TradeBoard WebSocket server and subscribes to LTP updates.
         Falls back to REST API if WebSocket fails or times out.
         """
         symbol = self.get_str(node_data, "symbol", "")
@@ -1675,7 +1675,7 @@ class NodeExecutor:
     def execute_subscribe_quote(self, node_data: dict) -> dict:
         """Execute Subscribe Quote node - get real-time quote via WebSocket
 
-        Connects to Tradeboard WebSocket and subscribes to quote updates (OHLC + volume).
+        Connects to TradeBoard WebSocket and subscribes to quote updates (OHLC + volume).
         Falls back to REST API if WebSocket fails or times out.
         """
         symbol = self.get_str(node_data, "symbol", "")
@@ -1786,7 +1786,7 @@ class NodeExecutor:
     def execute_subscribe_depth(self, node_data: dict) -> dict:
         """Execute Subscribe Depth node - get market depth via WebSocket
 
-        Connects to Tradeboard WebSocket and subscribes to depth updates (order book).
+        Connects to TradeBoard WebSocket and subscribes to depth updates (order book).
         Falls back to REST API if WebSocket fails or times out.
         """
         symbol = self.get_str(node_data, "symbol", "")

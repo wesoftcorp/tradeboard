@@ -1,8 +1,8 @@
-# 26 - Traffic Logs
+﻿# 26 - Traffic Logs
 
 ## Overview
 
-Tradeboard logs all HTTP traffic for monitoring, debugging, and security analysis. Traffic logs capture request/response metadata without sensitive data.
+TradeBoard logs all HTTP traffic for monitoring, debugging, and security analysis. Traffic logs capture request/response metadata without sensitive data.
 
 ## Architecture Diagram
 

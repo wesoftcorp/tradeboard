@@ -32,7 +32,7 @@ logger = get_logger(__name__)
 def migrate_leverage():
     """Create or recreate leverage_config as a single-row config table."""
 
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db/tradeboard.db")
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db/TradeBoard.db")
 
     # Adjust path for SQLite if relative (since we're in upgrade folder)
     if DATABASE_URL.startswith("sqlite:///") and not DATABASE_URL.startswith("sqlite:////"):
@@ -71,9 +71,7 @@ def migrate_leverage():
                     """
                 )
             )
-            conn.execute(
-                text("INSERT INTO leverage_config (id, leverage) VALUES (1, 0.0)")
-            )
+            conn.execute(text("INSERT INTO leverage_config (id, leverage) VALUES (1, 0.0)"))
             conn.commit()
             logger.info("Created table: leverage_config (single-row config)")
 
@@ -88,7 +86,7 @@ def migrate_leverage():
 def main():
     """Main function to run the migration"""
     logger.info("=" * 60)
-    logger.info("Tradeboard Leverage Configuration Migration")
+    logger.info("TradeBoard Leverage Configuration Migration")
     logger.info("=" * 60)
     logger.info("Creating leverage_config table for common crypto leverage setting")
     logger.info("-" * 60)

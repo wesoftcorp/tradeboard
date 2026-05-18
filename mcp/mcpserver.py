@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 
 import httpx
 from mcp.server.fastmcp import FastMCP
-from tradeboard import api
+from TradeBoard import api
 
 # Two boot paths share this module:
 #
@@ -16,14 +16,14 @@ from tradeboard import api
 # 2. HTTP / SSE — blueprints/mcp_http.py imports this module to access the
 #    `mcp` FastMCP instance (and every @mcp.tool decorated function), then
 #    calls init_for_http(api_key, host) once per process to wire the SDK
-#    client. The Flask app sets TRADEBOARD_MCP_HTTP_BOOT=1 *before* importing
+#    client. The Flask app sets TradeBoard_MCP_HTTP_BOOT=1 *before* importing
 #    so the argv check is bypassed.
 #
 # The branching is at module scope rather than inside a function so the
 # FastMCP `mcp = FastMCP(...)` instance and every `@mcp.tool` decorator
 # remain top-level (FastMCP relies on import-time registration).
 
-if os.environ.get("TRADEBOARD_MCP_HTTP_BOOT") == "1":
+if os.environ.get("TradeBoard_MCP_HTTP_BOOT") == "1":
     # HTTP transport — Flask sets the env var before import. The SDK
     # client is wired by init_for_http() right after import. Stdio
     # users never hit this branch.
@@ -42,7 +42,7 @@ else:
     api_key = sys.argv[1]
     host = sys.argv[2]
 
-    # Initialize Tradeboard client with provided arguments
+    # Initialize TradeBoard client with provided arguments
     client = api(api_key=api_key, host=host)
 
 
@@ -50,7 +50,7 @@ def init_for_http(api_key_value: str, host_value: str) -> None:
     """Wire the SDK client when running under the HTTP transport.
 
     Called once from blueprints/mcp_http.py after the Flask app has
-    determined the admin's API key and the local Tradeboard loopback URL.
+    determined the admin's API key and the local TradeBoard loopback URL.
     Idempotent — safe to call repeatedly with the same values; later
     calls overwrite the global so a restarted broker session can rotate
     the underlying SDK client without restarting Gunicorn.
@@ -60,49 +60,117 @@ def init_for_http(api_key_value: str, host_value: str) -> None:
     host = host_value
     client = api(api_key=api_key_value, host=host_value)
 
+
 # Default strategy name for all order-related calls originating from the MCP server.
-# Surfaced in Tradeboard logs and analyzer views so MCP-driven trades are identifiable.
+# Surfaced in TradeBoard logs and analyzer views so MCP-driven trades are identifiable.
 MCP_STRATEGY = "python mcp"
 
-# Tradeboard standardized index symbols (NSE_INDEX / BSE_INDEX) — rolled out across all brokers.
-# Source: https://docs.wesoftcorp.com/symbol-format
+# TradeBoard standardized index symbols (NSE_INDEX / BSE_INDEX) — rolled out across all brokers.
+# Source: https://docs.TradeBoard.in/symbol-format
 NSE_INDEX_SYMBOLS = [
-    "NIFTY", "NIFTYNXT50", "FINNIFTY", "BANKNIFTY", "MIDCPNIFTY", "INDIAVIX",
+    "NIFTY",
+    "NIFTYNXT50",
+    "FINNIFTY",
+    "BANKNIFTY",
+    "MIDCPNIFTY",
+    "INDIAVIX",
     "HANGSENGBEESNAV",
-    "NIFTY100", "NIFTY200", "NIFTY500",
-    "NIFTYALPHA50", "NIFTYAUTO", "NIFTYCOMMODITIES", "NIFTYCONSUMPTION",
-    "NIFTYCPSE", "NIFTYDIVOPPS50", "NIFTYENERGY", "NIFTYFMCG",
+    "NIFTY100",
+    "NIFTY200",
+    "NIFTY500",
+    "NIFTYALPHA50",
+    "NIFTYAUTO",
+    "NIFTYCOMMODITIES",
+    "NIFTYCONSUMPTION",
+    "NIFTYCPSE",
+    "NIFTYDIVOPPS50",
+    "NIFTYENERGY",
+    "NIFTYFMCG",
     "NIFTYGROWSECT15",
-    "NIFTYGS10YR", "NIFTYGS10YRCLN", "NIFTYGS1115YR", "NIFTYGS15YRPLUS",
-    "NIFTYGS48YR", "NIFTYGS813YR", "NIFTYGSCOMPSITE",
-    "NIFTYINFRA", "NIFTYIT", "NIFTYMEDIA", "NIFTYMETAL",
-    "NIFTYMIDLIQ15", "NIFTYMIDCAP100", "NIFTYMIDCAP150", "NIFTYMIDCAP50",
-    "NIFTYMIDSML400", "NIFTYMNC", "NIFTYPHARMA", "NIFTYPSE", "NIFTYPSUBANK",
-    "NIFTYPVTBANK", "NIFTYREALTY", "NIFTYSERVSECTOR",
-    "NIFTYSMLCAP100", "NIFTYSMLCAP250", "NIFTYSMLCAP50",
-    "NIFTY100EQLWGT", "NIFTY100LIQ15", "NIFTY100LOWVOL30",
-    "NIFTY100QUALTY30", "NIFTY200QUALTY30",
-    "NIFTY50DIVPOINT", "NIFTY50EQLWGT",
-    "NIFTY50PR1XINV", "NIFTY50PR2XLEV", "NIFTY50TR1XINV", "NIFTY50TR2XLEV",
+    "NIFTYGS10YR",
+    "NIFTYGS10YRCLN",
+    "NIFTYGS1115YR",
+    "NIFTYGS15YRPLUS",
+    "NIFTYGS48YR",
+    "NIFTYGS813YR",
+    "NIFTYGSCOMPSITE",
+    "NIFTYINFRA",
+    "NIFTYIT",
+    "NIFTYMEDIA",
+    "NIFTYMETAL",
+    "NIFTYMIDLIQ15",
+    "NIFTYMIDCAP100",
+    "NIFTYMIDCAP150",
+    "NIFTYMIDCAP50",
+    "NIFTYMIDSML400",
+    "NIFTYMNC",
+    "NIFTYPHARMA",
+    "NIFTYPSE",
+    "NIFTYPSUBANK",
+    "NIFTYPVTBANK",
+    "NIFTYREALTY",
+    "NIFTYSERVSECTOR",
+    "NIFTYSMLCAP100",
+    "NIFTYSMLCAP250",
+    "NIFTYSMLCAP50",
+    "NIFTY100EQLWGT",
+    "NIFTY100LIQ15",
+    "NIFTY100LOWVOL30",
+    "NIFTY100QUALTY30",
+    "NIFTY200QUALTY30",
+    "NIFTY50DIVPOINT",
+    "NIFTY50EQLWGT",
+    "NIFTY50PR1XINV",
+    "NIFTY50PR2XLEV",
+    "NIFTY50TR1XINV",
+    "NIFTY50TR2XLEV",
     "NIFTY50VALUE20",
 ]
 BSE_INDEX_SYMBOLS = [
-    "SENSEX", "BANKEX", "SENSEX50",
-    "BSE100", "BSE150MIDCAPINDEX", "BSE200", "BSE250LARGEMIDCAPINDEX",
-    "BSE400MIDSMALLCAPINDEX", "BSE500",
-    "BSEAUTO", "BSECAPITALGOODS", "BSECARBONEX", "BSECONSUMERDURABLES",
-    "BSECPSE", "BSEDOLLEX100", "BSEDOLLEX200", "BSEDOLLEX30",
-    "BSEENERGY", "BSEFASTMOVINGCONSUMERGOODS", "BSEFINANCIALSERVICES",
-    "BSEGREENEX", "BSEHEALTHCARE", "BSEINDIAINFRASTRUCTUREINDEX",
-    "BSEINDUSTRIALS", "BSEINFORMATIONTECHNOLOGY", "BSEIPO",
-    "BSELARGECAP", "BSEMETAL", "BSEMIDCAP", "BSEMIDCAPSELECTINDEX",
-    "BSEOIL&GAS", "BSEPOWER", "BSEPSU", "BSEREALTY", "BSESENSEXNEXT50",
-    "BSESMALLCAP", "BSESMALLCAPSELECTINDEX", "BSESMEIPO",
-    "BSETECK", "BSETELECOM",
+    "SENSEX",
+    "BANKEX",
+    "SENSEX50",
+    "BSE100",
+    "BSE150MIDCAPINDEX",
+    "BSE200",
+    "BSE250LARGEMIDCAPINDEX",
+    "BSE400MIDSMALLCAPINDEX",
+    "BSE500",
+    "BSEAUTO",
+    "BSECAPITALGOODS",
+    "BSECARBONEX",
+    "BSECONSUMERDURABLES",
+    "BSECPSE",
+    "BSEDOLLEX100",
+    "BSEDOLLEX200",
+    "BSEDOLLEX30",
+    "BSEENERGY",
+    "BSEFASTMOVINGCONSUMERGOODS",
+    "BSEFINANCIALSERVICES",
+    "BSEGREENEX",
+    "BSEHEALTHCARE",
+    "BSEINDIAINFRASTRUCTUREINDEX",
+    "BSEINDUSTRIALS",
+    "BSEINFORMATIONTECHNOLOGY",
+    "BSEIPO",
+    "BSELARGECAP",
+    "BSEMETAL",
+    "BSEMIDCAP",
+    "BSEMIDCAPSELECTINDEX",
+    "BSEOIL&GAS",
+    "BSEPOWER",
+    "BSEPSU",
+    "BSEREALTY",
+    "BSESENSEXNEXT50",
+    "BSESMALLCAP",
+    "BSESMALLCAPSELECTINDEX",
+    "BSESMEIPO",
+    "BSETECK",
+    "BSETELECOM",
 ]
 
 # Create MCP server
-mcp = FastMCP("tradeboard")
+mcp = FastMCP("TradeBoard")
 
 
 def _to_json(payload: Any) -> str:
@@ -115,6 +183,7 @@ def _to_json(payload: Any) -> str:
             default=str,
         )
     return json.dumps(payload, indent=2, default=str)
+
 
 # ORDER MANAGEMENT TOOLS
 
@@ -825,7 +894,7 @@ def get_historical_data(
         start_date: Start date (YYYY-MM-DD)
         end_date: End date (YYYY-MM-DD)
         source: 'api' (default) fetches from broker API. 'db' fetches from the local
-                Tradeboard Historify DuckDB store (1m/D stored, other intervals computed via SQL).
+                TradeBoard Historify DuckDB store (1m/D stored, other intervals computed via SQL).
 
     Returns:
         JSON with count and data (list of {timestamp, open, high, low, close, volume}).
@@ -910,10 +979,10 @@ def get_symbol_info(symbol: str, exchange: str = "NSE", instrument_type: str = N
 @mcp.tool()
 def get_index_symbols(exchange: str = "NSE") -> str:
     """
-    Get the Tradeboard-standardized index symbols for NSE or BSE.
+    Get the TradeBoard-standardized index symbols for NSE or BSE.
 
     These are the common index names rolled out across all supported brokers via the
-    Tradeboard symbol standardization. Use exchange code 'NSE_INDEX' / 'BSE_INDEX' when
+    TradeBoard symbol standardization. Use exchange code 'NSE_INDEX' / 'BSE_INDEX' when
     placing orders or fetching quotes for these symbols.
 
     Args:
@@ -1087,12 +1156,12 @@ def get_option_greeks(
 
 
 @mcp.tool()
-def get_tradeboard_version() -> str:
-    """Get the Tradeboard library version."""
+def get_TradeBoard_version() -> str:
+    """Get the TradeBoard library version."""
     try:
-        import tradeboard
+        import TradeBoard
 
-        return f"Tradeboard version: {tradeboard.__version__}"
+        return f"TradeBoard version: {TradeBoard.__version__}"
     except Exception as e:
         return f"Error getting version: {str(e)}"
 
@@ -1134,7 +1203,7 @@ def send_telegram_alert(username: str, message: str, priority: int = 5) -> str:
     Send a Telegram alert notification.
 
     Args:
-        username: Tradeboard login ID/username
+        username: TradeBoard login ID/username
         message: Alert message to send
         priority: Notification priority (1-10, default 5). Higher values may be used
                   by the bot for emphasis/sorting depending on configuration.
@@ -1206,7 +1275,7 @@ def check_holiday(date: str, exchange: str | None = None) -> str:
     """
     Check if a specific date is a market holiday for an exchange.
 
-    This calls the /api/v1/checkholiday endpoint directly (not yet in the tradeboard SDK).
+    This calls the /api/v1/checkholiday endpoint directly (not yet in the TradeBoard SDK).
     Use this for fast pre-trade "is the market open?" checks.
 
     Args:

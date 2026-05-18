@@ -610,7 +610,7 @@ def process_aliceblue_indices_csv(path):
             "NIFTYFINSERVICE": "FINNIFTY",
             "NIFTYBANK": "BANKNIFTY",
             "NIFTYMIDCAPSELECT": "MIDCPNIFTY",
-            # BSE Index Symbols (AliceBlue -> Tradeboard)
+            # BSE Index Symbols (AliceBlue -> TradeBoard)
             "SNSX50": "SENSEX50",
             "SNXT50": "BSESENSEXNEXT50",
             "MID150": "BSE150MIDCAPINDEX",

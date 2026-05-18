@@ -1,8 +1,8 @@
-# 25 - Latency Monitor
+﻿# 25 - Latency Monitor
 
 ## Introduction
 
-The Latency Monitor tracks the time taken for various operations in Tradeboard, from receiving signals to order execution. Understanding and optimizing latency is critical for algorithmic trading, especially for time-sensitive strategies.
+The Latency Monitor tracks the time taken for various operations in TradeBoard, from receiving signals to order execution. Understanding and optimizing latency is critical for algorithmic trading, especially for time-sensitive strategies.
 
 ## What is Latency?
 
@@ -10,7 +10,7 @@ The Latency Monitor tracks the time taken for various operations in Tradeboard, 
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                        Order Execution Latency                              │
 │                                                                              │
-│  Signal Source → Tradeboard Processing → Broker API → Exchange → Execution   │
+│  Signal Source → TradeBoard Processing → Broker API → Exchange → Execution   │
 │       │               │                    │            │           │       │
 │       │←── Network ──▶│←── Processing ────▶│←─ Broker ─▶│←─ Exch ──▶│       │
 │       │    Latency    │     Latency        │   Latency  │  Latency  │       │
@@ -26,9 +26,9 @@ The Latency Monitor tracks the time taken for various operations in Tradeboard, 
 
 | Component | Description | Typical Range |
 |-----------|-------------|---------------|
-| Network Latency | Signal source to Tradeboard | 50-500ms |
-| Processing Latency | Tradeboard internal processing | 1-10ms |
-| API Latency | Tradeboard to Broker API | 50-200ms |
+| Network Latency | Signal source to TradeBoard | 50-500ms |
+| Processing Latency | TradeBoard internal processing | 1-10ms |
+| API Latency | TradeBoard to Broker API | 50-200ms |
 | Broker Latency | Broker to Exchange | 10-50ms |
 | Exchange Latency | Order matching | 1-5ms |
 
@@ -234,10 +234,10 @@ Recommendation:
 
 ```
 Current Setup:
-Signal Source → Internet → Tradeboard
+Signal Source → Internet → TradeBoard
 
 Optimized Setup:
-Signal Source → Same Network → Tradeboard (Co-located)
+Signal Source → Same Network → TradeBoard (Co-located)
 
 Improvement: 50-100ms reduction
 ```

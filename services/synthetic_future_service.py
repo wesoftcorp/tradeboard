@@ -31,7 +31,7 @@ def calculate_synthetic_future(
         underlying: Underlying symbol (e.g., "NIFTY", "BANKNIFTY")
         exchange: Exchange (e.g., "NSE_INDEX", "NSE")
         expiry_date: Expiry date in DDMMMYY format (e.g., "28OCT25")
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
 
     Returns:
         Tuple of (success, response_data, status_code)

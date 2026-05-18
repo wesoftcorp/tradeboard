@@ -1,4 +1,4 @@
-# SplitOrder
+﻿# SplitOrder
 
 Split a large order into multiple smaller orders to reduce market impact or comply with freeze quantity limits.
 
@@ -96,7 +96,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/splitorder \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | strategy | Strategy identifier | Optional | - |
 | symbol | Trading symbol | Mandatory | - |
 | exchange | Exchange code: NSE, BSE, NFO, BFO, CDS, BCD, MCX | Mandatory | - |

@@ -32,7 +32,7 @@ def get_margin_data(auth_token):
         "Authorization": f"Bearer {auth_token}",
         "Content-Type": "application/json",
         "Accept": "application/json",
-        "x-device-id": "OPENALGO",
+        "x-device-id": "TradeBoard",
     }
 
     logger.debug(f"Nubra funds request to: {base_url}/portfolio/user_funds_and_margin")
@@ -49,10 +49,10 @@ def get_margin_data(auth_token):
     if margin_data.get("port_funds_and_margin"):
         data = margin_data["port_funds_and_margin"]
 
-        # Map Nubra fields to Tradeboard standard format
+        # Map Nubra fields to TradeBoard standard format
         try:
             # Nubra API returns values in paise, convert to rupees by dividing by 100
-            
+
             # Available cash - using net_margin_available as available funds
             availablecash = float(data.get("net_margin_available", 0) or 0) / 100
 

@@ -6,9 +6,9 @@ from typing import Dict, Optional, Set
 
 
 class DhanExchangeMapper:
-    """Maps between Tradeboard exchange names and Dhan exchange codes"""
+    """Maps between TradeBoard exchange names and Dhan exchange codes"""
 
-    # Tradeboard to Dhan exchange mapping
+    # TradeBoard to Dhan exchange mapping
     EXCHANGE_MAP = {
         "NSE": "NSE_EQ",
         "BSE": "BSE_EQ",
@@ -21,7 +21,7 @@ class DhanExchangeMapper:
         "BSE_INDEX": "IDX_I",  # Added BSE Index
     }
 
-    # Dhan exchange segment codes (numeric) to Tradeboard exchange mapping
+    # Dhan exchange segment codes (numeric) to TradeBoard exchange mapping
     # Based on official Dhan documentation
     # Note: Both NSE_INDEX and BSE_INDEX use segment 0 (IDX_I), defaulting to NSE_INDEX
     SEGMENT_TO_EXCHANGE = {
@@ -36,22 +36,22 @@ class DhanExchangeMapper:
     }
 
     # Reverse mappings
-    DHAN_TO_OPENALGO = {v: k for k, v in EXCHANGE_MAP.items()}
+    DHAN_TO_TradeBoard = {v: k for k, v in EXCHANGE_MAP.items()}
     EXCHANGE_TO_SEGMENT = {v: k for k, v in SEGMENT_TO_EXCHANGE.items()}
 
     @classmethod
-    def get_dhan_exchange(cls, tradeboard_exchange: str) -> str | None:
-        """Convert Tradeboard exchange to Dhan exchange format"""
-        return cls.EXCHANGE_MAP.get(tradeboard_exchange)
+    def get_dhan_exchange(cls, TradeBoard_exchange: str) -> str | None:
+        """Convert TradeBoard exchange to Dhan exchange format"""
+        return cls.EXCHANGE_MAP.get(TradeBoard_exchange)
 
     @classmethod
-    def get_tradeboard_exchange(cls, dhan_exchange: str) -> str | None:
-        """Convert Dhan exchange to Tradeboard exchange format"""
-        return cls.DHAN_TO_OPENALGO.get(dhan_exchange)
+    def get_TradeBoard_exchange(cls, dhan_exchange: str) -> str | None:
+        """Convert Dhan exchange to TradeBoard exchange format"""
+        return cls.DHAN_TO_TradeBoard.get(dhan_exchange)
 
     @classmethod
     def get_exchange_from_segment(cls, segment_code: int) -> str | None:
-        """Convert Dhan exchange segment code to Tradeboard exchange"""
+        """Convert Dhan exchange segment code to TradeBoard exchange"""
         # Note: Both NSE_INDEX and BSE_INDEX use segment 0 (IDX_I)
         # This method returns NSE_INDEX by default for segment 0
         # Use context from symbol/token to differentiate if needed
@@ -59,7 +59,7 @@ class DhanExchangeMapper:
 
     @classmethod
     def get_segment_from_exchange(cls, exchange: str) -> int | None:
-        """Convert Tradeboard exchange to Dhan exchange segment code"""
+        """Convert TradeBoard exchange to Dhan exchange segment code"""
         # Special handling for BSE_INDEX - also maps to segment 0 like NSE_INDEX
         if exchange == "BSE_INDEX":
             return 0  # Same as NSE_INDEX (IDX_I)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Historify DuckDB Migration Script for Tradeboard
+Historify DuckDB Migration Script for TradeBoard
 
 This migration sets up the Historify database for historical market data storage:
 - Creates the DuckDB database file in /db directory

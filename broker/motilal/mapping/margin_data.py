@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Motilal Oswal Margin API - See Motilal_Oswal.md documentation
 # Note: Motilal Oswal does not provide a margin calculator API.
 
@@ -9,13 +9,13 @@ logger = get_logger(__name__)
 
 def transform_margin_positions(positions):
     """
-    Transform Tradeboard margin position format to Motilal Oswal margin format.
+    Transform TradeBoard margin position format to Motilal Oswal margin format.
 
     Note: Motilal Oswal does not provide a margin calculator API.
     This function is a placeholder for API consistency.
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
 
     Returns:
         Empty list (API not supported)

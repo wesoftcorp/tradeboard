@@ -1,8 +1,8 @@
-# 31 - Utils Functionalities
+﻿# 31 - Utils Functionalities
 
 ## Overview
 
-The utils directory contains shared utility functions used across the Tradeboard platform for authentication, logging, configuration, and common operations.
+The utils directory contains shared utility functions used across the TradeBoard platform for authentication, logging, configuration, and common operations.
 
 ## Utils Directory Structure
 

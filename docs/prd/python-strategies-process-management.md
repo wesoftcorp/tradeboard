@@ -1,4 +1,4 @@
-# Python Strategies Process Management
+﻿# Python Strategies Process Management
 
 Complete documentation for subprocess isolation, lifecycle management, and cross-platform support.
 
@@ -51,8 +51,8 @@ def start_strategy(strategy_id):
 
     # Prepare environment
     env = os.environ.copy()
-    env['TRADEBOARD_APIKEY'] = get_api_key()
-    env['TRADEBOARD_HOST'] = get_host_url()
+    env['TradeBoard_APIKEY'] = get_api_key()
+    env['TradeBoard_HOST'] = get_host_url()
     env['PYTHONUNBUFFERED'] = '1'  # Real-time output
 
     # Prepare log file
@@ -322,7 +322,7 @@ def setup_log_rotation(strategy_id):
 ## Directory Structure
 
 ```
-tradeboard/
+TradeBoard/
 ├── strategies/
 │   ├── scripts/                    # User-uploaded strategies
 │   │   ├── ema_crossover.py

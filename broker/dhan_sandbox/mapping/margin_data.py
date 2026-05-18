@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Dhan Sandbox Margin API https://dhanhq.co/docs/v2/funds/
 
 from broker.dhan_sandbox.mapping.transform_data import (
@@ -14,12 +14,12 @@ logger = get_logger(__name__)
 
 def transform_margin_position(position, client_id):
     """
-    Transform a single Tradeboard margin position to Dhan Sandbox margin format.
+    Transform a single TradeBoard margin position to Dhan Sandbox margin format.
 
     Note: Dhan Sandbox margin calculator API accepts only one order at a time, not a batch.
 
     Args:
-        position: Position in Tradeboard format
+        position: Position in TradeBoard format
         client_id: Dhan client ID
 
     Returns:
@@ -66,9 +66,9 @@ def transform_margin_position(position, client_id):
 
 def map_product_type_for_margin(product):
     """
-    Maps Tradeboard product type to Dhan Sandbox product type for margin calculation.
+    Maps TradeBoard product type to Dhan Sandbox product type for margin calculation.
 
-    Tradeboard: CNC, NRML, MIS
+    TradeBoard: CNC, NRML, MIS
     Dhan Sandbox: CNC, MARGIN, INTRADAY, MTF, CO, BO
     """
     product_type_mapping = {
@@ -81,7 +81,7 @@ def map_product_type_for_margin(product):
 
 def parse_margin_response(response_data):
     """
-    Parse Dhan Sandbox margin response to Tradeboard standard format.
+    Parse Dhan Sandbox margin response to TradeBoard standard format.
 
     Args:
         response_data: Raw response from Dhan Sandbox API
@@ -102,7 +102,7 @@ def parse_margin_response(response_data):
         span_margin = response_data.get("spanMargin", 0)
         exposure_margin = response_data.get("exposureMargin", 0)
 
-        # Return standardized format with Tradeboard-compatible aliases.
+        # Return standardized format with TradeBoard-compatible aliases.
         return {
             "status": "success",
             "data": {
@@ -128,7 +128,7 @@ def parse_margin_response(response_data):
 
 def parse_multi_margin_response(response_data):
     """
-    Parse Dhan Sandbox /v2/margincalculator/multi response to Tradeboard standard format.
+    Parse Dhan Sandbox /v2/margincalculator/multi response to TradeBoard standard format.
 
     Response structure:
     {

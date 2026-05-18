@@ -1,4 +1,4 @@
-# Instruments
+﻿# Instruments
 
 Get the complete list of instruments/symbols available for trading. Can be filtered by exchange.
 
@@ -79,7 +79,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/instruments \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | exchange | Exchange filter: NSE, BSE, NFO, BFO, CDS, BCD, MCX | Optional | All exchanges |
 | format | Output format: "json" or "csv" | Optional | json |
 
@@ -95,10 +95,10 @@ curl -X POST http://127.0.0.1:5000/api/v1/instruments \
 
 | Field | Type | Description |
 |-------|------|-------------|
-| symbol | string | Tradeboard standard symbol |
+| symbol | string | TradeBoard standard symbol |
 | brsymbol | string | Broker-specific symbol |
 | name | string | Full company/instrument name |
-| exchange | string | Tradeboard exchange code |
+| exchange | string | TradeBoard exchange code |
 | brexchange | string | Broker-specific exchange code |
 | token | string | Broker-specific instrument token |
 | expiry | string | Expiry date (null for equity) |

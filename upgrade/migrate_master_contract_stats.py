@@ -36,7 +36,7 @@ def migrate_master_contract_status_table():
     """Add smart download columns to master_contract_status table if they don't exist"""
 
     # Get database URL from environment
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db/tradeboard.db")
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db/TradeBoard.db")
 
     # Adjust path for SQLite if relative (since we're in upgrade folder)
     if DATABASE_URL.startswith("sqlite:///") and not DATABASE_URL.startswith("sqlite:////"):
@@ -52,7 +52,9 @@ def migrate_master_contract_status_table():
 
         # Check if table exists
         if "master_contract_status" not in inspector.get_table_names():
-            logger.info("master_contract_status table doesn't exist. It will be created on first run.")
+            logger.info(
+                "master_contract_status table doesn't exist. It will be created on first run."
+            )
             return True
 
         # Get existing columns
@@ -108,7 +110,7 @@ def migrate_master_contract_status_table():
 def main():
     """Main function to run the migration"""
     logger.info("=" * 60)
-    logger.info("Tradeboard Master Contract Smart Download Migration")
+    logger.info("TradeBoard Master Contract Smart Download Migration")
     logger.info("=" * 60)
     logger.info("This script adds columns for smart master contract download tracking")
     logger.info("-" * 60)

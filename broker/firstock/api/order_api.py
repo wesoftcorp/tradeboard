@@ -1,5 +1,7 @@
 import json
 import os
+import threading
+import time
 
 from broker.firstock.mapping.transform_data import (
     map_product_type,
@@ -11,8 +13,6 @@ from database.auth_db import get_auth_token
 from database.token_db import get_br_symbol, get_symbol, get_token
 from utils.httpx_client import get_httpx_client
 from utils.logging import get_logger
-import threading
-import time
 
 # Initialize logger
 logger = get_logger(__name__)
@@ -135,14 +135,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -182,15 +182,15 @@ def get_open_position(tradingsymbol, exchange, producttype, auth):
     Get open position for a specific symbol
 
     Args:
-        tradingsymbol (str): Trading symbol in Tradeboard format
+        tradingsymbol (str): Trading symbol in TradeBoard format
         exchange (str): Exchange (NSE, BSE, etc.)
-        producttype (str): Product type in Tradeboard format (CNC, MIS, NRML)
+        producttype (str): Product type in TradeBoard format (CNC, MIS, NRML)
         auth (str): Authentication token (jKey)
 
     Returns:
         str: Net quantity as string, '0' if no position found
     """
-    # Convert Trading Symbol from Tradeboard Format to Broker Format
+    # Convert Trading Symbol from TradeBoard Format to Broker Format
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
     if "&" in tradingsymbol:
         tradingsymbol = tradingsymbol.replace("&", "%26")
@@ -403,7 +403,7 @@ def close_all_positions(current_api_key, auth):
             quantity = abs(int(net_qty))
             action = "SELL" if int(net_qty) > 0 else "BUY"
 
-            # Get Tradeboard symbol
+            # Get TradeBoard symbol
             symbol = get_symbol(position.get("token"), position.get("exchange"))
             if not symbol:
                 positions_failed += 1
@@ -538,7 +538,7 @@ def modify_order(data, auth):
     Modify an existing order
 
     Args:
-        data (dict): Order modification data in Tradeboard format
+        data (dict): Order modification data in TradeBoard format
         auth (str): Authentication token (jKey)
 
     Returns:
@@ -552,7 +552,7 @@ def modify_order(data, auth):
     api_key = api_key[:-4]  # Remove last 4 characters
 
     # Get token. Do NOT mutate data["symbol"] to the broker symbol — MPP
-    # inside transform_modify_order_data needs the Tradeboard symbol for
+    # inside transform_modify_order_data needs the TradeBoard symbol for
     # get_quotes / get_instrument_type_from_symbol / get_symbol_info
     # lookups. transform_modify_order_data computes the broker symbol
     # itself via get_br_symbol, matching the transform_data pattern.
@@ -637,7 +637,7 @@ def placeorder(data, auth):
     Place an order through Firstock API
 
     Parameters:
-        data (dict): Order data in Tradeboard format
+        data (dict): Order data in TradeBoard format
         auth (str): Authentication token (jKey)
 
     Returns:

@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Shoonya GetBasketMargin API
 
 from broker.shoonya.mapping.transform_data import map_order_type, map_product_type

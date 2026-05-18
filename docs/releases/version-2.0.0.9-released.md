@@ -1,4 +1,4 @@
-# Version 2.0.0.9 Released
+﻿# Version 2.0.0.9 Released
 
 **Date: 1st May 2026**
 
@@ -47,7 +47,7 @@ Fixes shipped:
   sudo chown 1000:1000 .env
   sudo chmod 600 .env
   ```
-  A second prominent banner block — `[Tradeboard] DO NOT regenerate API_KEY_PEPPER` — explains why and points to the rotate_pepper.py migration. PEPPER rotation is only safe on installs with no users; on any other install, leave it alone and let the auto-rotation's silent fast path take over once `APP_KEY` is no longer compromised.
+  A second prominent banner block — `[TradeBoard] DO NOT regenerate API_KEY_PEPPER` — explains why and points to the rotate_pepper.py migration. PEPPER rotation is only safe on installs with no users; on any other install, leave it alone and let the auto-rotation's silent fast path take over once `APP_KEY` is no longer compromised.
 
 The `_generate_keys_on_first_run` decision matrix (already documented in `utils/env_check.py:332-345`) is unchanged. v2.0.0.9 only tightens the *user-facing manual-rotation guidance* to mirror the same gating.
 
@@ -76,9 +76,9 @@ After this, `_generate_keys_on_first_run` takes the silent fast path for `APP_KE
 **Links**
 
 * **Repository**: <https://github.com/wesoftcorp/tradeboard>
-* **Documentation**: <https://docs.wesoftcorp.com>
-* **Discord**: <https://www.wesoftcorp.com/discord>
-* **YouTube**: <https://www.youtube.com/@tradeboard>
+* **Documentation**: <https://docs.TradeBoard.in>
+* **Discord**: <https://www.TradeBoard.in/discord>
+* **YouTube**: <https://www.youtube.com/@TradeBoard>
 * **Issue tracker**: <https://github.com/wesoftcorp/tradeboard/issues>
 
 ***
@@ -93,7 +93,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.wesoftcorp.com/change-log/release/version-2.0.0.9-released.md?ask=<question>
+GET https://docs.TradeBoard.in/change-log/release/version-2.0.0.9-released.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

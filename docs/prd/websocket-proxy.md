@@ -1,4 +1,4 @@
-# PRD: WebSocket Proxy - Real-Time Market Data
+﻿# PRD: WebSocket Proxy - Real-Time Market Data
 
 > **Status:** ✅ Stable - Fully implemented with connection pooling
 
@@ -23,7 +23,7 @@ Clients need:
 
 A proxy server that:
 - Connects to broker-specific WebSocket APIs
-- Normalizes data to Tradeboard format
+- Normalizes data to TradeBoard format
 - Uses ZeroMQ for high-performance internal messaging
 - Supports connection pooling for scale
 

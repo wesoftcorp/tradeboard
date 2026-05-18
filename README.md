@@ -1,36 +1,43 @@
-# Tradeboard - Open Source Algorithmic Trading Platform
+﻿# TradeBoard - Open Source Algorithmic Trading Platform
 
 <div align="center">
 
-[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/tradeboardHQ)](https://twitter.com/tradeboardHQ)
-[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCw7eVneIEyiTApy4RtxrJsQ)](https://www.youtube.com/@tradeboard)
+[![PyPI Downloads](https://static.pepy.tech/badge/TradeBoard)](https://pepy.tech/projects/TradeBoard)
+[![PyPI Downloads](https://static.pepy.tech/badge/TradeBoard/month)](https://pepy.tech/projects/TradeBoard)
+[![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/TradeBoardHQ)](https://twitter.com/TradeBoardHQ)
+[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCw7eVneIEyiTApy4RtxrJsQ)](https://www.youtube.com/@TradeBoard)
 [![Discord](https://img.shields.io/discord/1219847221055455263)](https://discord.com/invite/UPh7QPsNhP)
 
 </div>
 
-## What is Tradeboard?
+## What is TradeBoard?
 
-Tradeboard is a free, open source, self-hosted **trading platform** — not just a broker bridge. Built on Python Flask + React 19, it gives traders a full-stack environment to **design, host, and execute strategies** across **30+ Indian brokers** through a single unified API. Whether you write Python, prefer drag-and-drop, or trade options exclusively, Tradeboard gives you a first-class workflow without tying you to any single broker or vendor.
+TradeBoard is a free, open source, self-hosted **trading platform** — not just a broker bridge. Built on Python Flask + React 19, it gives traders a full-stack environment to **design, host, and execute strategies** across **30+ Indian brokers** through a single unified API. Whether you write Python, prefer drag-and-drop, or trade options exclusively, TradeBoard gives you a first-class workflow without tying you to any single broker or vendor.
 
-Tradeboard is no longer just "an API layer in front of your broker." Today it is **four products in one self-hosted instance** — sharing one broker session, one WebSocket feed, and one database — covering the complete journey from idea → backtest → live trade.
+TradeBoard is no longer just "an API layer in front of your broker." Today it is **four products in one self-hosted instance** — sharing one broker session, one WebSocket feed, and one database — covering the complete journey from idea → backtest → live trade.
 
-## Four Ways to Trade with Tradeboard
+## Four Ways to Trade with TradeBoard
 
-| Surface                             | Route      | Who it's for                                                                                                                                                                                                                                                                                                |
-| ----------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Unified Broker API**              | `/api/v1/` | External platforms — TradingView, Amibroker, ChartInk, Excel, Google Sheets, Python, Java, Go, .NET, Node.js, MetaTrader, GoCharting, N8N. One API, 30+ brokers.                                                                                                                                            |
-| **Python Strategy Host**            | `/python`  | Traders who code — paste any Python script into the in-browser CodeMirror editor, schedule it on IST start/stop times, run multiple strategies in parallel with process isolation, watch real-time logs. No external server, no Docker, no cron.                                                            |
-| **Flow — No-Code Strategy Builder** | `/flow`    | Traders who don't code — drag-and-drop nodes for market data, indicators, conditions, order execution, and notifications. Webhook triggers for TradingView and external signals built in. JSON import/export for sharing strategies.                                                                        |
-| **Options Trading Suite**           | `/tools`   | Options traders — twelve built-in analytical tools (Strategy Builder with payoff diagrams & live Greeks, Option Chain, IV Smile, Max Pain, Vol Surface, GEX dashboard, OI Tracker, OI Profile, Straddle Chart, Straddle PnL simulator, Option Greeks history). Each one streams from your connected broker. |
+| Surface | Route | Who it's for |
+| --- | --- | --- |
+| **Unified Broker API** | `/api/v1/` | External platforms — TradingView, Amibroker, ChartInk, Excel, Google Sheets, Python, Java, Go, .NET, Node.js, MetaTrader, GoCharting, N8N. One API, 30+ brokers. |
+| **Python Strategy Host** | `/python` | Traders who code — paste any Python script into the in-browser CodeMirror editor, schedule it on IST start/stop times, run multiple strategies in parallel with process isolation, watch real-time logs. No external server, no Docker, no cron. |
+| **Flow — No-Code Strategy Builder** | `/flow` | Traders who don't code — drag-and-drop nodes for market data, indicators, conditions, order execution, and notifications. Webhook triggers for TradingView and external signals built in. JSON import/export for sharing strategies. |
+| **Options Trading Suite** | `/tools` | Options traders — twelve built-in analytical tools (Strategy Builder with payoff diagrams & live Greeks, Option Chain, IV Smile, Max Pain, Vol Surface, GEX dashboard, OI Tracker, OI Profile, Straddle Chart, Straddle PnL simulator, Option Greeks history). Each one streams from your connected broker. |
 
-Every surface above runs on the same Sandbox engine (₹1 Crore sandbox capital, exchange-aligned auto square-off) so you can sandbox-trade _any_ of these flows before going live. Real-time dashboards, PnL tracker, latency monitor, Telegram alerts, and the AI / MCP server work uniformly across all four.
+Every surface above runs on the same Sandbox engine (₹1 Crore sandbox capital, exchange-aligned auto square-off) so you can sandbox-trade *any* of these flows before going live. Real-time dashboards, PnL tracker, latency monitor, Telegram alerts, and the AI / MCP server work uniformly across all four.
+
+## Video Tutorial
+
+[![What is TradeBoard](https://img.youtube.com/vi/S5myMo9WUdQ/0.jpg)](https://www.youtube.com/watch?v=S5myMo9WUdQ)
 
 ## Quick Links
 
-- **Documentation**: [docs.wesoftcorp.com](https://docs.wesoftcorp.com)
-- **Installation Guide**: [Getting Started](https://docs.wesoftcorp.com/installation-guidelines/getting-started)
-- **Upgrade Guide**: [Upgrade Instructions](https://docs.wesoftcorp.com/installation-guidelines/getting-started/upgrade)
-- **Why Tradeboard**: [Why Build with Tradeboard](https://docs.wesoftcorp.com/why-to-build-with-tradeboard)
+- **Documentation**: [docs.TradeBoard.in](https://docs.TradeBoard.in)
+- **Installation Guide**: [Getting Started](https://docs.TradeBoard.in/installation-guidelines/getting-started)
+- **Upgrade Guide**: [Upgrade Instructions](https://docs.TradeBoard.in/installation-guidelines/getting-started/upgrade)
+- **Why TradeBoard**: [Why Build with TradeBoard](https://docs.TradeBoard.in/why-to-build-with-TradeBoard)
+
 
 ## Python Compatibility
 
@@ -79,16 +86,13 @@ All brokers share a unified API interface, making it easy to switch between brok
 ## Core Features
 
 ### Unified REST API Layer (`/api/v1/`)
-
 A single, standardized API across all brokers with 30+ endpoints:
-
 - **Order Management**: Place, modify, cancel orders, basket orders, smart orders with position sizing
 - **Portfolio**: Get positions, holdings, order book, trade book, funds
 - **Market Data**: Real-time quotes, historical data, market depth (Level 5), symbol search
 - **Advanced**: Option Greeks calculator, margin calculator, synthetic futures, auto-split orders
 
 ### Real-Time WebSocket Streaming
-
 - Unified WebSocket proxy server for all brokers (port 8765)
 - Common WebSocket implementation using ZMQ for normalized data across brokers
 - Subscribe to LTP, Quote, or Market Depth for any symbol
@@ -96,9 +100,7 @@ A single, standardized API across all brokers with 30+ endpoints:
 - Automatic reconnection and failover handling
 
 ### Flow Visual Strategy Builder (`/flow`)
-
 Build trading strategies visually without writing code:
-
 - **Node-based editor** powered by xyflow/React Flow
 - **Pre-built nodes**: Market data, indicators, conditions, order execution, notifications
 - **Real-time execution** with live market data
@@ -108,30 +110,27 @@ Build trading strategies visually without writing code:
 - **Visual debugging** with execution flow highlighting
 
 ### Options & Strategy Analytics Tools (`/tools`)
-
 A complete suite of twelve built-in analytical tools for options trading and market analysis — no external subscriptions required. Accessible from the **Tools** page in the sidebar:
 
-| Tool                   | Route                        | What it does                                                                                                                                              |
-| ---------------------- | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Strategy Builder**   | `/strategybuilder`           | Build multi-leg option strategies with live Greeks, payoff diagrams, what-if simulators, Strategy Chart, Multi Strike OI tabs, and basket order execution |
-| **Strategy Portfolio** | `/strategybuilder/portfolio` | Saved strategies across MyTrades and Simulation watchlists                                                                                                |
-| **Option Chain**       | `/optionchain`               | Real-time option chain with live Greeks, OI data, and quick order placement                                                                               |
-| **Option Greeks**      | `/ivchart`                   | Historical IV, Delta, Theta, Vega, and Gamma charts for ATM options                                                                                       |
-| **OI Tracker**         | `/oitracker`                 | Open Interest analysis with CE/PE OI bars, PCR overlay, and ATM strike marker                                                                             |
-| **Max Pain**           | `/maxpain`                   | Max Pain strike calculation with visual pain distribution across strikes                                                                                  |
-| **Straddle Chart**     | `/straddle`                  | Dynamic ATM Straddle chart with rolling strike, Spot, and Synthetic Futures overlay                                                                       |
-| **Straddle PnL**       | `/straddlepnl`               | Simulated intraday ATM straddle P&L with automated N-point adjustments and trade log                                                                      |
-| **Vol Surface**        | `/volsurface`                | 3D Implied Volatility surface across strikes and expiries using live option chain data                                                                    |
-| **GEX Dashboard**      | `/gex`                       | Gamma Exposure analysis with OI Walls, Net GEX per strike, and top gamma strikes                                                                          |
-| **IV Smile**           | `/ivsmile`                   | Implied Volatility smile with Call/Put IV curves, ATM IV, and skew analysis                                                                               |
-| **OI Profile**         | `/oiprofile`                 | Futures candlestick with OI butterfly and daily OI change across strikes                                                                                  |
+| Tool | Route | What it does |
+|------|-------|--------------|
+| **Strategy Builder** | `/strategybuilder` | Build multi-leg option strategies with live Greeks, payoff diagrams, what-if simulators, Strategy Chart, Multi Strike OI tabs, and basket order execution |
+| **Strategy Portfolio** | `/strategybuilder/portfolio` | Saved strategies across MyTrades and Simulation watchlists |
+| **Option Chain** | `/optionchain` | Real-time option chain with live Greeks, OI data, and quick order placement |
+| **Option Greeks** | `/ivchart` | Historical IV, Delta, Theta, Vega, and Gamma charts for ATM options |
+| **OI Tracker** | `/oitracker` | Open Interest analysis with CE/PE OI bars, PCR overlay, and ATM strike marker |
+| **Max Pain** | `/maxpain` | Max Pain strike calculation with visual pain distribution across strikes |
+| **Straddle Chart** | `/straddle` | Dynamic ATM Straddle chart with rolling strike, Spot, and Synthetic Futures overlay |
+| **Straddle PnL** | `/straddlepnl` | Simulated intraday ATM straddle P&L with automated N-point adjustments and trade log |
+| **Vol Surface** | `/volsurface` | 3D Implied Volatility surface across strikes and expiries using live option chain data |
+| **GEX Dashboard** | `/gex` | Gamma Exposure analysis with OI Walls, Net GEX per strike, and top gamma strikes |
+| **IV Smile** | `/ivsmile` | Implied Volatility smile with Call/Put IV curves, ATM IV, and skew analysis |
+| **OI Profile** | `/oiprofile` | Futures candlestick with OI butterfly and daily OI change across strikes |
 
 All tools stream live from your connected broker via the unified WebSocket feed and work identically across every supported broker.
 
 ### API Analyzer Mode
-
 Complete testing environment with ₹1 Crore sandbox capital:
-
 - Test strategies with real market data without risking money
 - Pre-deployment testing for strategy validation
 - Supports all order types (Market, Limit, SL, SL-M)
@@ -139,23 +138,19 @@ Complete testing environment with ₹1 Crore sandbox capital:
 - Auto square-off at exchange timings
 - Separate database for complete isolation
 
-[API Analyzer Documentation](https://docs.wesoftcorp.com/new-features/api-analyzer)
+[API Analyzer Documentation](https://docs.TradeBoard.in/new-features/api-analyzer)
 
 ### Action Center
-
 Order approval workflow for manual control:
-
 - **Auto Mode**: Immediate order execution (for personal trading)
 - **Semi-Auto Mode**: Manual approval required before broker execution
 - Complete audit trail with IST timestamps
 - Approve individual orders or bulk approve all
 
-[Action Center Documentation](https://docs.wesoftcorp.com/new-features/action-center)
+[Action Center Documentation](https://docs.TradeBoard.in/new-features/action-center)
 
 ### Python Strategy Host (`/python`)
-
-Host and run your Python strategies directly inside Tradeboard — no separate VM, no cron, no Docker:
-
+Host and run your Python strategies directly inside TradeBoard — no separate VM, no cron, no Docker:
 - Built-in code editor powered by **CodeMirror** with Python syntax highlighting and themes
 - Run multiple strategies in parallel with **full process isolation**
 - Automated **IST-based scheduling** with start/stop times and per-day-of-week control
@@ -164,27 +159,21 @@ Host and run your Python strategies directly inside Tradeboard — no separate V
 - Built-in `Python Strategy Guide` page walks first-time users from an empty editor to a scheduled, running strategy
 
 ### ChartInk Integration
-
 Direct webhook integration for scanner alerts:
-
 - Supports BUY, SELL, SHORT, COVER actions
 - Intraday with auto square-off and positional strategies
 - Bulk symbol configuration via CSV
 - Real-time strategy monitoring
 
 ### AI-Powered Trading (MCP Server)
-
 Connect AI assistants for natural language trading:
-
 - Compatible with Claude Desktop, Cursor, Windsurf, ChatGPT
 - Execute trades using natural language commands
 - Full trading capabilities: orders, positions, market data
-- Local and secure integration with your Tradeboard instance
+- Local and secure integration with your TradeBoard instance
 
 ### Telegram Bot Integration
-
 Real-time notifications and command execution:
-
 - Automatic order and trade alerts delivered to Telegram
 - Get orderbook, positions, holdings, funds on demand
 - Generate intraday and daily charts
@@ -193,19 +182,17 @@ Real-time notifications and command execution:
 - Secure API key encryption
 
 ### Advanced Monitoring Tools
-
 **Latency Monitor**: Track order execution performance and round-trip times across brokers
 
 **Traffic Monitor**: API usage analytics, error tracking, and endpoint statistics
 
 **PnL Tracker**: Real-time profit/loss with interactive charts powered by TradingView Lightweight Charts
 
-[PnL Tracker Documentation](https://docs.wesoftcorp.com/new-features/pnl-tracker)
+[PnL Tracker Documentation](https://docs.TradeBoard.in/new-features/pnl-tracker)
 
-[Traffic & Latency Monitor Documentation](https://docs.wesoftcorp.com/new-features/traffic-latency-monitor)
+[Traffic & Latency Monitor Documentation](https://docs.TradeBoard.in/new-features/traffic-latency-monitor)
 
 ### Enterprise-Grade Security
-
 **Password Security**: Argon2 hashing (Password Hashing Competition winner)
 
 **Token Encryption**: Fernet symmetric encryption with PBKDF2 key derivation
@@ -223,7 +210,6 @@ Real-time notifications and command execution:
 **Privacy First**: Zero data collection policy - your data stays on your server
 
 ### Modern React Frontend
-
 - **React 19** with TypeScript for type-safe, maintainable code
 - **shadcn/ui** components with Tailwind CSS 4.0 for beautiful, accessible UI
 - **TanStack Query** for efficient server state management and caching
@@ -256,7 +242,6 @@ Receive your strategy alerts directly to **Telegram** for all platforms.
 ## Technology Stack
 
 ### Backend
-
 - **Flask 3.0** - Python web framework
 - **SQLAlchemy 2.0** - Database ORM
 - **Flask-SocketIO** - Real-time WebSocket communication
@@ -265,7 +250,6 @@ Receive your strategy alerts directly to **Telegram** for all platforms.
 - **Cryptography** - Fernet encryption for tokens
 
 ### Frontend
-
 - **React 19** - UI library
 - **TypeScript** - Type-safe JavaScript
 - **Vite 7** - Fast build tool
@@ -275,41 +259,51 @@ Receive your strategy alerts directly to **Telegram** for all platforms.
 - **Zustand** - Client state management
 
 ### Data Visualization & Editors
-
 - **TradingView Lightweight Charts** - Financial charts
 - **CodeMirror** - Code editor for strategies
 - **xyflow/React Flow** - Visual Flow builder
 - **Lucide React** - Icon library
 
 ### Testing & Quality
-
 - **Vitest** - Unit testing
 - **Playwright** - E2E testing
 - **Biome** - Linting and formatting
 - **axe-core** - Accessibility testing
 
 ### Databases
-
 - **SQLite** - 4 separate databases (main, logs, latency, sandbox)
 - **DuckDB** - Historical market data (Historify)
 
 ## Official SDKs
 
-Tradeboard provides officially supported client libraries for application development and system-level integrations:
+TradeBoard provides officially supported client libraries for application development and system-level integrations:
 
-| Language / Platform | Repository                                                                           |
-| ------------------- | ------------------------------------------------------------------------------------ |
-| Python              | [tradeboard-python-library](https://github.com/wesoftcorp/tradeboard-python-library) |
-| Node.js             | [tradeboard-node](https://github.com/wesoftcorp/tradeboard-node)                     |
-| Java                | [tradeboard-java](https://github.com/wesoftcorp/tradeboard-java)                     |
-| Rust                | [tradeboard-rust](https://github.com/wesoftcorp/tradeboard-rust)                     |
-| .NET / C#           | [tradeboard.NET](https://github.com/wesoftcorp/tradeboard.NET)                       |
-| Go                  | [tradeboard-go](https://github.com/wesoftcorp/tradeboard-go)                         |
+| Language / Platform | Repository |
+|---------------------|------------|
+| Python | [TradeBoard-python-library](https://github.com/wesoftcorp/tradeboard-python-library) |
+| Node.js | [TradeBoard-node](https://github.com/wesoftcorp/tradeboard-node) |
+| Java | [TradeBoard-java](https://github.com/wesoftcorp/tradeboard-java) |
+| Rust | [TradeBoard-rust](https://github.com/wesoftcorp/tradeboard-rust) |
+| .NET / C# | [TradeBoard.NET](https://github.com/wesoftcorp/tradeboard.NET) |
+| Go | [TradeBoard-go](https://github.com/wesoftcorp/tradeboard-go) |
+
+## TradeBoard FOSS Ecosystem
+
+TradeBoard is part of a larger open-source trading ecosystem:
+
+- **TradeBoard Core**: This repository (Python Flask + React)
+- **Historify**: Stock market data management platform
+- **Official SDKs**: Python, Node.js, Java, Rust, .NET, Go (see above)
+- **Excel Add-in**: Direct Excel integration
+- **MCP Server**: AI agents integration
+- **Chrome Plugin**: Browser-based tools
+- **Fast Scalper**: High-performance trading (Rust + Tauri)
+- **Web Portal**: Modern UI (NextJS + ShadcnUI)
+- **Documentation**: Comprehensive guides on [Gitbook](https://docs.TradeBoard.in/mini-foss-universe)
 
 ## Installation
 
 ### Minimum Requirements
-
 - **RAM**: 2GB (or 0.5GB + 2GB swap)
 - **Disk**: 1GB
 - **CPU**: 1 vCPU
@@ -318,12 +312,12 @@ Tradeboard provides officially supported client libraries for application develo
 
 ### Quick Start with UV
 
-Tradeboard uses the modern `uv` package manager for faster, more reliable installations:
+TradeBoard uses the modern `uv` package manager for faster, more reliable installations:
 
 ```bash
 # Clone the repository
 git clone https://github.com/wesoftcorp/tradeboard.git
-cd tradeboard
+cd TradeBoard
 
 # Install UV package manager
 pip install uv
@@ -338,14 +332,13 @@ uv run app.py
 
 The application will be available at `http://127.0.0.1:5000`
 
-For detailed installation instructions, deployment options (Docker, AWS, etc.), and configuration guides, visit [docs.wesoftcorp.com/installation-guidelines/getting-started](https://docs.wesoftcorp.com/installation-guidelines/getting-started)
+For detailed installation instructions, deployment options (Docker, AWS, etc.), and configuration guides, visit [docs.TradeBoard.in/installation-guidelines/getting-started](https://docs.TradeBoard.in/installation-guidelines/getting-started)
 
 ## API Documentation
 
 Complete API reference and examples:
-
-- **API Documentation**: [docs.wesoftcorp.com/api-documentation/v1](https://docs.wesoftcorp.com/api-documentation/v1)
-- **Symbol Format**: [docs.wesoftcorp.com/symbol-format](https://docs.wesoftcorp.com/symbol-format)
+- **API Documentation**: [docs.TradeBoard.in/api-documentation/v1](https://docs.TradeBoard.in/api-documentation/v1)
+- **Symbol Format**: [docs.TradeBoard.in/symbol-format](https://docs.TradeBoard.in/symbol-format)
 
 ## Key Benefits
 
@@ -363,8 +356,7 @@ Complete API reference and examples:
 
 ## Documentation
 
-Comprehensive documentation is available at [docs.wesoftcorp.com](https://docs.wesoftcorp.com):
-
+Comprehensive documentation is available at [docs.TradeBoard.in](https://docs.TradeBoard.in):
 - API Reference with examples
 - Broker-specific guides
 - Security best practices
@@ -384,61 +376,53 @@ We welcome contributions! To contribute:
 
 ## Community & Support
 
-- **Discord**: [Join our community](https://www.wesoftcorp.com/discord)
-- **Twitter/X**: [@tradeboardHQ](https://twitter.com/tradeboardHQ)
-- **YouTube**: [@tradeboard](https://www.youtube.com/@tradeboard)
+- **Discord**: [Join our community](https://www.TradeBoard.in/discord)
+- **Twitter/X**: [@TradeBoardHQ](https://twitter.com/TradeBoardHQ)
+- **YouTube**: [@TradeBoard](https://www.youtube.com/@TradeBoard)
 - **GitHub Issues**: [Report bugs or request features](https://github.com/wesoftcorp/tradeboard/issues)
 
 ## License
 
-Tradeboard is released under the **AGPL V3.0 License**. See [LICENSE](LICENSE) for details.
+TradeBoard is released under the **AGPL V3.0 License**. See [LICENSE](LICENSE) for details.
 
 ## Credits & Acknowledgments
 
-Tradeboard is built upon the shoulders of giants. We extend our gratitude to all the open-source projects that make this platform possible.
+TradeBoard is built upon the shoulders of giants. We extend our gratitude to all the open-source projects that make this platform possible.
 
 ### Core Framework
-
 - **[Flask](https://flask.palletsprojects.com)** - BSD License - Python web microframework
 - **[React](https://react.dev)** - MIT License - UI library for building user interfaces
 - **[SQLAlchemy](https://www.sqlalchemy.org)** - MIT License - Python SQL toolkit and ORM
 
 ### UI Components & Styling
-
 - **[shadcn/ui](https://ui.shadcn.com)** - MIT License - Beautifully designed components built with Radix UI and Tailwind CSS
 - **[Radix UI](https://www.radix-ui.com)** - MIT License - Unstyled, accessible UI components
 - **[Tailwind CSS](https://tailwindcss.com)** - MIT License - Utility-first CSS framework
 - **[Lucide](https://lucide.dev)** - ISC License - Beautiful & consistent icon library
 
 ### Data Visualization
-
 - **[TradingView Lightweight Charts](https://github.com/tradingview/lightweight-charts)** - Apache 2.0 - Financial charting library for market data and P&L visualization
 - **[Plotly](https://plotly.com/javascript/)** - MIT License - Interactive charting library for options analytics and visualization
 - **[xyflow/React Flow](https://reactflow.dev)** - MIT License - Highly customizable library for building node-based visual strategy editors
 
 ### Code Editors
-
 - **[CodeMirror](https://codemirror.net)** - MIT License - Versatile code editor for Python and JSON with syntax highlighting
 - **[@uiw/react-codemirror](https://uiwjs.github.io/react-codemirror)** - MIT License - CodeMirror React wrapper with themes
 
 ### State Management & Data Fetching
-
 - **[TanStack Query](https://tanstack.com/query)** - MIT License - Powerful asynchronous state management
 - **[Zustand](https://zustand-demo.pmnd.rs)** - MIT License - Lightweight state management
 - **[Axios](https://axios-http.com)** - MIT License - Promise-based HTTP client
 
 ### Real-Time Communication
-
 - **[Socket.IO](https://socket.io)** - MIT License - Real-time bidirectional event-based communication
 - **[ZeroMQ](https://zeromq.org)** - LGPL License - High-performance asynchronous messaging
 
 ### Security
-
 - **[Argon2-CFFI](https://argon2-cffi.readthedocs.io)** - MIT License - Argon2 password hashing (PHC winner)
 - **[Cryptography](https://cryptography.io)** - BSD/Apache License - Cryptographic recipes and primitives
 
 ### Build & Development Tools
-
 - **[Vite](https://vitejs.dev)** - MIT License - Fast frontend build tool
 - **[TypeScript](https://www.typescriptlang.org)** - Apache 2.0 - JavaScript with syntax for types
 - **[Biome](https://biomejs.dev)** - MIT License - Fast formatter and linter
@@ -446,13 +430,16 @@ Tradeboard is built upon the shoulders of giants. We extend our gratitude to all
 - **[Playwright](https://playwright.dev)** - Apache 2.0 - End-to-end testing framework
 
 ### Additional Libraries
-
 - **[React Router](https://reactrouter.com)** - MIT License - Declarative routing for React
 - **[Sonner](https://sonner.emilkowal.ski)** - MIT License - Toast notifications
 - **[cmdk](https://cmdk.paco.me)** - MIT License - Command palette component
 - **[next-themes](https://github.com/pacocoursey/next-themes)** - MIT License - Theme switching
 - **[react-resizable-panels](https://github.com/bvaughn/react-resizable-panels)** - MIT License - Resizable panel layouts
 - **[html2canvas-pro](https://html2canvas.hertzen.com)** - MIT License - Screenshot generation
+
+## Repo Activity
+
+![Alt](https://repobeats.axiom.co/api/embed/0b6b18194a3089cb47ab8ae588caabb14aa9972b.svg "Repobeats analytics image")
 
 ## Disclaimer
 

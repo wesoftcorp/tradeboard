@@ -124,7 +124,7 @@ class AliceBlueMessageMapper:
 
             # For 'tk' (token acknowledgment) messages, we get full data
             if msg_type == "tk":
-                # Extract symbol and clean it (remove suffixes like -EQ for Tradeboard format)
+                # Extract symbol and clean it (remove suffixes like -EQ for TradeBoard format)
                 raw_symbol = message.get("ts", "")
                 # Log the raw symbol for debugging
                 import logging
@@ -202,7 +202,7 @@ class AliceBlueMessageMapper:
                     if src_key in message:
                         try:
                             if dest_key == "symbol" and src_key == "ts":
-                                # Clean symbol for Tradeboard format (remove -EQ suffix)
+                                # Clean symbol for TradeBoard format (remove -EQ suffix)
                                 raw_symbol = message[src_key]
                                 clean_symbol = raw_symbol.split("-")[0] if raw_symbol else ""
                                 parsed[dest_key] = clean_symbol

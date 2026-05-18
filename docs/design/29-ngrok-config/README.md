@@ -1,8 +1,8 @@
-# 29 - Ngrok Configuration
+﻿# 29 - Ngrok Configuration
 
 ## Overview
 
-Ngrok creates secure tunnels to expose your local Tradeboard instance to the internet, enabling webhook integrations from TradingView, Chartink, and other external services.
+Ngrok creates secure tunnels to expose your local TradeBoard instance to the internet, enabling webhook integrations from TradingView, Chartink, and other external services.
 
 ## Architecture Diagram
 
@@ -41,7 +41,7 @@ Ngrok creates secure tunnels to expose your local Tradeboard instance to the int
                                  │
                                  ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                       Tradeboard (localhost:5000)                              │
+│                       TradeBoard (localhost:5000)                              │
 │                                                                              │
 │  POST /api/v1/placeorder                                                    │
 │  POST /api/v1/webhook/{strategy_id}                                         │
@@ -74,7 +74,7 @@ HOST_SERVER=https://your-custom-domain.ngrok.io
 2. Sign up for free account
 3. Copy your auth token
 
-### 2. Configure Tradeboard
+### 2. Configure TradeBoard
 
 ```bash
 # .env
@@ -82,7 +82,7 @@ NGROK_ENABLED=True
 NGROK_AUTH_TOKEN=2abc123def456...
 ```
 
-### 3. Start Tradeboard
+### 3. Start TradeBoard
 
 ```bash
 uv run app.py
@@ -91,7 +91,7 @@ uv run app.py
 Ngrok starts automatically and displays the public URL:
 
 ```
-╭─── Tradeboard v2.0.0 ───────────────────────────────────────────╮
+╭─── TradeBoard v2.0.0 ───────────────────────────────────────────╮
 │                                                               │
 │ Endpoints                                                     │
 │ Web App    http://127.0.0.1:5000                             │
@@ -181,7 +181,7 @@ https://your-domain.ngrok.io/api/v1/placeorder
 
 ```json
 {
-    "apikey": "your_tradeboard_api_key",
+    "apikey": "your_TradeBoard_api_key",
     "symbol": "SBIN",
     "exchange": "NSE",
     "action": "BUY",
@@ -198,7 +198,7 @@ https://your-domain.ngrok.io/api/v1/placeorder
 | Issue | Solution |
 |-------|----------|
 | Tunnel not starting | Check NGROK_AUTH_TOKEN |
-| Connection refused | Ensure Tradeboard is running |
+| Connection refused | Ensure TradeBoard is running |
 | URL changes on restart | Use custom domain |
 | Rate limiting | Upgrade ngrok plan |
 

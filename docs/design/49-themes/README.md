@@ -1,8 +1,8 @@
-# 49 - Themes
+﻿# 49 - Themes
 
 ## Overview
 
-Tradeboard's React frontend supports theme customization with light/dark modes and 12 base colors. Theme preferences persist across sessions using Zustand with localStorage. The theme system also manages "App Mode" (live vs analyzer) with distinct visual states.
+TradeBoard's React frontend supports theme customization with light/dark modes and 12 base colors. Theme preferences persist across sessions using Zustand with localStorage. The theme system also manages "App Mode" (live vs analyzer) with distinct visual states.
 
 ## Architecture Diagram
 
@@ -40,7 +40,7 @@ Tradeboard's React frontend supports theme customization with light/dark modes a
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │  localStorage                                                        │   │
 │  │                                                                      │   │
-│  │  tradeboard-theme: {                                                  │   │
+│  │  TradeBoard-theme: {                                                  │   │
 │  │    "state": {                                                       │   │
 │  │      "theme": "dark",                                               │   │
 │  │      "accentColor": "blue"                                          │   │
@@ -121,7 +121,7 @@ export const useThemeStore = create<ThemeState>()(
       }
     }),
     {
-      name: 'tradeboard-theme',
+      name: 'TradeBoard-theme',
       partialize: (state) => ({
         theme: state.theme,
         accentColor: state.accentColor
@@ -466,7 +466,7 @@ function useSystemTheme() {
 
   useEffect(() => {
     // Check if user has set a preference
-    const stored = localStorage.getItem('tradeboard-theme');
+    const stored = localStorage.getItem('TradeBoard-theme');
     if (stored) return; // User preference takes precedence
 
     // Use system preference

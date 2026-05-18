@@ -1,8 +1,8 @@
-# CI/CD Workflows Reference
+﻿# CI/CD Workflows Reference
 
 ## Overview
 
-This document details all GitHub Actions workflows in the Tradeboard CI/CD pipeline.
+This document details all GitHub Actions workflows in the TradeBoard CI/CD pipeline.
 
 ## Main CI Workflow
 

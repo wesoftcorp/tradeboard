@@ -1,4 +1,4 @@
-# Tradeboard v2.0 - Comprehensive Manual Testing Guide
+﻿# TradeBoard v2.0 - Comprehensive Manual Testing Guide
 
 A systematic testing procedure to ensure quality and catch bugs effectively.
 
@@ -9,7 +9,7 @@ A systematic testing procedure to ensure quality and catch bugs effectively.
 ```bash
 # 1. Setup
 git clone https://github.com/wesoftcorp/tradeboard.git
-cd tradeboard
+cd TradeBoard
 cp .sample.env .env
 # Edit .env with your broker credentials
 
@@ -558,8 +558,8 @@ open http://127.0.0.1:5000
 ### 13.1 Docker
 | Test | Steps | Expected | Status |
 |------|-------|----------|--------|
-| Build image | `docker build -t tradeboard .` | Image built | [ ] |
-| Run container | `docker run -p 5000:5000 tradeboard` | App accessible | [ ] |
+| Build image | `docker build -t TradeBoard .` | Image built | [ ] |
+| Run container | `docker run -p 5000:5000 TradeBoard` | App accessible | [ ] |
 | Volume mount | Mount db folder | Data persists | [ ] |
 | docker-compose | `docker-compose up` | All services up | [ ] |
 
@@ -751,7 +751,7 @@ open http://127.0.0.1:5000
 
 ---
 
-## Appendix: Tradeboard Symbol Format
+## Appendix: TradeBoard Symbol Format
 
 ### Exchange Codes
 | Code | Description |

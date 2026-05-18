@@ -1,4 +1,4 @@
-# Tradeboard Installation Guide
+﻿# TradeBoard Installation Guide
 
 ## Prerequisites
 
@@ -57,8 +57,8 @@
 ssh user@your_server_ip
 
 # Create a directory for installation
-mkdir -p ~/tradeboard-install
-cd ~/tradeboard-install
+mkdir -p ~/TradeBoard-install
+cd ~/TradeBoard-install
 
 # Download the installation script
 wget https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/install/install.sh
@@ -90,13 +90,13 @@ The installation process will:
 - **Auto-configure SELinux** on RHEL-based systems
 - Obtain and install Let's Encrypt SSL certificate
 - Configure Nginx with SSL and WebSocket support
-- Set up the Tradeboard application with unique deployment name
+- Set up the TradeBoard application with unique deployment name
 - Create systemd service with unique name based on domain and broker
 - Generate detailed installation logs in the logs directory
 
 #### Multi-Domain Deployment
 The installation script supports deploying multiple instances on the same server:
-- Each deployment gets a unique service name (e.g., tradeboard-yourdomain-broker)
+- Each deployment gets a unique service name (e.g., TradeBoard-yourdomain-broker)
 - Separate configuration files and directories for each deployment
 - Individual log files for each installation in the logs directory
 - Independent SSL certificates for each domain
@@ -128,10 +128,10 @@ After installation completes, verify each deployment:
 1. **Check Service Status**
    ```bash
    # Example for Fyers deployment
-   sudo systemctl status tradeboard-fyers-yourdomain-fyers
+   sudo systemctl status TradeBoard-fyers-yourdomain-fyers
    
    # Example for Zerodha deployment
-   sudo systemctl status tradeboard-zerodha-yourdomain-zerodha
+   sudo systemctl status TradeBoard-zerodha-yourdomain-zerodha
    ```
 
 2. **Verify Nginx Configuration**
@@ -182,12 +182,12 @@ After installation completes, verify each deployment:
    Example scenario: Managing multiple broker deployments
    ```bash
    # Example 1: Fyers deployment on fyers.yourdomain.com
-   sudo journalctl -u tradeboard-fyers-yourdomain-fyers    # View logs
-   sudo systemctl restart tradeboard-fyers-yourdomain-fyers # Restart service
+   sudo journalctl -u TradeBoard-fyers-yourdomain-fyers    # View logs
+   sudo systemctl restart TradeBoard-fyers-yourdomain-fyers # Restart service
    
    # Example 2: Zerodha deployment on zerodha.yourdomain.com
-   sudo journalctl -u tradeboard-zerodha-yourdomain-zerodha # View logs
-   sudo systemctl restart tradeboard-zerodha-yourdomain-zerodha # Restart service
+   sudo journalctl -u TradeBoard-zerodha-yourdomain-zerodha # View logs
+   sudo systemctl restart TradeBoard-zerodha-yourdomain-zerodha # Restart service
    ```
 
 3. **Nginx Issues**
@@ -249,8 +249,8 @@ After installation completes, verify each deployment:
 
    # The script auto-configures SELinux, but if issues persist:
    sudo setsebool -P httpd_can_network_connect on
-   sudo semanage fcontext -a -t httpd_sys_rw_content_t "/var/python/tradeboard-flask(/.*)?"
-   sudo restorecon -Rv /var/python/tradeboard-flask
+   sudo semanage fcontext -a -t httpd_sys_rw_content_t "/var/python/TradeBoard-flask(/.*)?"
+   sudo restorecon -Rv /var/python/TradeBoard-flask
    ```
 
 2. **Firewalld not configured**
@@ -280,30 +280,30 @@ After installation completes, verify each deployment:
 
 1. **Service Management Examples**
    ```bash
-   # List all Tradeboard services
-   systemctl list-units "tradeboard-*"
+   # List all TradeBoard services
+   systemctl list-units "TradeBoard-*"
    
    # Example outputs:
-   # tradeboard-fyers-yourdomain-fyers.service    loaded active running
-   # tradeboard-zerodha-yourdomain-zerodha.service loaded active running
+   # TradeBoard-fyers-yourdomain-fyers.service    loaded active running
+   # TradeBoard-zerodha-yourdomain-zerodha.service loaded active running
    
    # Restart specific deployment
-   sudo systemctl restart tradeboard-fyers-yourdomain-fyers
+   sudo systemctl restart TradeBoard-fyers-yourdomain-fyers
    
    # Check status of specific deployment
-   sudo systemctl status tradeboard-zerodha-yourdomain-zerodha
+   sudo systemctl status TradeBoard-zerodha-yourdomain-zerodha
    ```
 
 2. **Log Management Examples**
    ```bash
    # View real-time logs for Fyers deployment
-   sudo journalctl -f -u tradeboard-fyers-yourdomain-fyers
+   sudo journalctl -f -u TradeBoard-fyers-yourdomain-fyers
    
    # View last 100 lines of Zerodha deployment logs
-   sudo journalctl -n 100 -u tradeboard-zerodha-yourdomain-zerodha
+   sudo journalctl -n 100 -u TradeBoard-zerodha-yourdomain-zerodha
    
    # View logs since last hour for specific deployment
-   sudo journalctl --since "1 hour ago" -u tradeboard-fyers-yourdomain-fyers
+   sudo journalctl --since "1 hour ago" -u TradeBoard-fyers-yourdomain-fyers
    ```
 
 3. **Nginx Configuration Examples**
@@ -322,14 +322,14 @@ After installation completes, verify each deployment:
 4. **Installation Directory Examples**
    ```bash
    # List deployment directories
-   ls -l /var/python/tradeboard-flask/
+   ls -l /var/python/TradeBoard-flask/
    
    # Example structure:
-   # /var/python/tradeboard-flask/fyers-yourdomain-fyers/
-   # /var/python/tradeboard-flask/zerodha-yourdomain-zerodha/
+   # /var/python/TradeBoard-flask/fyers-yourdomain-fyers/
+   # /var/python/TradeBoard-flask/zerodha-yourdomain-zerodha/
    
    # Check specific deployment files
-   ls -l /var/python/tradeboard-flask/fyers-yourdomain-fyers/
+   ls -l /var/python/TradeBoard-flask/fyers-yourdomain-fyers/
    ```
 
 ## Security Notes
@@ -348,7 +348,7 @@ After installation completes, verify each deployment:
      ```
 
 2. **SELinux (RHEL-based systems)**
-   - The installation script **automatically configures SELinux** for Tradeboard
+   - The installation script **automatically configures SELinux** for TradeBoard
    - Sets correct contexts for application directories
    - Enables httpd network connections
    - Creates custom policies if needed

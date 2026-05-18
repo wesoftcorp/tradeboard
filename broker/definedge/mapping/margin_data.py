@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Definedge Span Calculator API
 
 from broker.definedge.mapping.transform_data import map_exchange, map_product_type
@@ -10,10 +10,10 @@ logger = get_logger(__name__)
 
 def transform_margin_positions(positions):
     """
-    Transform Tradeboard margin positions to Definedge Span Calculator format.
+    Transform TradeBoard margin positions to Definedge Span Calculator format.
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
 
     Returns:
         List of positions in Definedge format
@@ -98,7 +98,7 @@ def transform_margin_positions(positions):
 
 def parse_margin_response(response_data):
     """
-    Parse Definedge margin response to Tradeboard standard format.
+    Parse Definedge margin response to TradeBoard standard format.
 
     Args:
         response_data: Raw response from Definedge API
@@ -127,7 +127,7 @@ def parse_margin_response(response_data):
         exposure_margin = float(response_data.get("exposure", 0))
         total_margin_required = span_margin + exposure_margin
 
-        # Return standardized Tradeboard format
+        # Return standardized TradeBoard format
         return {
             "status": "success",
             "data": {

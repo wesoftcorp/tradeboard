@@ -1,8 +1,8 @@
-# 50 - TOTP Configuration
+﻿# 50 - TOTP Configuration
 
 ## Overview
 
-Tradeboard supports Time-based One-Time Password (TOTP) for two-factor authentication. Users can enable 2FA through QR code scanning with authenticator apps like Google Authenticator, Authy, or Microsoft Authenticator.
+TradeBoard supports Time-based One-Time Password (TOTP) for two-factor authentication. Users can enable 2FA through QR code scanning with authenticator apps like Google Authenticator, Authy, or Microsoft Authenticator.
 
 ## Architecture Diagram
 
@@ -26,7 +26,7 @@ Tradeboard supports Time-based One-Time Password (TOTP) for two-factor authentic
 │  │           │                                                          │   │
 │  │           ▼                                                          │   │
 │  │  Generate provisioning URI                                          │   │
-│  │  otpauth://totp/Tradeboard:user@example.com?secret=...&issuer=Tradeboard│   │
+│  │  otpauth://totp/TradeBoard:user@example.com?secret=...&issuer=TradeBoard│   │
 │  │           │                                                          │   │
 │  │           ▼                                                          │   │
 │  │  Generate QR code image                                             │   │
@@ -97,7 +97,7 @@ def generate_totp_secret():
     secret = pyotp.random_base32(length=32)
     return secret
 
-def get_provisioning_uri(secret, email, issuer="Tradeboard"):
+def get_provisioning_uri(secret, email, issuer="TradeBoard"):
     """Generate provisioning URI for QR code"""
     totp = pyotp.TOTP(secret)
     return totp.provisioning_uri(
@@ -237,7 +237,7 @@ Authorization: Bearer USER_TOKEN
     "data": {
         "secret": "JBSWY3DPEHPK3PXP",
         "qr_code": "data:image/png;base64,iVBORw0KGgo...",
-        "provisioning_uri": "otpauth://totp/Tradeboard:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Tradeboard"
+        "provisioning_uri": "otpauth://totp/TradeBoard:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=TradeBoard"
     }
 }
 ```

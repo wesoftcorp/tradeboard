@@ -1,4 +1,4 @@
-# OptionChain
+﻿# OptionChain
 
 Get the complete option chain for a given underlying and expiry, including quotes for all strikes.
 
@@ -153,7 +153,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/optionchain \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | underlying | Underlying symbol (NIFTY, BANKNIFTY, SENSEX) | Mandatory | - |
 | exchange | Exchange: NSE_INDEX, BSE_INDEX | Mandatory | - |
 | expiry_date | Expiry date in DDMMMYY format | Mandatory | - |

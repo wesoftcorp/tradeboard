@@ -1,4 +1,4 @@
-# CancelOrder
+﻿# CancelOrder
 
 Cancel a specific open order by its order ID.
 
@@ -45,7 +45,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/cancelorder \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | orderid | Order ID to cancel | Mandatory | - |
 | strategy | Strategy identifier | Optional | - |
 

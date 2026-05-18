@@ -1,4 +1,4 @@
-# Flow Node Reference
+﻿# Flow Node Reference
 
 Complete reference for all 50+ nodes available in the Flow visual workflow builder.
 
@@ -631,7 +631,7 @@ Send Telegram notification.
 | message | string | Alert message |
 | chatId | string | Telegram chat ID (optional) |
 
-**Requires:** Telegram bot configured in Tradeboard settings.
+**Requires:** Telegram bot configured in TradeBoard settings.
 
 ### Math Expression
 

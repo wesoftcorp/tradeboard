@@ -124,10 +124,10 @@ def download_mstock_csv(auth_token):
 # -------------------------------------------------------------------
 def convert_date(date_str):
     """
-    Convert date format to Tradeboard expiry column format: DD-MMM-YY (with hyphens).
+    Convert date format to TradeBoard expiry column format: DD-MMM-YY (with hyphens).
     Example: '19MAR2024' -> '19-MAR-24' or '2024-03-19' -> '19-MAR-24'
 
-    Tradeboard Expiry Column Format: DD-MMM-YY (e.g., 28-MAR-24, 25-APR-24)
+    TradeBoard Expiry Column Format: DD-MMM-YY (e.g., 28-MAR-24, 25-APR-24)
     Note: This is for the expiry column. Symbols use DDMMMYY without hyphens.
     """
     if pd.isna(date_str) or date_str == "" or str(date_str).strip() == "":
@@ -242,7 +242,7 @@ def fetch_and_process_mstock_indices():
         token_df["instrumenttype"] = "INDEX"
         token_df["tick_size"] = 0.05
 
-        # Standardize NSE index symbols that differ from Tradeboard standard format
+        # Standardize NSE index symbols that differ from TradeBoard standard format
         # Only map symbols where mstock name differs; unlisted symbols pass through as-is
         token_df["symbol"] = token_df["symbol"].replace(
             {
@@ -281,7 +281,7 @@ def fetch_and_process_mstock_indices():
 # -------------------------------------------------------------------
 def process_mstock_json(json_data):
     """
-    Processes the MStock JSON data to fit the Tradeboard database schema.
+    Processes the MStock JSON data to fit the TradeBoard database schema.
 
     Args:
         json_data: JSON array from MStock Type B API
@@ -317,7 +317,7 @@ def process_mstock_json(json_data):
 
     # -------------------------------------------------------------------
     # Map Currency Derivatives Exchange
-    # MStock API returns NSE/BSE for currency, but Tradeboard uses CDS/BCD
+    # MStock API returns NSE/BSE for currency, but TradeBoard uses CDS/BCD
     # -------------------------------------------------------------------
     # NSE Currency Derivatives → CDS (brexchange stays NSE)
     mask_nse_currency = (df["instrumenttype"].isin(["OPTCUR", "FUTCUR", "OPTIRC", "FUTIRC"])) & (
@@ -334,7 +334,7 @@ def process_mstock_json(json_data):
     # Clean up equity symbols (remove -EQ, -BE suffixes)
     df["symbol"] = df["symbol"].str.replace(r"-EQ$|-BZ$", "", regex=True)
 
-    # Convert expiry dates to Tradeboard format (DD-MMM-YY)
+    # Convert expiry dates to TradeBoard format (DD-MMM-YY)
     df["expiry"] = df["expiry"].apply(
         lambda x: convert_date(x) if pd.notnull(x) and str(x).strip() != "" else ""
     )
@@ -379,7 +379,7 @@ def process_mstock_json(json_data):
                 f"Mapped {mask_bse_index.sum()} BSE index tokens to BSE_INDEX from master contract"
             )
 
-            # Normalize BSE Index symbols to Tradeboard standard format
+            # Normalize BSE Index symbols to TradeBoard standard format
             bse_index_symbol_map = {
                 "SNSX50": "SENSEX50",
                 "SNXT50": "BSESENSEXNEXT50",
@@ -422,14 +422,14 @@ def process_mstock_json(json_data):
                 "TELCOM": "BSETELECOM",
             }
             mask_bse_idx = df["exchange"] == "BSE_INDEX"
-            df.loc[mask_bse_idx, "symbol"] = (
-                df.loc[mask_bse_idx, "name"].replace(bse_index_symbol_map)
+            df.loc[mask_bse_idx, "symbol"] = df.loc[mask_bse_idx, "name"].replace(
+                bse_index_symbol_map
             )
     except Exception as e:
         logger.warning(f"Could not fetch BSE index tokens for mapping: {e}")
 
     # -------------------------------------------------------------------
-    # Format F&O Symbols (Tradeboard Standard)
+    # Format F&O Symbols (TradeBoard Standard)
     # Format: [Base][DDMMMYY]FUT/CE/PE
     # -------------------------------------------------------------------
 
@@ -679,7 +679,7 @@ def process_mstock_json(json_data):
     )
 
     # -------------------------------------------------------------------
-    # Normalize instrumenttype to Tradeboard standard (match Angel format)
+    # Normalize instrumenttype to TradeBoard standard (match Angel format)
     # Options: OPTIDX/OPTSTK/OPTFUT/OPTCUR/OPTIRC -> CE or PE
     # Futures: FUTIDX/FUTSTK/FUTCOM/FUTCUR/FUTIRC/FUTIRT -> FUT
     # -------------------------------------------------------------------

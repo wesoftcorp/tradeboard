@@ -1,4 +1,4 @@
-# ClosePosition
+﻿# ClosePosition
 
 Close all open positions across all exchanges in a single request. This is a square-off operation that places counter orders for all open positions.
 
@@ -52,7 +52,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/closeposition \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | strategy | Strategy identifier | Optional | - |
 
 ## Response Fields

@@ -23,7 +23,7 @@ from datetime import datetime, timedelta
 
 import httpx
 
-from database.auth_db import get_username_by_apikey, get_broker_name
+from database.auth_db import get_broker_name, get_username_by_apikey
 
 # Database imports
 from database.telegram_db import (
@@ -44,7 +44,7 @@ logger = get_logger(__name__)
 
 
 class TelegramBotService:
-    """Service class for managing Telegram bot operations with Tradeboard SDK integration"""
+    """Service class for managing Telegram bot operations with TradeBoard SDK integration"""
 
     def __init__(self):
         self.application = None
@@ -54,12 +54,12 @@ class TelegramBotService:
         self.http_client = None  # Will be created in thread
         self.bot_thread = None
         self.bot_loop = None  # Store the bot's event loop
-        self.sdk_clients = {}  # Cache for Tradeboard SDK clients per user
+        self.sdk_clients = {}  # Cache for TradeBoard SDK clients per user
         self._stop_event = original_threading.Event()  # Thread-safe stop signal
 
-    def _get_sdk_client(self, telegram_id: int) -> tradeboard_api | None:
-        """Get or create Tradeboard SDK client for a user"""
-        from tradeboard import api as tradeboard_api
+    def _get_sdk_client(self, telegram_id: int) -> TradeBoard_api | None:
+        """Get or create TradeBoard SDK client for a user"""
+        from TradeBoard import api as TradeBoard_api
 
         try:
             # Check if client already exists
@@ -76,7 +76,7 @@ class TelegramBotService:
             api_key = credentials["api_key"]
 
             # Create SDK client
-            client = tradeboard_api(api_key=api_key, host=host_url)
+            client = TradeBoard_api(api_key=api_key, host=host_url)
 
             # Cache the client
             self.sdk_clients[telegram_id] = client
@@ -135,7 +135,7 @@ class TelegramBotService:
         """
         import queue as _queue
 
-        result_q: "_queue.Queue[tuple[str, object]]" = _queue.Queue()
+        result_q: _queue.Queue[tuple[str, object]] = _queue.Queue()
 
         def _worker() -> None:
             try:
@@ -144,9 +144,7 @@ class TelegramBotService:
             except BaseException as exc:  # noqa: BLE001 - propagate across thread
                 result_q.put(("err", exc))
 
-        t = original_threading.Thread(
-            target=_worker, daemon=True, name="tradeboard-kaleido-render"
-        )
+        t = original_threading.Thread(target=_worker, daemon=True, name="TradeBoard-kaleido-render")
         t.start()
         t.join()
 
@@ -547,7 +545,9 @@ class TelegramBotService:
             from utils.httpx_client import get_httpx_client
 
             try:
-                response = get_httpx_client().get(f"https://api.telegram.org/bot{token}/getMe", timeout=10)
+                response = get_httpx_client().get(
+                    f"https://api.telegram.org/bot{token}/getMe", timeout=10
+                )
 
                 if response.status_code == 200:
                     data = response.json()
@@ -879,8 +879,8 @@ class TelegramBotService:
             )
         else:
             await update.message.reply_text(
-                f"Welcome to Tradeboard Bot, {user.first_name}! 🚀\n\n"
-                "To get started, link your Tradeboard account:\n"
+                f"Welcome to TradeBoard Bot, {user.first_name}! 🚀\n\n"
+                "To get started, link your TradeBoard account:\n"
                 "`/link <api_key> <host_url>`\n\n"
                 "Example:\n"
                 "`/link your_api_key_here http://127.0.0.1:5000`\n\n"
@@ -898,7 +898,7 @@ class TelegramBotService:
 📚 *Available Commands:*
 
 *Account Management:*
-/link `<api_key> <host_url>` - Link your Tradeboard account
+/link `<api_key> <host_url>` - Link your TradeBoard account
 /unlink - Unlink your account
 /status - Check connection status
 
@@ -958,10 +958,10 @@ class TelegramBotService:
 
         # Validate API key by making a test call
         try:
-            from tradeboard import api as tradeboard_api
+            from TradeBoard import api as TradeBoard_api
 
             # Create temporary SDK client for validation
-            test_client = tradeboard_api(api_key=api_key, host=host_url)
+            test_client = TradeBoard_api(api_key=api_key, host=host_url)
 
             # Test with a simple call
             loop = asyncio.get_event_loop()
@@ -969,40 +969,42 @@ class TelegramBotService:
 
             if test_response and test_response.get("status") == "success":
                 # Valid credentials, save them
-                # Get the actual Tradeboard username from the API key
-                tradeboard_username = None
+                # Get the actual TradeBoard username from the API key
+                TradeBoard_username = None
                 try:
-                    tradeboard_username = get_username_by_apikey(api_key)
-                    logger.info(f"API key lookup returned: '{tradeboard_username}'")
+                    TradeBoard_username = get_username_by_apikey(api_key)
+                    logger.info(f"API key lookup returned: '{TradeBoard_username}'")
                 except Exception as e:
                     logger.exception(f"Error getting username from API key: {e}")
 
                 # If we couldn't get username from API key, try to extract from response
-                if not tradeboard_username and test_response.get("data"):
+                if not TradeBoard_username and test_response.get("data"):
                     # Some brokers return username in the funds response
                     data = test_response.get("data", {})
                     if isinstance(data, dict):
-                        tradeboard_username = (
+                        TradeBoard_username = (
                             data.get("username") or data.get("user_id") or data.get("client_id")
                         )
-                        if tradeboard_username:
-                            logger.info(f"Got username from funds response: {tradeboard_username}")
+                        if TradeBoard_username:
+                            logger.info(f"Got username from funds response: {TradeBoard_username}")
 
                 # Log for debugging
                 logger.info(
-                    f"Linking Telegram user {user.id} (@{user.username}) with Tradeboard username: '{tradeboard_username}'"
+                    f"Linking Telegram user {user.id} (@{user.username}) with TradeBoard username: '{TradeBoard_username}'"
                 )
 
                 # If we still can't get username, DON'T use telegram username with @
                 # Use a proper fallback
-                if not tradeboard_username:
+                if not TradeBoard_username:
                     # Try to get from session or use telegram ID
-                    tradeboard_username = f"user_{user.id}"
+                    TradeBoard_username = f"user_{user.id}"
                     logger.warning(
-                        f"Could not get Tradeboard username, using fallback: {tradeboard_username}"
+                        f"Could not get TradeBoard username, using fallback: {TradeBoard_username}"
                     )
                 else:
-                    logger.info(f"Successfully retrieved Tradeboard username: {tradeboard_username}")
+                    logger.info(
+                        f"Successfully retrieved TradeBoard username: {TradeBoard_username}"
+                    )
 
                 # Determine broker for currency symbol selection
                 broker_name = get_broker_name(api_key) or "default"
@@ -1010,7 +1012,7 @@ class TelegramBotService:
 
                 create_or_update_telegram_user(
                     telegram_id=user.id,
-                    username=tradeboard_username,  # Use the actual Tradeboard username
+                    username=TradeBoard_username,  # Use the actual TradeBoard username
                     telegram_username=user.username,
                     first_name=user.first_name,
                     last_name=user.last_name,
@@ -1019,7 +1021,7 @@ class TelegramBotService:
                     broker=broker_name,
                 )
 
-                logger.info(f"Database updated - Username stored as: {tradeboard_username}")
+                logger.info(f"Database updated - Username stored as: {TradeBoard_username}")
 
                 await update.message.reply_text(
                     "✅ Account linked successfully!\n"
@@ -1087,10 +1089,10 @@ class TelegramBotService:
             else:
                 status = "🔴 Client Error"
 
-            # Get display name (prefer telegram_username, fallback to tradeboard_username)
+            # Get display name (prefer telegram_username, fallback to TradeBoard_username)
             display_name = (
                 telegram_user.get("telegram_username")
-                or telegram_user.get("tradeboard_username")
+                or telegram_user.get("TradeBoard_username")
                 or "N/A"
             )
             host_url = telegram_user.get("host_url") or "N/A"
@@ -1106,7 +1108,7 @@ class TelegramBotService:
             )
         else:
             await update.message.reply_text(
-                "❌ No linked account found.\nUse /link to connect your Tradeboard account.",
+                "❌ No linked account found.\nUse /link to connect your TradeBoard account.",
                 parse_mode=ParseMode.MARKDOWN,
             )
 
@@ -1128,7 +1130,7 @@ class TelegramBotService:
         # Get orderbook using SDK
         client = self._get_sdk_client(user.id)
         if not client:
-            await update.message.reply_text("❌ Failed to connect to Tradeboard")
+            await update.message.reply_text("❌ Failed to connect to TradeBoard")
             return
 
         loop = asyncio.get_event_loop()
@@ -1166,7 +1168,9 @@ class TelegramBotService:
             try:
                 price = float(order.get("price", 0))
                 price_str = (
-                    "Market" if price == 0 and order.get("pricetype") == "MARKET" else f"{cs}{price}"
+                    "Market"
+                    if price == 0 and order.get("pricetype") == "MARKET"
+                    else f"{cs}{price}"
                 )
             except (ValueError, TypeError):
                 price_str = f"{cs}{order.get('price', 0)}"
@@ -1256,7 +1260,7 @@ class TelegramBotService:
         # Get tradebook using SDK
         client = self._get_sdk_client(user.id)
         if not client:
-            await update.message.reply_text("❌ Failed to connect to Tradeboard")
+            await update.message.reply_text("❌ Failed to connect to TradeBoard")
             return
 
         loop = asyncio.get_event_loop()
@@ -1344,7 +1348,7 @@ class TelegramBotService:
         # Get positions using SDK
         client = self._get_sdk_client(user.id)
         if not client:
-            await update.message.reply_text("❌ Failed to connect to Tradeboard")
+            await update.message.reply_text("❌ Failed to connect to TradeBoard")
             return
 
         loop = asyncio.get_event_loop()
@@ -1440,7 +1444,7 @@ class TelegramBotService:
         # Get holdings using SDK
         client = self._get_sdk_client(user.id)
         if not client:
-            await update.message.reply_text("❌ Failed to connect to Tradeboard")
+            await update.message.reply_text("❌ Failed to connect to TradeBoard")
             return
 
         loop = asyncio.get_event_loop()
@@ -1541,7 +1545,7 @@ class TelegramBotService:
         # Get funds using SDK
         client = self._get_sdk_client(user.id)
         if not client:
-            await update.message.reply_text("❌ Failed to connect to Tradeboard")
+            await update.message.reply_text("❌ Failed to connect to TradeBoard")
             return
 
         loop = asyncio.get_event_loop()
@@ -1601,7 +1605,7 @@ class TelegramBotService:
         # Get P&L from funds using SDK
         client = self._get_sdk_client(user.id)
         if not client:
-            await update.message.reply_text("❌ Failed to connect to Tradeboard")
+            await update.message.reply_text("❌ Failed to connect to TradeBoard")
             return
 
         loop = asyncio.get_event_loop()
@@ -1673,7 +1677,7 @@ class TelegramBotService:
         # Get quote using SDK
         client = self._get_sdk_client(user.id)
         if not client:
-            await update.message.reply_text("❌ Failed to connect to Tradeboard")
+            await update.message.reply_text("❌ Failed to connect to TradeBoard")
             return
 
         loop = asyncio.get_event_loop()
@@ -1874,14 +1878,14 @@ class TelegramBotService:
         reply_markup = InlineKeyboardMarkup(keyboard)
 
         await update.message.reply_text(
-            "📱 *Tradeboard Trading Menu*\nSelect an option below:",
+            "📱 *TradeBoard Trading Menu*\nSelect an option below:",
             reply_markup=reply_markup,
             parse_mode=ParseMode.MARKDOWN,
         )
 
         log_command(user.id, "menu", update.effective_chat.id)
 
-    def _format_orderbook(self, response: dict, cs: str = '₹') -> str:
+    def _format_orderbook(self, response: dict, cs: str = "₹") -> str:
         """Format orderbook response into message"""
         if not response or response.get("status") != "success":
             return "❌ Failed to fetch orderbook"
@@ -1921,7 +1925,7 @@ class TelegramBotService:
             message += f"_... and {len(orders) - 10} more orders_"
         return message
 
-    def _format_tradebook(self, response: dict, cs: str = '₹') -> str:
+    def _format_tradebook(self, response: dict, cs: str = "₹") -> str:
         """Format tradebook response into message"""
         if not response or response.get("status") != "success":
             return "❌ Failed to fetch tradebook"
@@ -1951,7 +1955,7 @@ class TelegramBotService:
             message += f"_... and {len(trades) - 10} more trades_"
         return message
 
-    def _format_positions(self, response: dict, cs: str = '₹') -> str:
+    def _format_positions(self, response: dict, cs: str = "₹") -> str:
         """Format positions response into message"""
         if not response or response.get("status") != "success":
             return "❌ Failed to fetch positions"
@@ -1978,7 +1982,7 @@ class TelegramBotService:
             message += f"_... and {len(active_positions) - 10} more positions_"
         return message
 
-    def _format_holdings(self, response: dict, cs: str = '₹') -> str:
+    def _format_holdings(self, response: dict, cs: str = "₹") -> str:
         """Format holdings response into message"""
         if not response or response.get("status") != "success":
             return "❌ Failed to fetch holdings"
@@ -2001,7 +2005,7 @@ class TelegramBotService:
             message += f"_... and {len(holdings) - 10} more holdings_"
         return message
 
-    def _format_funds(self, response: dict, cs: str = '₹') -> str:
+    def _format_funds(self, response: dict, cs: str = "₹") -> str:
         """Format funds response into message"""
         if not response or response.get("status") != "success":
             return "❌ Failed to fetch funds"
@@ -2022,7 +2026,7 @@ class TelegramBotService:
             f"💼 Total: {cs}{(available + collateral):,.2f}"
         )
 
-    def _format_pnl(self, response: dict, cs: str = '₹') -> str:
+    def _format_pnl(self, response: dict, cs: str = "₹") -> str:
         """Format P&L response into message (uses positionbook data)"""
         if not response or response.get("status") != "success":
             return "❌ Failed to fetch P&L"
@@ -2037,7 +2041,9 @@ class TelegramBotService:
                 pass
 
         pnl_emoji = "🟢" if total_pnl > 0 else "🔴" if total_pnl < 0 else "⚪"
-        return f"💹 *PROFIT & LOSS*\n━━━━━━━━━━━━━━━\n\n{pnl_emoji} *Day P&L*\n└ {cs}{total_pnl:,.2f}"
+        return (
+            f"💹 *PROFIT & LOSS*\n━━━━━━━━━━━━━━━\n\n{pnl_emoji} *Day P&L*\n└ {cs}{total_pnl:,.2f}"
+        )
 
     async def cmd_closeall(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Handle /closeall command — close all open positions with confirmation"""
@@ -2114,12 +2120,8 @@ class TelegramBotService:
             [InlineKeyboardButton(f"🐍 {name}", callback_data=f"spy_{idx}")]
             for idx, (_, name) in enumerate(running)
         ]
-        keyboard.append(
-            [InlineKeyboardButton("🛑 Stop All", callback_data="spy_all")]
-        )
-        keyboard.append(
-            [InlineKeyboardButton("❌ Cancel", callback_data="cancel_action")]
-        )
+        keyboard.append([InlineKeyboardButton("🛑 Stop All", callback_data="spy_all")])
+        keyboard.append([InlineKeyboardButton("❌ Cancel", callback_data="cancel_action")])
         reply_markup = InlineKeyboardMarkup(keyboard)
 
         await update.message.reply_text(
@@ -2196,7 +2198,7 @@ class TelegramBotService:
 
             client = self._get_sdk_client(user.id)
             if not client:
-                await query.edit_message_text("❌ Failed to connect to Tradeboard")
+                await query.edit_message_text("❌ Failed to connect to TradeBoard")
                 return
 
             await query.edit_message_text("⏳ Closing all positions...")
@@ -2236,7 +2238,7 @@ class TelegramBotService:
 
             client = self._get_sdk_client(user.id)
             if not client:
-                await query.edit_message_text("❌ Failed to connect to Tradeboard")
+                await query.edit_message_text("❌ Failed to connect to TradeBoard")
                 return
 
             await query.edit_message_text("⏳ Closing all positions and stopping strategies...")
@@ -2299,9 +2301,7 @@ class TelegramBotService:
 
             stoppy_list = context.user_data.get("stoppy_list", [])
             if idx < 0 or idx >= len(stoppy_list):
-                await query.edit_message_text(
-                    "❌ Selection expired. Please run /stoppython again."
-                )
+                await query.edit_message_text("❌ Selection expired. Please run /stoppython again.")
                 return
 
             sid, name = stoppy_list[idx]
@@ -2323,9 +2323,7 @@ class TelegramBotService:
             stoppy_list = context.user_data.get("stoppy_list", [])
             count = len(stoppy_list)
             if count == 0:
-                await query.edit_message_text(
-                    "❌ Selection expired. Please run /stoppython again."
-                )
+                await query.edit_message_text("❌ Selection expired. Please run /stoppython again.")
                 return
 
             keyboard = [
@@ -2353,9 +2351,7 @@ class TelegramBotService:
 
             stoppy_list = context.user_data.get("stoppy_list", [])
             if idx < 0 or idx >= len(stoppy_list):
-                await query.edit_message_text(
-                    "❌ Selection expired. Please run /stoppython again."
-                )
+                await query.edit_message_text("❌ Selection expired. Please run /stoppython again.")
                 return
 
             sid, name = stoppy_list[idx]
@@ -2425,7 +2421,7 @@ class TelegramBotService:
         # Handle mode toggle
         if callback_data in ("mode_live", "mode_analyze"):
             try:
-                from database.settings_db import set_analyze_mode, get_analyze_mode
+                from database.settings_db import get_analyze_mode, set_analyze_mode
 
                 new_mode = callback_data == "mode_analyze"
                 loop = asyncio.get_event_loop()
@@ -2434,6 +2430,7 @@ class TelegramBotService:
                 # Sync mode to frontend via SocketIO
                 try:
                     from extensions import socketio
+
                     socketio.emit("app_mode_changed", {"analyze_mode": new_mode})
                 except Exception:
                     pass
@@ -2474,7 +2471,7 @@ class TelegramBotService:
 
                 timestamp = datetime.now().strftime("%H:%M:%S")
                 await query.edit_message_text(
-                    f"📱 *Tradeboard Trading Menu*\nSelect an option below:\n_Updated: {timestamp}_",
+                    f"📱 *TradeBoard Trading Menu*\nSelect an option below:\n_Updated: {timestamp}_",
                     reply_markup=reply_markup,
                     parse_mode=ParseMode.MARKDOWN,
                 )
@@ -2495,7 +2492,9 @@ class TelegramBotService:
 
         client = self._get_sdk_client(user.id)
         if not client:
-            await context.bot.send_message(chat_id=chat_id, text="❌ Failed to connect to Tradeboard")
+            await context.bot.send_message(
+                chat_id=chat_id, text="❌ Failed to connect to TradeBoard"
+            )
             return
 
         # Map callback data to API calls and formatters
@@ -2570,11 +2569,11 @@ class TelegramBotService:
                         for u in users
                         if u.get("notifications_enabled") == filters["notifications_enabled"]
                     ]
-                if filters.get("tradeboard_username"):
+                if filters.get("TradeBoard_username"):
                     users = [
                         u
                         for u in users
-                        if u.get("tradeboard_username") == filters["tradeboard_username"]
+                        if u.get("TradeBoard_username") == filters["TradeBoard_username"]
                     ]
 
             success_count = 0
@@ -2592,7 +2591,9 @@ class TelegramBotService:
                         # Add small delay to avoid rate limits
                         await asyncio.sleep(0.1)
                 except Exception as e:
-                    logger.exception(f"Failed to send broadcast to {user.get('telegram_id')}: {str(e)}")
+                    logger.exception(
+                        f"Failed to send broadcast to {user.get('telegram_id')}: {str(e)}"
+                    )
                     fail_count += 1
 
             logger.debug(f"Broadcast complete: {success_count} success, {fail_count} failed")

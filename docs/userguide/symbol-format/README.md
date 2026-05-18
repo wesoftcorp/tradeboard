@@ -1,8 +1,8 @@
-# Tradeboard Symbol Format Guide
+﻿# TradeBoard Symbol Format Guide
 
 ## Introduction
 
-Tradeboard uses a standardized symbol format across all exchanges and brokers. This uniform symbology eliminates the need for traders to adapt to varied broker-specific formats, streamlining algorithm development and execution.
+TradeBoard uses a standardized symbol format across all exchanges and brokers. This uniform symbology eliminates the need for traders to adapt to varied broker-specific formats, streamlining algorithm development and execution.
 
 Understanding the symbol format is **essential** for placing orders correctly. Incorrect symbol format is the most common cause of order failures.
 
@@ -10,7 +10,7 @@ Understanding the symbol format is **essential** for placing orders correctly. I
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Tradeboard Symbol Format                               │
+│                        TradeBoard Symbol Format                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  EQUITY                                                                      │
@@ -43,7 +43,7 @@ Equity symbols use the base trading symbol without any modifications.
 
 ### Examples
 
-| Company | Base Symbol | Tradeboard Symbol |
+| Company | Base Symbol | TradeBoard Symbol |
 |---------|-------------|-----------------|
 | State Bank of India | SBIN | `SBIN` |
 | Infosys | INFY | `INFY` |
@@ -85,7 +85,7 @@ Where:
 
 ### Examples
 
-| Description | Tradeboard Symbol |
+| Description | TradeBoard Symbol |
 |-------------|-----------------|
 | Nifty Future expiring 30th Jan 2025 | `NIFTY30JAN25FUT` |
 | Bank Nifty Future expiring 27th Feb 2025 | `BANKNIFTY27FEB25FUT` |
@@ -130,7 +130,7 @@ Where:
 
 #### Index Options (NSE)
 
-| Description | Tradeboard Symbol |
+| Description | TradeBoard Symbol |
 |-------------|-----------------|
 | Nifty 21500 Call, 30th Jan 2025 | `NIFTY30JAN2521500CE` |
 | Nifty 21000 Put, 30th Jan 2025 | `NIFTY30JAN2521000PE` |
@@ -140,7 +140,7 @@ Where:
 
 #### Stock Options (NSE)
 
-| Description | Tradeboard Symbol |
+| Description | TradeBoard Symbol |
 |-------------|-----------------|
 | SBIN 800 Call, 27th Feb 2025 | `SBIN27FEB25800CE` |
 | RELIANCE 1300 Put, 27th Feb 2025 | `RELIANCE27FEB251300PE` |
@@ -148,14 +148,14 @@ Where:
 
 #### Currency Options
 
-| Description | Tradeboard Symbol |
+| Description | TradeBoard Symbol |
 |-------------|-----------------|
 | USDINR 84 Call, 27th Jan 2025 | `USDINR27JAN2584CE` |
 | USDINR 83.50 Put, 27th Jan 2025 | `USDINR27JAN2583.5PE` |
 
 #### Commodity Options (MCX)
 
-| Description | Tradeboard Symbol |
+| Description | TradeBoard Symbol |
 |-------------|-----------------|
 | Crude Oil 6500 Call, 17th Feb 2025 | `CRUDEOIL17FEB256500CE` |
 | Gold 62000 Put, 5th Feb 2025 | `GOLD05FEB2562000PE` |
@@ -175,7 +175,7 @@ Where:
 
 ## Exchange Codes
 
-Tradeboard uses standardized exchange codes to identify trading venues.
+TradeBoard uses standardized exchange codes to identify trading venues.
 
 ### Equity Exchanges
 
@@ -215,7 +215,7 @@ Tradeboard uses standardized exchange codes to identify trading venues.
 
 ## Common Index Symbols
 
-Tradeboard has rolled out a **standardized index symbol set across all supported brokers**. Use exchange code `NSE_INDEX` or `BSE_INDEX` when placing orders or fetching quotes for these symbols — the same symbol works identically on every broker.
+TradeBoard has rolled out a **standardized index symbol set across all supported brokers**. Use exchange code `NSE_INDEX` or `BSE_INDEX` when placing orders or fetching quotes for these symbols — the same symbol works identically on every broker.
 
 ### NSE Indices (Exchange: `NSE_INDEX`)
 
@@ -274,7 +274,7 @@ Tradeboard has rolled out a **standardized index symbol set across all supported
 
 `BSECARBONEX`, `BSEDOLLEX30`, `BSEDOLLEX100`, `BSEDOLLEX200`, `BSEGREENEX`, `BSEINDIAINFRASTRUCTUREINDEX`, `BSEIPO`, `BSESMEIPO`
 
-> The `BSEOIL&GAS` symbol literally contains an ampersand — preserve it exactly as shown when passing the symbol via API, JSON body, or webhook. For the full authoritative reference see [docs.wesoftcorp.com/symbol-format](https://docs.wesoftcorp.com/symbol-format).
+> The `BSEOIL&GAS` symbol literally contains an ampersand — preserve it exactly as shown when passing the symbol via API, JSON body, or webhook. For the full authoritative reference see [docs.TradeBoard.in/symbol-format](https://docs.TradeBoard.in/symbol-format).
 
 ## Product Types
 
@@ -451,16 +451,16 @@ Tradeboard has rolled out a **standardized index symbol set across all supported
 
 ## Finding the Correct Symbol
 
-### Method 1: Tradeboard Symbol Search
+### Method 1: TradeBoard Symbol Search
 
-1. Go to Tradeboard dashboard
+1. Go to TradeBoard dashboard
 2. Navigate to **Search** page
 3. Enter the symbol name
 4. Copy the exact symbol from results
 
 ### Method 2: Master Contract Database
 
-Tradeboard maintains a master contract database that maps broker symbols to standardized symbols. The database is updated daily.
+TradeBoard maintains a master contract database that maps broker symbols to standardized symbols. The database is updated daily.
 
 ### Method 3: API Endpoint
 
@@ -516,7 +516,7 @@ POST /api/v1/search
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Tradeboard Symbol Quick Reference                          │
+│                    TradeBoard Symbol Quick Reference                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │  TYPE          FORMAT                      EXAMPLE                          │

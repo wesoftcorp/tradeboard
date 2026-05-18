@@ -1,4 +1,4 @@
-# Tradeboard WebSocket API Templates
+﻿# TradeBoard WebSocket API Templates
 
 This folder contains Bruno-style templates for WebSocket message formats.
 

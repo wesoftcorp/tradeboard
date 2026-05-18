@@ -1,6 +1,6 @@
-# ⚙️ How to Integrate Any XTS API-Supported Broker in Tradeboard (5-Minute Setup)
+﻿# ⚙️ How to Integrate Any XTS API-Supported Broker in TradeBoard (5-Minute Setup)
 
-Tradeboard already supports XTS API through the `compositedge` plugin. Any broker using XTS (like IIFL, Nirmal Bang, Anand Rathi, Jainam, 5paisa, etc.) can be added with **zero code duplication**—just a few config updates.
+TradeBoard already supports XTS API through the `compositedge` plugin. Any broker using XTS (like IIFL, Nirmal Bang, Anand Rathi, Jainam, 5paisa, etc.) can be added with **zero code duplication**—just a few config updates.
 
 ---
 
@@ -184,8 +184,8 @@ broker/compositedge/
 │   └── master_contract_db.py   # Download & store broker's symbol master
 │
 └── mapping/
-    ├── order_data.py           # Tradeboard → XTS order translation
-    └── transform_data.py       # XTS → Tradeboard data formatting
+    ├── order_data.py           # TradeBoard → XTS order translation
+    └── transform_data.py       # XTS → TradeBoard data formatting
 ```
 
 ---
@@ -195,11 +195,11 @@ broker/compositedge/
 ```json
 {
   "Plugin Name": "compositedge",
-  "Plugin URI": "https://wesoftcorp.com",
-  "Description": "CompositedgeTradeboard Plugin",
+  "Plugin URI": "https://TradeBoard.in",
+  "Description": "CompositedgeTradeBoard Plugin",
   "Version": "1.0",
   "Author": "Kalaivani",
-  "Author URI": "https://wesoftcorp.com"
+  "Author URI": "https://TradeBoard.in"
 }
 ```
 
@@ -221,6 +221,6 @@ broker/compositedge/
 
 ## 🚀 Conclusion
 
-Thanks to Tradeboard’s modular and broker-agnostic design:
+Thanks to TradeBoard’s modular and broker-agnostic design:
 
 > 💡 You can integrate **any XTS broker in under 5 minutes** by changing only `baseurl.py`, `.env`, and a few UI/backend hooks.

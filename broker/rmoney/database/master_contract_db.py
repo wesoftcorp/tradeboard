@@ -222,7 +222,7 @@ BSE_INDEX_SYMBOL_MAP = {
 
 
 def normalize_bse_index_symbols(symbol_series: pd.Series) -> pd.Series:
-    """Normalize raw BSE index symbols to Tradeboard naming and format."""
+    """Normalize raw BSE index symbols to TradeBoard naming and format."""
     normalized = symbol_series.astype(str).str.upper().str.strip()
     normalized = normalized.str.replace(r"\s+", " ", regex=True)
     normalized = normalized.replace(BSE_INDEX_SYMBOL_MAP)
@@ -282,7 +282,7 @@ def process_compositedge_bse_csv(path):
     token_df["instrumenttype"] = df["Series"]
     token_df["tick_size"] = df["TickSize"]
 
-    # Normalize BSE index short codes from SPOT rows to Tradeboard index symbols
+    # Normalize BSE index short codes from SPOT rows to TradeBoard index symbols
     bse_idx_mask = token_df["exchange"] == "BSE_INDEX"
     token_df.loc[bse_idx_mask, "symbol"] = normalize_bse_index_symbols(
         token_df.loc[bse_idx_mask, "symbol"]
@@ -309,10 +309,12 @@ def process_compositedge_nfo_csv(path):
     df["StrikePrice"] = pd.to_numeric(df["StrikePrice"], errors="coerce").fillna(1.0)
 
     df["symbol"] = df.apply(
-        lambda row: f"{row['Name']}"
-        f"{row['ContractExpiration'].strftime('%d%b%y').upper()}"
-        f"{'' if row['OptionType'] == 1 else (str(int(float(row['StrikePrice']))) if float(row['StrikePrice']) == int(float(row['StrikePrice'])) else str(row['StrikePrice'])) if pd.notna(row['StrikePrice']) else ''}"
-        f"{'FUT' if row['OptionType'] == 1 else 'CE' if row['OptionType'] == 3 else 'PE'}",
+        lambda row: (
+            f"{row['Name']}"
+            f"{row['ContractExpiration'].strftime('%d%b%y').upper()}"
+            f"{'' if row['OptionType'] == 1 else (str(int(float(row['StrikePrice']))) if float(row['StrikePrice']) == int(float(row['StrikePrice'])) else str(row['StrikePrice'])) if pd.notna(row['StrikePrice']) else ''}"
+            f"{'FUT' if row['OptionType'] == 1 else 'CE' if row['OptionType'] == 3 else 'PE'}"
+        ),
         axis=1,
     )
 
@@ -352,10 +354,12 @@ def process_compositedge_cds_csv(path):
     df["StrikePrice"] = pd.to_numeric(df["StrikePrice"], errors="coerce").fillna(1.0)
 
     df["symbol"] = df.apply(
-        lambda row: f"{row['Name']}"
-        f"{row['ContractExpiration'].strftime('%d%b%y').upper()}"
-        f"{'' if row['OptionType'] == 1 else (str(int(float(row['StrikePrice']))) if float(row['StrikePrice']) == int(float(row['StrikePrice'])) else str(row['StrikePrice'])) if pd.notna(row['StrikePrice']) else ''}"
-        f"{'FUT' if row['OptionType'] == 1 else 'CE' if row['OptionType'] == 3 else 'PE'}",
+        lambda row: (
+            f"{row['Name']}"
+            f"{row['ContractExpiration'].strftime('%d%b%y').upper()}"
+            f"{'' if row['OptionType'] == 1 else (str(int(float(row['StrikePrice']))) if float(row['StrikePrice']) == int(float(row['StrikePrice'])) else str(row['StrikePrice'])) if pd.notna(row['StrikePrice']) else ''}"
+            f"{'FUT' if row['OptionType'] == 1 else 'CE' if row['OptionType'] == 3 else 'PE'}"
+        ),
         axis=1,
     )
 
@@ -412,10 +416,12 @@ def process_compositedge_bfo_csv(path):
     df["StrikePrice"] = pd.to_numeric(df["StrikePrice"], errors="coerce").fillna(1.0)
 
     df["symbol"] = df.apply(
-        lambda row: f"{row['Name']}"
-        f"{row['ContractExpiration'].strftime('%d%b%y').upper()}"
-        f"{'' if row['OptionType'] == 1 else (str(int(float(row['StrikePrice']))) if float(row['StrikePrice']) == int(float(row['StrikePrice'])) else str(row['StrikePrice'])) if pd.notna(row['StrikePrice']) else ''}"
-        f"{'FUT' if row['OptionType'] == 1 else 'CE' if row['OptionType'] == 3 else 'PE'}",
+        lambda row: (
+            f"{row['Name']}"
+            f"{row['ContractExpiration'].strftime('%d%b%y').upper()}"
+            f"{'' if row['OptionType'] == 1 else (str(int(float(row['StrikePrice']))) if float(row['StrikePrice']) == int(float(row['StrikePrice'])) else str(row['StrikePrice'])) if pd.notna(row['StrikePrice']) else ''}"
+            f"{'FUT' if row['OptionType'] == 1 else 'CE' if row['OptionType'] == 3 else 'PE'}"
+        ),
         axis=1,
     )
 
@@ -453,10 +459,12 @@ def process_compositedge_mcx_csv(path):
     df["StrikePrice"] = pd.to_numeric(df["StrikePrice"], errors="coerce").fillna(1.0)
 
     df["symbol"] = df.apply(
-        lambda row: f"{row['Name']}"
-        f"{row['ContractExpiration'].strftime('%d%b%y').upper()}"
-        f"{'' if row['OptionType'] == 1 else (str(int(float(row['StrikePrice']))) if float(row['StrikePrice']) == int(float(row['StrikePrice'])) else str(row['StrikePrice'])) if pd.notna(row['StrikePrice']) else ''}"
-        f"{'FUT' if row['OptionType'] == 1 else 'CE' if row['OptionType'] == 3 else 'PE'}",
+        lambda row: (
+            f"{row['Name']}"
+            f"{row['ContractExpiration'].strftime('%d%b%y').upper()}"
+            f"{'' if row['OptionType'] == 1 else (str(int(float(row['StrikePrice']))) if float(row['StrikePrice']) == int(float(row['StrikePrice'])) else str(row['StrikePrice'])) if pd.notna(row['StrikePrice']) else ''}"
+            f"{'FUT' if row['OptionType'] == 1 else 'CE' if row['OptionType'] == 3 else 'PE'}"
+        ),
         axis=1,
     )
 
@@ -481,7 +489,7 @@ def process_compositedge_mcx_csv(path):
 
 def process_index_data(index_data):
     """
-    Processes index data from API to fit the Tradeboard database schema.
+    Processes index data from API to fit the TradeBoard database schema.
     Uses regex normalization to handle spacing variations in symbol names.
 
     Input format from API (index_entry format: "SYMBOL_TOKEN"):
@@ -499,7 +507,7 @@ def process_index_data(index_data):
     df["symbol"] = df["symbol"].astype(str).str.upper().str.strip()
     df["symbol"] = df["symbol"].str.replace(r"\s+", " ", regex=True)
 
-    # NSE index mapping (raw broker index names -> Tradeboard symbols)
+    # NSE index mapping (raw broker index names -> TradeBoard symbols)
     nse_index_map = {
         "NIFTY 50": "NIFTY",
         "NIFTY BANK": "BANKNIFTY",
@@ -514,9 +522,7 @@ def process_index_data(index_data):
 
     # BSE short-code mapping (applied only to BSE_INDEX symbols)
     bse_idx_mask = df["exchange"] == "BSE_INDEX"
-    df.loc[bse_idx_mask, "symbol"] = normalize_bse_index_symbols(
-        df.loc[bse_idx_mask, "symbol"]
-    )
+    df.loc[bse_idx_mask, "symbol"] = normalize_bse_index_symbols(df.loc[bse_idx_mask, "symbol"])
 
     # Final cleanup: enforce no spaces/hyphens in symbols
     df["symbol"] = df["symbol"].str.replace(r"[\s\-]+", "", regex=True)

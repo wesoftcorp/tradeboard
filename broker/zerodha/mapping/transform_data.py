@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Zerodha Broking Parameters https://kite.trade/docs/connect/v3/
 
 from database.token_db import get_br_symbol
@@ -23,7 +23,7 @@ def transform_data(data):
         "disclosed_quantity": data.get("disclosed_quantity", "0"),
         "validity": "DAY",
         "market_protection": "-1",
-        "tag": "tradeboard",
+        "tag": "TradeBoard",
     }
 
     # Extended mapping for fields that might need conditional logic or additional processing
@@ -66,9 +66,9 @@ def map_product_type(product):
 
 def reverse_map_product_type(exchange, product):
     """
-    Reverse maps the broker product type to the Tradeboard product type, considering the exchange.
+    Reverse maps the broker product type to the TradeBoard product type, considering the exchange.
     """
-    # Exchange to Tradeboard product type mapping for 'D'
+    # Exchange to TradeBoard product type mapping for 'D'
     exchange_mapping = {
         "CNC": "CNC",
         "NRML": "NRML",

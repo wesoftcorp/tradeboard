@@ -1,4 +1,4 @@
-import type * as PlotlyTypes from 'plotly.js'
+﻿import type * as PlotlyTypes from 'plotly.js'
 import { useMemo } from 'react'
 import Plot from '@/lib/Plot2D'
 import type { PayoffResult } from '@/lib/strategyMath'
@@ -264,7 +264,7 @@ export function PayoffChart({
       y: 0,
       xref: 'paper',
       yref: 'paper',
-      text: 'openalgo.in',
+      text: 'TradeBoard.in',
       showarrow: false,
       xanchor: 'right',
       yanchor: 'top',

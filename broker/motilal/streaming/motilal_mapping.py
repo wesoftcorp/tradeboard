@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class MotilalExchangeMapper:
-    """Maps Tradeboard exchange codes to Motilal-specific exchange types"""
+    """Maps TradeBoard exchange codes to Motilal-specific exchange types"""
 
     # Exchange type mapping for Motilal broker
     # Based on WebSocket documentation and API doc

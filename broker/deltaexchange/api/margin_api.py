@@ -5,7 +5,10 @@
 import os
 
 from broker.deltaexchange.api.baseurl import BASE_URL, get_auth_headers
-from broker.deltaexchange.mapping.margin_data import parse_margin_response, transform_margin_positions
+from broker.deltaexchange.mapping.margin_data import (
+    parse_margin_response,
+    transform_margin_positions,
+)
 from utils.httpx_client import get_httpx_client
 from utils.logging import get_logger
 
@@ -28,7 +31,7 @@ def get_margin_mode(auth: str) -> str:
     positions combined, whereas in isolated mode each position has a
     separate margin allocation.
     """
-    api_key    = auth
+    api_key = auth
     api_secret = os.getenv("BROKER_API_SECRET", "")
     if not api_key or not api_secret:
         return "unknown"
@@ -70,12 +73,12 @@ def calculate_margin_api(positions, auth):
     Results are aggregated across all positions.
 
     Args:
-        positions: List of Tradeboard-format position dicts
+        positions: List of TradeBoard-format position dicts
             {symbol, exchange, action, quantity, product, price, pricetype}
-        auth (str): api_key stored in the Tradeboard auth DB.
+        auth (str): api_key stored in the TradeBoard auth DB.
 
     Returns:
-        Tuple of (MockResponse, response_data) matching Tradeboard broker interface.
+        Tuple of (MockResponse, response_data) matching TradeBoard broker interface.
     """
     api_key = auth
     api_secret = os.getenv("BROKER_API_SECRET", "")
@@ -167,7 +170,7 @@ def calculate_margin_api(positions, auth):
             failed.append(str(product_id))
 
     if ok_count == 0:
-        msg = f"Margin calculation failed for all positions."
+        msg = "Margin calculation failed for all positions."
         if failed:
             msg += f" Failed product_ids: {', '.join(failed)}"
         return MockResponse(500), {"status": "error", "message": msg}

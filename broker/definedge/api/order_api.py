@@ -1,9 +1,9 @@
 import json
 import os
-
-import httpx
 import threading
 import time
+
+import httpx
 
 from broker.definedge.mapping.transform_data import (
     map_product_type,
@@ -86,14 +86,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -128,10 +128,9 @@ def _invalidate_position_cache(auth):
         _position_cache.pop(auth, None)
 
 
-
 def get_open_position(tradingsymbol, exchange, product, auth):
     """Get open position for a specific symbol."""
-    # Convert Trading Symbol from Tradeboard Format to Broker Format Before Search in OpenPosition
+    # Convert Trading Symbol from TradeBoard Format to Broker Format Before Search in OpenPosition
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
 
     logger.info("=== GET OPEN POSITION ===")
@@ -313,7 +312,9 @@ def place_smartorder_api(data, auth):
             position_size = int(data.get("position_size", "0"))
 
             # Get current open position for the symbol
-            current_position = int(get_open_position(symbol, exchange, map_product_type(product), auth))
+            current_position = int(
+                get_open_position(symbol, exchange, map_product_type(product), auth)
+            )
 
             logger.info("=== SMART ORDER EXECUTION ===")
             logger.info(f"Symbol: {symbol}, Exchange: {exchange}, Product: {product}")
@@ -490,14 +491,14 @@ def close_all_positions(current_api_key, auth):
                 f"Closing position: {tradingsymbol} ({exchange}) - Qty: {netqty_int}, Action: {action}"
             )
 
-            # Get tradeboard symbol to send to placeorder function
+            # Get TradeBoard symbol to send to placeorder function
             symbol = get_oa_symbol(tradingsymbol, exchange)
 
             if not symbol:
-                logger.error(f"Failed to get Tradeboard symbol for {tradingsymbol} on {exchange}")
+                logger.error(f"Failed to get TradeBoard symbol for {tradingsymbol} on {exchange}")
                 symbol = tradingsymbol  # Use original as fallback
 
-            logger.info(f"Tradeboard symbol: {symbol}")
+            logger.info(f"TradeBoard symbol: {symbol}")
 
             # Prepare the order payload
             place_order_payload = {

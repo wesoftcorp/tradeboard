@@ -7,18 +7,18 @@ import logging
 
 
 class DeltaExchangeMapper:
-    """Maps Tradeboard exchange codes to Delta Exchange equivalents.
+    """Maps TradeBoard exchange codes to Delta Exchange equivalents.
 
     Delta Exchange uses plain symbol strings (e.g. "BTCUSD").
-    All products trade on a single exchange named "CRYPTO" in Tradeboard.
+    All products trade on a single exchange named "CRYPTO" in TradeBoard.
     """
 
-    # Tradeboard exchange code → Delta Exchange exchange code
+    # TradeBoard exchange code → Delta Exchange exchange code
     EXCHANGE_SEGMENTS = {
         "CRYPTO": "CRYPTO",
-        "NSE":    "CRYPTO",   # safety alias if misconfigured
-        "BSE":    "CRYPTO",
-        "MCX":    "CRYPTO",
+        "NSE": "CRYPTO",  # safety alias if misconfigured
+        "BSE": "CRYPTO",
+        "MCX": "CRYPTO",
     }
 
     @staticmethod
@@ -32,13 +32,13 @@ class DeltaExchangeMapper:
 
 
 class DeltaModeMapper:
-    """Maps Tradeboard subscription mode integers to Delta Exchange channel names."""
+    """Maps TradeBoard subscription mode integers to Delta Exchange channel names."""
 
-    # Tradeboard mode → Delta WS channel name
+    # TradeBoard mode → Delta WS channel name
     MODE_CHANNELS = {
-        1: "v2/ticker",    # LTP mode
-        2: "v2/ticker",    # Quote mode (also uses ticker; provides bid/ask/OI)
-        3: "l2_orderbook", # Depth mode
+        1: "v2/ticker",  # LTP mode
+        2: "v2/ticker",  # Quote mode (also uses ticker; provides bid/ask/OI)
+        3: "l2_orderbook",  # Depth mode
     }
 
     @staticmethod

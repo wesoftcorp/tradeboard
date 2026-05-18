@@ -2,10 +2,10 @@ import logging
 
 
 class CompositedgeExchangeMapper:
-    """Maps between Tradeboard exchange codes and Compositedge XTS specific exchange types"""
+    """Maps between TradeBoard exchange codes and Compositedge XTS specific exchange types"""
 
     # Exchange type mapping for Compositedge XTS broker
-    # Format: {Tradeboard_Exchange: Compositedge_Exchange_Code}
+    # Format: {TradeBoard_Exchange: Compositedge_Exchange_Code}
     # Based on Compositedge API documentation:
     # "NSECM": 1, "NSEFO": 2, "NSECD": 3, "BSECM": 11, "BSEFO": 12, "MCXFO": 51
     EXCHANGE_TYPES = {
@@ -29,8 +29,8 @@ class CompositedgeExchangeMapper:
         "MCXFO": 51,  # MCX F&O
     }
 
-    # Reverse mapping for converting Compositedge exchange codes to Tradeboard format
-    # Format: {Compositedge_Exchange_Code: Tradeboard_Exchange}
+    # Reverse mapping for converting Compositedge exchange codes to TradeBoard format
+    # Format: {Compositedge_Exchange_Code: TradeBoard_Exchange}
     REVERSE_EXCHANGE_TYPES = {
         1: "NSE",  # NSECM
         2: "NFO",  # NSEFO
@@ -43,7 +43,7 @@ class CompositedgeExchangeMapper:
     @staticmethod
     def get_exchange_type(exchange):
         """
-        Convert Tradeboard exchange code to Compositedge XTS specific exchange type
+        Convert TradeBoard exchange code to Compositedge XTS specific exchange type
 
         Args:
             exchange: Exchange code (e.g., 'NSE', 'BSE', 'NSEFO')
@@ -62,7 +62,7 @@ class CompositedgeExchangeMapper:
         # Mapping based on Compositedge API documentation:
         # "NSECM": 1, "NSEFO": 2, "NSECD": 3, "BSECM": 11, "BSEFO": 12, "MCXFO": 51
         all_exchange_mappings = {
-            # Tradeboard standard codes
+            # TradeBoard standard codes
             "NSE": 1,  # NSE Cash Market
             "NFO": 2,  # NSE F&O
             "CDS": 3,  # NSE Currency Derivatives
@@ -100,15 +100,15 @@ class CompositedgeExchangeMapper:
         return 1
 
     @staticmethod
-    def get_tradeboard_exchange(compositedge_code):
+    def get_TradeBoard_exchange(compositedge_code):
         """
-        Convert Compositedge XTS exchange code to Tradeboard exchange code
+        Convert Compositedge XTS exchange code to TradeBoard exchange code
 
         Args:
             compositedge_code (int): Compositedge exchange code
 
         Returns:
-            str: Tradeboard exchange code
+            str: TradeBoard exchange code
         """
         return CompositedgeExchangeMapper.REVERSE_EXCHANGE_TYPES.get(
             compositedge_code, "NSE"

@@ -1,14 +1,22 @@
 import json
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 import pandas as pd
 
 from broker.iiflcapital.baseurl import BASE_URL
+from broker.iiflcapital.streaming.iiflcapital_mapping import supports_open_interest
 from database.token_db import get_brexchange, get_token
 from utils.httpx_client import get_httpx_client
 from utils.logging import get_logger
 
 logger = get_logger(__name__)
+
+# IIFL exposes OI on a separate single-mode endpoint, so an option chain
+# pull does N HTTP roundtrips. The shared httpx client allows up to 100
+# concurrent connections; cap fanout at 32 so a 60-leg chain finishes in
+# ~2 batches (~400 ms) instead of the previous 8-worker loop (~1.6 s).
+_OI_MAX_WORKERS = 32
 
 
 def _try_json(value: Any) -> Any:
@@ -128,9 +136,7 @@ def _looks_like_market_row(value: Any) -> bool:
 def _extract_row_error(row: dict) -> str | None:
     status = str(_first(row, ("status", "Status"), "")).lower()
     if status in ("error", "failed", "failure", "false", "ko"):
-        return str(
-            _first(row, ("message", "error", "description", "emsg"), "Request failed")
-        )
+        return str(_first(row, ("message", "error", "description", "emsg"), "Request failed"))
     return None
 
 
@@ -454,12 +460,10 @@ class BrokerData:
 
         if not _is_success(response.status_code, data):
             message = (
-                data.get("message")
-                if isinstance(data, dict)
-                else None
-            ) or (
-                data.get("error") if isinstance(data, dict) else None
-            ) or f"Request failed with HTTP {response.status_code}"
+                (data.get("message") if isinstance(data, dict) else None)
+                or (data.get("error") if isinstance(data, dict) else None)
+                or f"Request failed with HTTP {response.status_code}"
+            )
             raise Exception(message)
 
         return data
@@ -471,6 +475,56 @@ class BrokerData:
             return rows
 
         raise Exception("No quote rows in broker response")
+
+    def _fetch_openinterest(self, instrument: dict) -> int:
+        """
+        Fetch open interest for one F&O instrument.
+
+        IIFL's /marketdata/openinterest is single-mode only and lives on a
+        separate endpoint from marketquotes (which never returns OI). Best
+        effort — returns 0 on any failure so a flaky OI call never blocks
+        the quote/option-chain response.
+        """
+        try:
+            response = self._post("/marketdata/openinterest", instrument)
+        except Exception as exc:
+            logger.debug(f"IIFL OI fetch failed for {instrument}: {exc}")
+            return 0
+
+        if not isinstance(response, dict):
+            return 0
+
+        result = response.get("result", response)
+        if isinstance(result, list) and result:
+            result = result[0]
+        if not isinstance(result, dict):
+            return 0
+
+        return _to_int(_first(result, ("openInterest", "oi"), 0))
+
+    def _fetch_openinterest_map(self, instruments: list[dict]) -> dict[str, int]:
+        """
+        Concurrently fetch OI for many instruments. Keyed by 'exchange:instrumentId'.
+        IIFL doesn't support batch OI, so option chains require one HTTP call per
+        leg — fanout capped at _OI_MAX_WORKERS.
+        """
+        if not instruments:
+            return {}
+
+        oi_map: dict[str, int] = {}
+        with ThreadPoolExecutor(max_workers=min(_OI_MAX_WORKERS, len(instruments))) as pool:
+            futures = {
+                pool.submit(self._fetch_openinterest, inst): (
+                    f"{str(inst['exchange']).upper()}:{inst['instrumentId']}"
+                )
+                for inst in instruments
+            }
+            for future, key in futures.items():
+                try:
+                    oi_map[key] = future.result()
+                except Exception:
+                    oi_map[key] = 0
+        return oi_map
 
     def _resolve_token(self, symbol: str, exchange: str) -> str:
         token = get_token(symbol, exchange)
@@ -489,7 +543,8 @@ class BrokerData:
         }
 
     def get_quotes(self, symbol: str, exchange: str) -> dict:
-        rows = self._fetch_marketquote_rows([self._instrument(symbol, exchange)])
+        instrument = self._instrument(symbol, exchange)
+        rows = self._fetch_marketquote_rows([instrument])
         if not rows:
             raise Exception("No quote data received from broker")
 
@@ -504,7 +559,10 @@ class BrokerData:
         if not _looks_like_market_row(row):
             raise Exception("No quote data received from broker")
 
-        return _parse_quote_row(row)
+        parsed = _parse_quote_row(row)
+        if supports_open_interest(str(exchange).upper()):
+            parsed["oi"] = self._fetch_openinterest(instrument)
+        return parsed
 
     def get_multiquotes(self, symbols: list) -> list:
         instruments = []
@@ -550,6 +608,15 @@ class BrokerData:
 
         rows = self._fetch_marketquote_rows(instruments)
 
+        # IIFL OI lives on a separate single-mode endpoint. Fetch concurrently
+        # for F&O legs only (cash equities have no OI) and merge by identity.
+        oi_instruments = [
+            v["instrument"]
+            for v in valid_symbols
+            if supports_open_interest(str(v["exchange"]).upper())
+        ]
+        oi_map = self._fetch_openinterest_map(oi_instruments)
+
         parsed_rows = []
         rows_by_identity: dict[str, dict] = {}
 
@@ -574,7 +641,9 @@ class BrokerData:
             original_exchange_key = f"{original['exchange'].upper()}:{instrument['instrumentId']}"
 
             if use_identity_lookup:
-                row = rows_by_identity.get(identity_key) or rows_by_identity.get(original_exchange_key)
+                row = rows_by_identity.get(identity_key) or rows_by_identity.get(
+                    original_exchange_key
+                )
             else:
                 row = parsed_rows[idx] if idx < len(parsed_rows) else None
 
@@ -601,18 +670,24 @@ class BrokerData:
                 )
                 continue
 
+            parsed = _parse_quote_row(row)
+            oi_key = f"{str(instrument['exchange']).upper()}:{instrument['instrumentId']}"
+            if oi_key in oi_map:
+                parsed["oi"] = oi_map[oi_key]
+
             results.append(
                 {
                     "symbol": original["symbol"],
                     "exchange": original["exchange"],
-                    "data": _parse_quote_row(row),
+                    "data": parsed,
                 }
             )
 
         return skipped + results
 
     def get_depth(self, symbol: str, exchange: str) -> dict:
-        payload = self._instrument(symbol, exchange)
+        instrument = self._instrument(symbol, exchange)
+        payload = instrument
         response = self._post("/marketdata/marketdepth", payload)
 
         rows = _extract_rows(response)
@@ -637,6 +712,8 @@ class BrokerData:
         prev_close = _to_float(_first(row, ("close", "previousClose"), 0))
         volume = _to_int(_first(row, ("volume", "tradedVolume"), 0))
         oi = _to_int(_first(row, ("oi", "openInterest"), 0))
+        if oi == 0 and supports_open_interest(str(exchange).upper()):
+            oi = self._fetch_openinterest(instrument)
         total_buy_qty = _to_int(
             _first(
                 row,
@@ -670,7 +747,9 @@ class BrokerData:
             "totalsellqty": total_sell_qty,
         }
 
-    def get_history(self, symbol: str, exchange: str, interval: str, start_date: str, end_date: str):
+    def get_history(
+        self, symbol: str, exchange: str, interval: str, start_date: str, end_date: str
+    ):
         broker_interval = self.timeframe_map.get(interval)
         if not broker_interval:
             raise Exception(f"Unsupported timeframe: {interval}")

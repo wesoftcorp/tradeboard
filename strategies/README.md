@@ -1,7 +1,7 @@
-# Python Strategy Management System
+﻿# Python Strategy Management System
 
 ## Overview
-A complete web-based strategy hosting and scheduling system for Tradeboard, accessible at `/python`.
+A complete web-based strategy hosting and scheduling system for TradeBoard, accessible at `/python`.
 
 ## Features
 - **Upload & Manage**: Upload Python strategy scripts through web interface
@@ -19,7 +19,7 @@ A complete web-based strategy hosting and scheduling system for Tradeboard, acce
 pip install apscheduler psutil
 ```
 
-2. The system is already integrated into Tradeboard. Access it at:
+2. The system is already integrated into TradeBoard. Access it at:
 ```
 http://localhost:5000/python
 ```
@@ -69,19 +69,19 @@ import time
 from datetime import datetime
 
 # Get parameters from environment.
-# EXCHANGE prefers TRADEBOARD_STRATEGY_EXCHANGE (set by /python from your
+# EXCHANGE prefers TradeBoard_STRATEGY_EXCHANGE (set by /python from your
 # strategy's exchange config) so the script trades on the same exchange
 # the host is gating its calendar against. Falls back to EXCHANGE env
 # var, then NSE — so the same script works standalone too.
 SYMBOL   = os.getenv('SYMBOL', 'RELIANCE')
 EXCHANGE = os.getenv(
-    'TRADEBOARD_STRATEGY_EXCHANGE',
+    'TradeBoard_STRATEGY_EXCHANGE',
     os.getenv('EXCHANGE', 'NSE'),
 )
-API_KEY  = os.getenv('TRADEBOARD_API_KEY', '')
-# HOST_SERVER is the canonical name in Tradeboard's .env (inherited).
-# TRADEBOARD_HOST is a fallback alias the platform setdefaults to 127.0.0.1:5000.
-API_HOST = os.getenv('HOST_SERVER') or os.getenv('TRADEBOARD_HOST', 'http://127.0.0.1:5000')
+API_KEY  = os.getenv('TradeBoard_API_KEY', '')
+# HOST_SERVER is the canonical name in TradeBoard's .env (inherited).
+# TradeBoard_HOST is a fallback alias the platform setdefaults to 127.0.0.1:5000.
+API_HOST = os.getenv('HOST_SERVER') or os.getenv('TradeBoard_HOST', 'http://127.0.0.1:5000')
 WS_URL   = os.getenv('WEBSOCKET_URL') or (
     f"ws://{os.getenv('WEBSOCKET_HOST', '127.0.0.1')}:{os.getenv('WEBSOCKET_PORT', '8765')}"
 )
@@ -96,7 +96,7 @@ def main():
             # 1. Fetch market data
             # 2. Calculate indicators
             # 3. Generate signals
-            # 4. Place orders via Tradeboard API
+            # 4. Place orders via TradeBoard API
             
             print(f"[{datetime.now()}] Running strategy...")
             time.sleep(60)  # Check every minute
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     main()
 ```
 
-> **Reading `TRADEBOARD_STRATEGY_EXCHANGE` is optional but strongly recommended.** If your script hardcodes `exchange = "NSE"`, the host will still gate it correctly per its config (e.g. host runs your script during MCX evening session because `exchange=MCX`), but your `client.placeorder(exchange="NSE", ...)` calls will still send NSE orders — and the broker will reject them. Wiring the env var keeps host calendar and script orders aligned.
+> **Reading `TradeBoard_STRATEGY_EXCHANGE` is optional but strongly recommended.** If your script hardcodes `exchange = "NSE"`, the host will still gate it correctly per its config (e.g. host runs your script during MCX evening session because `exchange=MCX`), but your `client.placeorder(exchange="NSE", ...)` calls will still send NSE orders — and the broker will reject them. Wiring the env var keeps host calendar and script orders aligned.
 
 ## Environment Variables
 
@@ -122,13 +122,13 @@ These are set directly on each strategy subprocess (only the ones below — the 
 
 - `STRATEGY_ID` — unique identifier for the strategy
 - `STRATEGY_NAME` — name of the strategy
-- `TRADEBOARD_STRATEGY_EXCHANGE` — the exchange picked at upload/edit time (`NSE` / `BSE` / `NFO` / `BFO` / `MCX` / `BCD` / `CDS` / `CRYPTO`). Read this in your script so its trading calls match the calendar the host is gating against
-- `TRADEBOARD_API_KEY` — decrypted API key for this user
-- `TRADEBOARD_HOST` — Tradeboard host URL, **set with `setdefault` to `http://127.0.0.1:5000`**. If `TRADEBOARD_HOST` is already present in `.env` (it usually isn't — `.env` uses `HOST_SERVER`), that value is kept. Treat this as a convenience fallback only
+- `TradeBoard_STRATEGY_EXCHANGE` — the exchange picked at upload/edit time (`NSE` / `BSE` / `NFO` / `BFO` / `MCX` / `BCD` / `CDS` / `CRYPTO`). Read this in your script so its trading calls match the calendar the host is gating against
+- `TradeBoard_API_KEY` — decrypted API key for this user
+- `TradeBoard_HOST` — TradeBoard host URL, **set with `setdefault` to `http://127.0.0.1:5000`**. If `TradeBoard_HOST` is already present in `.env` (it usually isn't — `.env` uses `HOST_SERVER`), that value is kept. Treat this as a convenience fallback only
 
 ### Inherited from `.env`
 
-Strategies are launched with `os.environ.copy()`, so they inherit **every** variable from Tradeboard's `.env`. The relevant ones for connecting to Tradeboard:
+Strategies are launched with `os.environ.copy()`, so they inherit **every** variable from TradeBoard's `.env`. The relevant ones for connecting to TradeBoard:
 
 - `HOST_SERVER` — REST host, e.g. `http://127.0.0.1:5000` (this is the canonical name in `.env`; **prefer this in your scripts**)
 - `WEBSOCKET_URL` — full WS URL, e.g. `ws://127.0.0.1:8765`
@@ -139,15 +139,15 @@ Strategies are launched with `os.environ.copy()`, so they inherit **every** vari
 
 > **Recommended pattern in scripts:**
 > ```python
-> # REST: prefer HOST_SERVER (from .env), fall back to injected TRADEBOARD_HOST, then a literal
-> API_HOST = os.getenv("HOST_SERVER") or os.getenv("TRADEBOARD_HOST", "http://127.0.0.1:5000")
+> # REST: prefer HOST_SERVER (from .env), fall back to injected TradeBoard_HOST, then a literal
+> API_HOST = os.getenv("HOST_SERVER") or os.getenv("TradeBoard_HOST", "http://127.0.0.1:5000")
 > # WebSocket: WEBSOCKET_URL is canonical; build from HOST/PORT only if URL isn't set
 > WS_URL = os.getenv("WEBSOCKET_URL") or (
 >     f"ws://{os.getenv('WEBSOCKET_HOST', '127.0.0.1')}:{os.getenv('WEBSOCKET_PORT', '8765')}"
 > )
 > ```
 >
-> Note: there is **no `HOST_URL` variable** anywhere in Tradeboard. Only `HOST_SERVER` (REST), `TRADEBOARD_HOST` (injected fallback alias), and `WEBSOCKET_URL` (WS).
+> Note: there is **no `HOST_URL` variable** anywhere in TradeBoard. Only `HOST_SERVER` (REST), `TradeBoard_HOST` (injected fallback alias), and `WEBSOCKET_URL` (WS).
 
 ### Per-strategy parameters
 
@@ -168,17 +168,17 @@ logs/
 
 ## API Integration
 
-Example of integrating with Tradeboard API in your strategy:
+Example of integrating with TradeBoard API in your strategy:
 
 ```python
 import os
 import requests
 
-class TradeboardAPI:
+class TradeBoardAPI:
     def __init__(self, host=None, api_key=None):
-        # HOST_SERVER (from .env) wins; TRADEBOARD_HOST is the platform-injected fallback.
-        self.host = host or os.getenv('HOST_SERVER') or os.getenv('TRADEBOARD_HOST', 'http://127.0.0.1:5000')
-        self.api_key = api_key or os.getenv('TRADEBOARD_API_KEY', '')
+        # HOST_SERVER (from .env) wins; TradeBoard_HOST is the platform-injected fallback.
+        self.host = host or os.getenv('HOST_SERVER') or os.getenv('TradeBoard_HOST', 'http://127.0.0.1:5000')
+        self.api_key = api_key or os.getenv('TradeBoard_API_KEY', '')
         self.headers = {'X-API-KEY': self.api_key}
 
     def place_order(self, symbol, exchange, action, quantity):
@@ -257,7 +257,7 @@ The "session today" lookup uses the same calendar DB that powers `/api/v1/market
    - Confirm your `schedule_start..schedule_stop` overlaps the calendar window — they intersect, so a 09:15-15:30 schedule will NOT fire during a 17:00-23:55 partial session
 6. **Strategy ran on a Sunday/Saturday (special session)**: that's by design — the calendar's SPECIAL_SESSION row overrides the weekend reject. To opt out, remove the day from `schedule_days`
 7. **Strategy paused with `paused_reason=holiday`** but you think today is open: check `get_market_status(exchange)` — the exchange's session may differ from another exchange's. Each strategy is gated by its own exchange
-8. **Orders rejected with "market closed" while host says strategy is running**: your script's hardcoded `exchange="NSE"` doesn't match the host's `exchange="MCX"`. Read `TRADEBOARD_STRATEGY_EXCHANGE` in your script (see Strategy Template)
+8. **Orders rejected with "market closed" while host says strategy is running**: your script's hardcoded `exchange="NSE"` doesn't match the host's `exchange="MCX"`. Read `TradeBoard_STRATEGY_EXCHANGE` in your script (see Strategy Template)
 
 ## Migration notes (existing deployments)
 
@@ -273,6 +273,6 @@ When upgrading to the exchange-aware /python:
 
 See `examples/simple_ema_strategy.py` for a complete working example that:
 - Implements EMA crossover logic
-- Integrates with Tradeboard API
+- Integrates with TradeBoard API
 - Handles errors gracefully
 - Uses environment parameters

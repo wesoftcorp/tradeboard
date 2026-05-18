@@ -2,7 +2,7 @@ import logging
 
 
 class SamcoExchangeMapper:
-    """Maps Tradeboard exchange codes to Samco-specific exchange types"""
+    """Maps TradeBoard exchange codes to Samco-specific exchange types"""
 
     # Exchange type mapping for Samco broker
     EXCHANGE_TYPES = {

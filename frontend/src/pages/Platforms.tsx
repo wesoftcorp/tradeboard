@@ -1,4 +1,4 @@
-import { ArrowRight, BarChart3, Layers, Lightbulb, LineChart } from 'lucide-react'
+﻿import { ArrowRight, BarChart3, Layers, Lightbulb, LineChart } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -38,7 +38,7 @@ export default function Platforms() {
           Trading Platforms
         </h1>
         <p className="text-muted-foreground mt-1">
-          Connect your favorite charting platforms with OpenAlgo for automated trading
+          Connect your favorite charting platforms with TradeBoard for automated trading
         </p>
       </div>
 
@@ -82,7 +82,7 @@ export default function Platforms() {
             configuring webhooks.
           </span>
           <Button asChild variant="outline" size="sm" className="gap-1 flex-shrink-0">
-            <a href="https://docs.openalgo.in" target="_blank" rel="noopener noreferrer">
+            <a href="https://docs.TradeBoard.in" target="_blank" rel="noopener noreferrer">
               View Documentation
             </a>
           </Button>

@@ -1,5 +1,5 @@
 """
-Complete Dhan WebSocket client wrapper for Tradeboard.
+Complete Dhan WebSocket client wrapper for TradeBoard.
 Based on Dhan V2 API documentation with proper binary packet parsing.
 """
 
@@ -8,6 +8,7 @@ import json
 import logging
 import os
 import struct
+import sys
 import threading
 import time
 from collections.abc import Callable
@@ -19,11 +20,26 @@ import websockets
 # Set up logging
 logger = logging.getLogger("dhan_websocket")
 
+# Issue #1344 (CRITICAL) — when running under gunicorn+eventlet (production
+# install path), eventlet monkey-patches threading.Thread into green threads.
+# asyncio.new_event_loop() inside a green thread is undefined behavior. The
+# in-house pattern in services/websocket_client.py:21-29 is to use
+# eventlet.patcher.original("threading") so the asyncio loop runs on a real
+# OS thread, bypassing the monkey-patch. The bug is invisible in dev (Flask
+# dev server uses standard threading) and only surfaces on production
+# gunicorn+eventlet deployments.
+if "eventlet" in sys.modules:
+    import eventlet
+
+    _original_threading = eventlet.patcher.original("threading")
+else:
+    _original_threading = threading
+
 
 class DhanWebSocket:
     """
     Complete Wrapper for Dhan's MarketFeed WebSocket client.
-    Bridges the async implementation with Tradeboard's threading model.
+    Bridges the async implementation with TradeBoard's threading model.
     """
 
     # Message type constants (based on Dhan binary packet first byte)
@@ -55,8 +71,10 @@ class DhanWebSocket:
     REQUEST_CODE_FULL = TYPE_DEPTH  # 21 - Full market data (5-level depth)
     REQUEST_CODE_DEPTH_20 = 23  # 23 - 20-level market depth
 
-    # Heartbeat interval in seconds
-    HEARTBEAT_INTERVAL = 15
+    # Heartbeat interval in seconds. Aligned to ping_interval=30 (used in
+    # _connect) so we have a single liveness signal cadence rather than two
+    # on staggered schedules (issue #1344). Matches flattrade's pattern.
+    HEARTBEAT_INTERVAL = 30
 
     # Exchange code mapping for binary packets
     EXCHANGE_MAP = {
@@ -141,7 +159,10 @@ class DhanWebSocket:
 
         try:
             self.loop = asyncio.new_event_loop()
-            self.thread = threading.Thread(target=self._run_event_loop, daemon=True)
+            # Use _original_threading.Thread so the asyncio event loop runs
+            # on a real OS thread under gunicorn+eventlet — see issue #1344
+            # and the import-time setup at the top of this file.
+            self.thread = _original_threading.Thread(target=self._run_event_loop, daemon=True)
             self.thread.start()
             self.running = True
             logger.info("WebSocket client thread started")
@@ -415,10 +436,16 @@ class DhanWebSocket:
 
             logger.info("Starting reconnection process...")
 
-            # Reconnect with exponential backoff
+            # Reconnect with exponential backoff.
+            # Issue #1344: WS-layer retry capped at 1 to avoid the dual-retry
+            # storm with the adapter-layer (which has its own 10-attempt /
+            # 5s..300s exponential backoff). Adapter is the canonical retry
+            # owner; this layer just attempts a single immediate reconnect
+            # so transient network blips recover without involving the
+            # adapter, but persistent failures bubble up promptly.
             base_delay = 1.0  # Start with 1 second
             max_delay = 60.0  # Max 60 seconds between retries
-            max_attempts = 10  # Max number of retry attempts
+            max_attempts = 1  # Adapter layer owns the retry budget
 
             for attempt in range(1, max_attempts + 1):
                 if not self.running:
@@ -736,7 +763,7 @@ class DhanWebSocket:
             dt = datetime.fromtimestamp(timestamp) if timestamp > 0 else datetime.now()
             formatted_time = dt.strftime("%Y-%m-%d %H:%M:%S")
 
-            # Create tick dictionary in Tradeboard format
+            # Create tick dictionary in TradeBoard format
             tick = {
                 "token": token,
                 "instrument_token": token,
@@ -893,7 +920,7 @@ class DhanWebSocket:
                 "low": low_price,
                 "close": close_price,
                 "mode": "QUOTE",
-                # Additional fields for Tradeboard compatibility
+                # Additional fields for TradeBoard compatibility
                 "instrument_token": unpacked[3],
                 "last_price": round(unpacked[4], 2),
                 "last_quantity": unpacked[5],
@@ -1441,7 +1468,7 @@ class DhanWebSocket:
                 "low": low_price,
                 "close": close_price,
                 "mode": "QUOTE",
-                # Additional fields for Tradeboard compatibility
+                # Additional fields for TradeBoard compatibility
                 "instrument_token": unpacked[3],
                 "last_price": round(unpacked[4], 2),
                 "last_quantity": unpacked[5],
@@ -1794,9 +1821,11 @@ class DhanWebSocket:
 
             logger.info("🚀 Starting 20-level depth WebSocket connection...")
 
-            # Create new event loop for 20-level depth
+            # Create new event loop for 20-level depth (issue #1344 — use
+            # _original_threading.Thread so eventlet does not green-thread
+            # the asyncio loop's host).
             self.depth_20_loop = asyncio.new_event_loop()
-            self.depth_20_thread = threading.Thread(
+            self.depth_20_thread = _original_threading.Thread(
                 target=self._run_20_level_event_loop, daemon=True
             )
             self.depth_20_thread.start()
@@ -2837,7 +2866,7 @@ class DhanWebSocket:
             exchange_code = data.get("exchange_code", 1)
             exchange = self.EXCHANGE_MAP.get(exchange_code, "NSE_EQ")
 
-            # Format depth data to match the Tradeboard standard
+            # Format depth data to match the TradeBoard standard
             formatted_bids = []
             if data.get("bids"):
                 for i, bid in enumerate(data["bids"][:20]):  # Ensure max 20 levels
@@ -2862,7 +2891,7 @@ class DhanWebSocket:
                         }
                     )
 
-            # Create tick data in Tradeboard format with enhanced depth information
+            # Create tick data in TradeBoard format with enhanced depth information
             tick = {
                 "token": token,
                 "instrument_token": token,

@@ -1,13 +1,13 @@
-# Indicators
+﻿# Indicators
 
-## Tradeboard Technical Indicators Library
+## TradeBoard Technical Indicators Library
 
-Tradeboard Technical Indicators is a high-performance Python library designed for comprehensive technical analysis with a focus on speed, accuracy, and ease of use. Built from the ground up with modern optimization techniques, it provides over 80 technical indicators across all major categories.
+TradeBoard Technical Indicators is a high-performance Python library designed for comprehensive technical analysis with a focus on speed, accuracy, and ease of use. Built from the ground up with modern optimization techniques, it provides over 80 technical indicators across all major categories.
 
 ### Import Statement
 
 ```python
-from tradeboard import ta
+from TradeBoard import ta
 ```
 
 ### List of Supported Indicators
@@ -153,7 +153,7 @@ from tradeboard import ta
 * **Research Teams** conducting market analysis and backtesting
 * **Financial Applications** needing embedded technical analysis capabilities
 
-Tradeboard Indicators bridges the gap between ease of use and performance, making sophisticated technical analysis accessible to both beginners and experts while maintaining the speed and accuracy demanded by professional trading systems.
+TradeBoard Indicators bridges the gap between ease of use and performance, making sophisticated technical analysis accessible to both beginners and experts while maintaining the speed and accuracy demanded by professional trading systems.
 
 
 ---
@@ -165,7 +165,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.wesoftcorp.com/trading-platform/python/indicators.md?ask=<question>
+GET https://docs.TradeBoard.in/trading-platform/python/indicators.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

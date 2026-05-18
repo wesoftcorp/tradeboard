@@ -1,10 +1,10 @@
-# Tradeboard Developer Documentation
+﻿# TradeBoard Developer Documentation
 
-Welcome to the Tradeboard Developer Bible - a comprehensive guide for understanding and working with the Tradeboard algorithmic trading platform.
+Welcome to the TradeBoard Developer Bible - a comprehensive guide for understanding and working with the TradeBoard algorithmic trading platform.
 
-## What is Tradeboard?
+## What is TradeBoard?
 
-Tradeboard is a production-ready algorithmic trading platform built with Flask (backend) and React 19 (frontend). It provides a unified API layer across 29 Indian brokers, enabling seamless integration with TradingView, Amibroker, Excel, Python, and AI agents.
+TradeBoard is a production-ready algorithmic trading platform built with Flask (backend) and React 19 (frontend). It provides a unified API layer across 29 Indian brokers, enabling seamless integration with TradingView, Amibroker, Excel, Python, and AI agents.
 
 ## Documentation Index
 

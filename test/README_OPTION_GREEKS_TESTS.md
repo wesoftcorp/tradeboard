@@ -1,4 +1,4 @@
-# Option Greeks API Tests
+﻿# Option Greeks API Tests
 
 This folder contains test scripts for the Option Greeks API.
 
@@ -15,8 +15,8 @@ This folder contains test scripts for the Option Greeks API.
    uv pip install mibian
    ```
 
-2. **Tradeboard must be running**
-   - Start Tradeboard application
+2. **TradeBoard must be running**
+   - Start TradeBoard application
    - Ensure it's accessible at `http://127.0.0.1:5000`
 
 3. **Markets Should Be Open**
@@ -25,7 +25,7 @@ This folder contains test scripts for the Option Greeks API.
    - Pre-market/post-market may have stale data
 
 4. **API Key**
-   - Get your API key from Tradeboard settings
+   - Get your API key from TradeBoard settings
    - Replace `"your_api_key_here"` in the test file
 
 ## How to Run Tests
@@ -34,7 +34,7 @@ This folder contains test scripts for the Option Greeks API.
 
 ```bash
 # Navigate to test directory
-cd D:/tradeboard-sandbox-test/tradeboard/test
+cd D:/TradeBoard-sandbox-test/TradeBoard/test
 
 # Run Option Greeks API tests
 python test_option_greeks_api.py
@@ -44,7 +44,7 @@ python test_option_greeks_api.py
 
 ```bash
 # Navigate to project root
-cd D:/tradeboard-sandbox-test/tradeboard
+cd D:/TradeBoard-sandbox-test/TradeBoard
 
 # Run Option Greeks API tests
 python test/test_option_greeks_api.py
@@ -54,7 +54,7 @@ python test/test_option_greeks_api.py
 
 ```bash
 # From project root
-cd D:/tradeboard-sandbox-test/tradeboard
+cd D:/TradeBoard-sandbox-test/TradeBoard
 
 # Run tests with uv
 uv run python test/test_option_greeks_api.py
@@ -458,5 +458,5 @@ For issues or questions:
 - Check symbol format matches documented pattern
 - Ensure markets are open for accurate prices
 - Update expiry dates to current/future
-- Review Tradeboard logs for detailed errors
+- Review TradeBoard logs for detailed errors
 - Compare with broker Greeks to validate accuracy

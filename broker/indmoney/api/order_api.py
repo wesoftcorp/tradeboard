@@ -1,9 +1,9 @@
 import json
 import os
-
-import httpx
 import threading
 import time
+
+import httpx
 
 from broker.indmoney.api.baseurl import get_url
 from broker.indmoney.mapping.transform_data import (
@@ -267,14 +267,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -309,9 +309,8 @@ def _invalidate_position_cache(auth):
         _position_cache.pop(auth, None)
 
 
-
 def get_open_position(tradingsymbol, exchange, product, auth):
-    # Convert Trading Symbol from Tradeboard Format to Broker Format Before Search in OpenPosition
+    # Convert Trading Symbol from TradeBoard Format to Broker Format Before Search in OpenPosition
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
     positions_response = _get_cached_positions(auth)
     net_qty = "0"
@@ -407,7 +406,7 @@ def place_order_api(data, auth):
             # Indmoney returns order ID in data.order_id field
             orderid = response_data.get("data", {}).get("order_id")
             logger.info(f"Order placed successfully with ID: {orderid}")
-            # Format response to match Tradeboard API standard
+            # Format response to match TradeBoard API standard
             response_data = {"orderid": orderid, "status": "success"}
         elif response_data and response_data.get("status") in ["error", "failure"]:
             # Handle API errors/failures - but check if order was actually placed
@@ -564,7 +563,7 @@ def close_all_positions(current_api_key, auth):
             else:
                 exchange = segment
 
-            # get tradeboard symbol to send to placeorder function
+            # get TradeBoard symbol to send to placeorder function
             symbol = get_symbol(position["security_id"], exchange)
             logger.info(f"The Symbol is {symbol}")
 

@@ -1,8 +1,8 @@
-# 17 - Connection Pooling
+﻿# 17 - Connection Pooling
 
 ## Overview
 
-Tradeboard implements connection pooling for WebSocket symbol subscriptions to optimize performance and manage broker API limits. The system uses `ConnectionPool` with a `SharedZmqPublisher` singleton to handle multiple WebSocket connections per broker, aggregating data through ZeroMQ for unified distribution.
+TradeBoard implements connection pooling for WebSocket symbol subscriptions to optimize performance and manage broker API limits. The system uses `ConnectionPool` with a `SharedZmqPublisher` singleton to handle multiple WebSocket connections per broker, aggregating data through ZeroMQ for unified distribution.
 
 ## Architecture Diagram
 

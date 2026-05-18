@@ -1,4 +1,4 @@
-# Cloudflare Tunnel Setup
+﻿# Cloudflare Tunnel Setup
 
 This folder contains instructions and configuration for running a Cloudflare Tunnel
 to expose a local service securely to the internet.
@@ -63,7 +63,7 @@ Select your domain when prompted.
 ### Step 2: Create a tunnel
 
 ```powershell
-cloudflared tunnel create tradeboard
+cloudflared tunnel create TradeBoard
 ```
 
 This creates a credentials JSON file (DO NOT COMMIT).
@@ -75,7 +75,7 @@ This creates a credentials JSON file (DO NOT COMMIT).
 Example:
 
 ```yaml
-tunnel: tradeboard
+tunnel: TradeBoard
 credentials-file: <ABSOLUTE_PATH_TO_JSON>
 
 ingress:
@@ -89,7 +89,7 @@ ingress:
 ### Step 4: Route DNS
 
 ```powershell
-cloudflared tunnel route dns tradeboard demo.example.com
+cloudflared tunnel route dns TradeBoard demo.example.com
 ```
 
 ---
@@ -97,7 +97,7 @@ cloudflared tunnel route dns tradeboard demo.example.com
 ### Step 5: Run the tunnel
 
 ```powershell
-cloudflared tunnel --config .\config.yml run tradeboard
+cloudflared tunnel --config .\config.yml run TradeBoard
 ```
 
 ---

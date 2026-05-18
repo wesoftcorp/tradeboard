@@ -1,8 +1,8 @@
-# 30 - Upgrade Procedure
+﻿# 30 - Upgrade Procedure
 
 ## Overview
 
-Guidelines for upgrading Tradeboard to new versions while preserving data and configurations.
+Guidelines for upgrading TradeBoard to new versions while preserving data and configurations.
 
 ## Pre-Upgrade Checklist
 
@@ -14,7 +14,7 @@ Guidelines for upgrading Tradeboard to new versions while preserving data and co
 │  □ 2. Backup .env file                                                     │
 │  □ 3. Backup custom strategies                                             │
 │  □ 4. Note current version                                                 │
-│  □ 5. Stop running Tradeboard instance                                       │
+│  □ 5. Stop running TradeBoard instance                                       │
 │  □ 6. Read release notes for breaking changes                              │
 │                                                                             │
 └────────────────────────────────────────────────────────────────────────────┘
@@ -29,7 +29,7 @@ Guidelines for upgrading Tradeboard to new versions while preserving data and co
 mkdir -p backups/$(date +%Y%m%d)
 
 # Backup all databases
-cp db/tradeboard.db backups/$(date +%Y%m%d)/
+cp db/TradeBoard.db backups/$(date +%Y%m%d)/
 cp db/logs.db backups/$(date +%Y%m%d)/
 cp db/latency.db backups/$(date +%Y%m%d)/
 cp db/sandbox.db backups/$(date +%Y%m%d)/
@@ -48,14 +48,14 @@ cp -r strategies/ backups/$(date +%Y%m%d)/
 
 ## Upgrade Steps
 
-### Step 1: Stop Tradeboard
+### Step 1: Stop TradeBoard
 
 ```bash
 # Stop running instance
 # Press Ctrl+C if running in terminal
 
 # Or if running as service
-sudo systemctl stop tradeboard
+sudo systemctl stop TradeBoard
 ```
 
 ### Step 2: Pull Latest Changes
@@ -90,7 +90,7 @@ diff .env .sample.env
 
 ### Step 5: Database Initialization
 
-Tradeboard uses automatic database initialization on startup. New tables are created automatically when the application starts - no manual migrations are required.
+TradeBoard uses automatic database initialization on startup. New tables are created automatically when the application starts - no manual migrations are required.
 
 ```bash
 # Start the app to initialize any new database tables
@@ -100,7 +100,7 @@ uv run app.py
 
 > **Note**: There is no `migrations/` directory. Database schema updates are handled automatically by SQLAlchemy's `create_all()` during app startup.
 
-### Step 6: Start Tradeboard
+### Step 6: Start TradeBoard
 
 ```bash
 # Start application
@@ -158,7 +158,7 @@ init_all_databases()
 git checkout v1.x.x  # Previous version tag
 
 # Restore databases
-cp backups/YYYYMMDD/tradeboard.db db/
+cp backups/YYYYMMDD/TradeBoard.db db/
 cp backups/YYYYMMDD/.env ./
 
 # Restart
@@ -195,17 +195,17 @@ volumes:
 
 ```bash
 # Stop service
-sudo systemctl stop tradeboard
+sudo systemctl stop TradeBoard
 
 # Update code
 git pull origin main
 uv sync
 
 # Restart service
-sudo systemctl start tradeboard
+sudo systemctl start TradeBoard
 
 # Check status
-sudo systemctl status tradeboard
+sudo systemctl status TradeBoard
 ```
 
 ## Post-Upgrade Verification
@@ -214,7 +214,7 @@ sudo systemctl status tradeboard
 
 ```bash
 # Check application logs
-tail -f log/tradeboard.log
+tail -f log/TradeBoard.log
 
 # Verify web access
 curl http://127.0.0.1:5000/health
@@ -278,7 +278,7 @@ uv run python -c "from database import init_all_databases; init_all_databases()"
 #!/bin/bash
 set -e
 
-echo "Starting Tradeboard upgrade..."
+echo "Starting TradeBoard upgrade..."
 
 # Backup
 BACKUP_DIR="backups/$(date +%Y%m%d_%H%M%S)"

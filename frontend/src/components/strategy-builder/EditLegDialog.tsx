@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { Minus, Plus, Trash2 } from 'lucide-react'
 import { apiClient } from '@/api/client'
 import { Button } from '@/components/ui/button'
@@ -40,7 +40,7 @@ export interface EditLegDialogProps {
   underlying: string
   /** F&O exchange (NFO / BFO / MCX / CDS) for the /quotes call. */
   optionExchange: string
-  /** OpenAlgo API key for /quotes. */
+  /** TradeBoard API key for /quotes. */
   apiKey: string
   /** ATM strike from the live chain — used to show moneyness next to the Strike field. */
   atmStrike?: number | null

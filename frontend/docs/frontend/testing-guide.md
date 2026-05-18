@@ -1,6 +1,6 @@
-# Testing Guide
+﻿# Testing Guide
 
-This guide covers testing practices for the Tradeboard frontend, including unit tests, E2E tests, and accessibility testing.
+This guide covers testing practices for the TradeBoard frontend, including unit tests, E2E tests, and accessibility testing.
 
 ## Testing Stack
 

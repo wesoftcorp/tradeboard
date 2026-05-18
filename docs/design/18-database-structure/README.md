@@ -1,8 +1,8 @@
-# 18 - Database Structure
+﻿# 18 - Database Structure
 
 ## Overview
 
-Tradeboard uses **5 separate databases** for data isolation, performance optimization, and specialized use cases. This separation prevents contention and allows each database to be optimized for its specific workload.
+TradeBoard uses **5 separate databases** for data isolation, performance optimization, and specialized use cases. This separation prevents contention and allows each database to be optimized for its specific workload.
 
 ## Architecture Diagram
 
@@ -15,7 +15,7 @@ Tradeboard uses **5 separate databases** for data isolation, performance optimiz
 │                           5 Separate Databases                               │
 │                                                                              │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐             │
-│  │   tradeboard.db   │  │    logs.db      │  │   latency.db    │             │
+│  │   TradeBoard.db   │  │    logs.db      │  │   latency.db    │             │
 │  │   (Main DB)     │  │   (Traffic)     │  │  (Performance)  │             │
 │  │                 │  │                 │  │                 │             │
 │  │  - Users        │  │  - traffic_logs │  │  - order_latency│             │
@@ -39,11 +39,11 @@ Tradeboard uses **5 separate databases** for data isolation, performance optimiz
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Database 1: Main Database (tradeboard.db)
+## Database 1: Main Database (TradeBoard.db)
 
 ### Location
 ```
-db/tradeboard.db
+db/TradeBoard.db
 ```
 
 ### Core Tables
@@ -257,7 +257,7 @@ db/latency.db
 │ rtt_ms           │ FLOAT        │ Round-trip time  │
 │ validation_ms    │ FLOAT        │ Pre-request      │
 │ response_ms      │ FLOAT        │ Post-response    │
-│ overhead_ms      │ FLOAT        │ Tradeboard overhead│
+│ overhead_ms      │ FLOAT        │ TradeBoard overhead│
 │ total_latency_ms │ FLOAT        │ End-to-end time  │
 │ status           │ VARCHAR(20)  │ SUCCESS/FAILED   │
 └──────────────────┴──────────────┴──────────────────┘
@@ -270,7 +270,7 @@ db/latency.db
 | rtt_ms | Network round-trip to broker |
 | validation_ms | Request validation time |
 | response_ms | Response processing time |
-| overhead_ms | Total Tradeboard overhead |
+| overhead_ms | Total TradeBoard overhead |
 | P50, P90, P95, P99 | Latency percentiles |
 
 ## Database 4: Sandbox Database (sandbox.db)
@@ -397,7 +397,7 @@ Primary Key: (symbol, exchange, interval, timestamp)
 from sqlalchemy.pool import NullPool
 
 engine = create_engine(
-    'sqlite:///db/tradeboard.db',
+    'sqlite:///db/TradeBoard.db',
     poolclass=NullPool,  # Create/close per request
     connect_args={'timeout': 30}
 )

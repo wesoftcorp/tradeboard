@@ -1,8 +1,8 @@
-# 21 - Flow Visual Strategy Builder
+﻿# 21 - Flow Visual Strategy Builder
 
 ## Introduction
 
-The Flow Visual Strategy Builder is Tradeboard's node-based visual programming interface. It allows you to create trading strategies without writing code by connecting nodes in a flowchart-like canvas.
+The Flow Visual Strategy Builder is TradeBoard's node-based visual programming interface. It allows you to create trading strategies without writing code by connecting nodes in a flowchart-like canvas.
 
 ## What is the Flow Builder?
 
@@ -32,7 +32,7 @@ The Flow Visual Strategy Builder is Tradeboard's node-based visual programming i
 
 ## Accessing the Flow Builder
 
-1. Login to Tradeboard
+1. Login to TradeBoard
 2. Navigate to **Flow** in the sidebar
 3. Click **New Flow** or select existing
 
@@ -239,7 +239,7 @@ Configuration:
 
 Flow webhooks need to be accessible from the internet for external triggers (TradingView, ChartInk, etc.).
 
-**Recommended**: Deploy Tradeboard on an Ubuntu server with your domain using `install.sh`:
+**Recommended**: Deploy TradeBoard on an Ubuntu server with your domain using `install.sh`:
 ```
 https://yourdomain.com/api/v1/flow/{flow-id}/webhook
 ```
@@ -257,7 +257,7 @@ See [Installation Guide](../04-installation/README.md) for detailed setup.
 ### Webhook URL Format
 
 ```
-https://your-tradeboard-url/api/v1/flow/{flow-id}/webhook
+https://your-TradeBoard-url/api/v1/flow/{flow-id}/webhook
 ```
 
 ### TradingView Alert Message
@@ -281,7 +281,7 @@ https://your-tradeboard-url/api/v1/flow/{flow-id}/webhook
 
 ## Flow Templates
 
-Tradeboard provides pre-built templates:
+TradeBoard provides pre-built templates:
 
 | Template | Description |
 |----------|-------------|

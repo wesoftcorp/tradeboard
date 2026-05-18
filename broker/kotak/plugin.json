@@ -1,10 +1,10 @@
-{
+﻿{
     "Plugin Name": "Kotak",
-    "Plugin URI": "https://wesoftcorp.com",
-    "Description": "Kotak Tradeboard Plugin",
+    "Plugin URI": "https://TradeBoard.in",
+    "Description": "Kotak TradeBoard Plugin",
     "Version": "1.0",
     "Author": "K Siva Rama Krishna Reddy",
-    "Author URI": "https://wesoftcorp.com",
+    "Author URI": "https://TradeBoard.in",
     "supported_exchanges": ["NSE", "BSE", "NFO", "BFO", "CDS", "MCX", "NSE_INDEX", "BSE_INDEX"],
     "broker_type": "IN_stock",
     "leverage_config": false

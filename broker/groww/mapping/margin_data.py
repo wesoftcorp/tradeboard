@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Groww Margin API
 
 from broker.groww.mapping.transform_data import (
@@ -15,7 +15,7 @@ logger = get_logger(__name__)
 
 def map_margin_exchange(exchange):
     """
-    Maps the Tradeboard Exchange to Groww Exchange values for margin API.
+    Maps the TradeBoard Exchange to Groww Exchange values for margin API.
     Groww only accepts NSE/BSE - segment (CASH/FNO) is passed separately.
     """
     exchange_mapping = {
@@ -29,10 +29,10 @@ def map_margin_exchange(exchange):
 
 def transform_margin_positions(positions):
     """
-    Transform Tradeboard margin positions to Groww margin format.
+    Transform TradeBoard margin positions to Groww margin format.
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
 
     Returns:
         Tuple of (segment, transformed_positions_list)
@@ -96,7 +96,7 @@ def transform_margin_positions(positions):
 
 def parse_margin_response(response_data):
     """
-    Parse Groww margin response to Tradeboard standard format.
+    Parse Groww margin response to TradeBoard standard format.
 
     Args:
         response_data: Raw response from Groww API
@@ -123,7 +123,7 @@ def parse_margin_response(response_data):
         # Calculate total margin
         total_requirement = float(payload.get("total_requirement", 0))
 
-        # Return standardized format matching Tradeboard API specification
+        # Return standardized format matching TradeBoard API specification
         return {
             "status": "success",
             "data": {

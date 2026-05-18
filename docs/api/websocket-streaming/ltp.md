@@ -1,4 +1,4 @@
-# LTP (WebSocket)
+﻿# LTP (WebSocket)
 
 Subscribe to real-time Last Traded Price (LTP) updates via WebSocket.
 
@@ -53,7 +53,7 @@ Custom Host  :  ws://<your-host>:8765
 ## Python SDK Example
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 import time
 
 # Initialize client with WebSocket

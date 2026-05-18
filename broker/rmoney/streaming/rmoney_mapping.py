@@ -2,10 +2,10 @@ import logging
 
 
 class RMoneyExchangeMapper:
-    """Maps between Tradeboard exchange codes and RMoney XTS specific exchange types"""
+    """Maps between TradeBoard exchange codes and RMoney XTS specific exchange types"""
 
     # Exchange type mapping for RMoney XTS broker
-    # Format: {Tradeboard_Exchange: RMoney_Exchange_Code}
+    # Format: {TradeBoard_Exchange: RMoney_Exchange_Code}
     # Based on XTS API documentation:
     # "NSECM": 1, "NSEFO": 2, "NSECD": 3, "BSECM": 11, "BSEFO": 12, "MCXFO": 51
     EXCHANGE_TYPES = {
@@ -29,8 +29,8 @@ class RMoneyExchangeMapper:
         "MCXFO": 51,  # MCX F&O
     }
 
-    # Reverse mapping for converting RMoney exchange codes to Tradeboard format
-    # Format: {RMoney_Exchange_Code: Tradeboard_Exchange}
+    # Reverse mapping for converting RMoney exchange codes to TradeBoard format
+    # Format: {RMoney_Exchange_Code: TradeBoard_Exchange}
     REVERSE_EXCHANGE_TYPES = {
         1: "NSE",  # NSECM
         2: "NFO",  # NSEFO
@@ -43,7 +43,7 @@ class RMoneyExchangeMapper:
     @staticmethod
     def get_exchange_type(exchange):
         """
-        Convert Tradeboard exchange code to RMoney XTS specific exchange type
+        Convert TradeBoard exchange code to RMoney XTS specific exchange type
 
         Args:
             exchange: Exchange code (e.g., 'NSE', 'BSE', 'NSEFO')
@@ -62,7 +62,7 @@ class RMoneyExchangeMapper:
         # Mapping based on XTS API documentation:
         # "NSECM": 1, "NSEFO": 2, "NSECD": 3, "BSECM": 11, "BSEFO": 12, "MCXFO": 51
         all_exchange_mappings = {
-            # Tradeboard standard codes
+            # TradeBoard standard codes
             "NSE": 1,  # NSE Cash Market
             "NFO": 2,  # NSE F&O
             "CDS": 3,  # NSE Currency Derivatives
@@ -100,15 +100,15 @@ class RMoneyExchangeMapper:
         return 1
 
     @staticmethod
-    def get_tradeboard_exchange(rmoney_code):
+    def get_TradeBoard_exchange(rmoney_code):
         """
-        Convert RMoney XTS exchange code to Tradeboard exchange code
+        Convert RMoney XTS exchange code to TradeBoard exchange code
 
         Args:
             rmoney_code (int): RMoney exchange code
 
         Returns:
-            str: Tradeboard exchange code
+            str: TradeBoard exchange code
         """
         return RMoneyExchangeMapper.REVERSE_EXCHANGE_TYPES.get(
             rmoney_code, "NSE"

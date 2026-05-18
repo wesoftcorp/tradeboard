@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Angel Broking Parameters https://smartapi.angelbroking.com/docs/Orders
 
 from database.token_db import get_br_symbol
@@ -23,7 +23,7 @@ def transform_data(data, token):
         "DisQty": int(data.get("disclosed_quantity", "0")),
         "IsIntraday": True if data.get("product") == "MIS" else False,
         "AHPlaced": "N",  # AMO Order by default NO
-        "RemoteOrderID": "Tradeboard",
+        "RemoteOrderID": "TradeBoard",
         # "AppSource": "7044"
     }
 

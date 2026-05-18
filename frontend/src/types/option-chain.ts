@@ -1,4 +1,4 @@
-export interface OptionChainResponse {
+﻿export interface OptionChainResponse {
   status: 'success' | 'error'
   underlying: string
   underlying_ltp: number
@@ -138,4 +138,4 @@ export const DEFAULT_PREFERENCES: OptionChainPreferences = {
   barStyle: 'gradient',
 }
 
-export const LOCALSTORAGE_KEY = 'tradeboard_option_chain_prefs'
+export const LOCALSTORAGE_KEY = 'TradeBoard_option_chain_prefs'

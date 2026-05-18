@@ -1,4 +1,4 @@
-import {
+﻿import {
   AlertTriangle,
   ArrowUpDown,
   ChevronDown,
@@ -59,7 +59,7 @@ import { useSupportedExchanges } from '@/hooks/useSupportedExchanges'
 import { onModeChange } from '@/stores/themeStore'
 import type { Position } from '@/types/trading'
 
-const STORAGE_KEY = 'openalgo_positions_prefs'
+const STORAGE_KEY = 'TradeBoard_positions_prefs'
 
 type GroupingType = 'none' | 'underlying' | 'underlying_expiry'
 type SortColumn = 0 | 3 | 4 | 6 | 7 | null
@@ -859,7 +859,7 @@ export default function Positions() {
 
       {/* Positions Table */}
       <Card>
-        <CardContent className="p-0">
+        <CardContent className="py-0">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin" />

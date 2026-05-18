@@ -115,12 +115,12 @@ def process_definedge_nse_csv(path):
     try:
         df = pd.read_csv(path)
 
-        # Map DefinedGe NSE columns to Tradeboard schema
+        # Map DefinedGe NSE columns to TradeBoard schema
         # Assuming DefinedGe uses standard format: Symbol, Token, Name, etc.
         processed_df = pd.DataFrame()
 
         if "Symbol" in df.columns:
-            processed_df["symbol"] = df["Symbol"] + "-EQ"  # Tradeboard format
+            processed_df["symbol"] = df["Symbol"] + "-EQ"  # TradeBoard format
             processed_df["brsymbol"] = df["Symbol"]  # DefinedGe format
 
         if "Token" in df.columns:
@@ -352,7 +352,7 @@ def process_definedge_allmaster_csv(path):
         processed_df["instrumenttype"] = df["InstrumentType"].fillna("EQ")
         processed_df["option_type"] = df["OptionType"].fillna("")
 
-        # Format symbols according to Tradeboard standard
+        # Format symbols according to TradeBoard standard
         processed_df["symbol"] = processed_df["brsymbol"].copy()
         processed_df["exchange"] = processed_df["brexchange"].copy()
 
@@ -465,10 +465,12 @@ def process_definedge_allmaster_csv(path):
             .str.replace("-", "", regex=False)
         )
 
-        # Step 3: Explicit rename map for symbols whose cleaned form differs from Tradeboard standard
+        # Step 3: Explicit rename map for symbols whose cleaned form differs from TradeBoard standard
         # Only apply to index exchanges to avoid renaming non-index symbols (e.g., ENERGY, FIN on NSE/BSE)
         idx_rename_mask = processed_df["exchange"].isin(["NSE_INDEX", "BSE_INDEX"])
-        processed_df.loc[idx_rename_mask, "symbol"] = processed_df.loc[idx_rename_mask, "symbol"].replace(
+        processed_df.loc[idx_rename_mask, "symbol"] = processed_df.loc[
+            idx_rename_mask, "symbol"
+        ].replace(
             {
                 # NSE Index symbols (post-cleanup: uppercase, no spaces/hyphens)
                 "NIFTY50": "NIFTY",

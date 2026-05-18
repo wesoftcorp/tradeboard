@@ -1,10 +1,10 @@
-{
+﻿{
     "Plugin Name": "deltaexchange",
-    "Plugin URI": "https://wesoftcorp.com",
-    "Description": "Delta Exchange Tradeboard Plugin — Crypto Derivatives (Futures & Options)",
+    "Plugin URI": "https://TradeBoard.in",
+    "Description": "Delta Exchange TradeBoard Plugin — Crypto Derivatives (Futures & Options)",
     "Version": "1.0",
     "Author": "Bashab Bhattacharjee (github.com/tradesbybashab)",
-    "Author URI": "https://wesoftcorp.com",
+    "Author URI": "https://TradeBoard.in",
     "supported_exchanges": ["CRYPTO"],
     "broker_type": "crypto",
     "leverage_config": true

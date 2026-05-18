@@ -1,5 +1,5 @@
 """
-Groww WebSocket streaming module for Tradeboard
+Groww WebSocket streaming module for TradeBoard
 """
 
 from .groww_adapter import GrowwWebSocketAdapter

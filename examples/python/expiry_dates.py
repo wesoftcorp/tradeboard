@@ -1,7 +1,7 @@
 """
-Tradeboard Expiry Date Extraction Example
+TradeBoard Expiry Date Extraction Example
 ----------------------------------------
-Demonstrates how to extract expiry dates using the Tradeboard Python SDK.
+Demonstrates how to extract expiry dates using the TradeBoard Python SDK.
 
 Weekly: current_week, next_week, current_month, next_month
 Monthly: current_month, next_month, far_month
@@ -11,7 +11,7 @@ Reference: AlgoMirror Strategy Executor implementation
 
 from datetime import datetime
 
-from tradeboard import api
+from TradeBoard import api
 
 # Initialize client with explicit parameters
 client = api(
@@ -28,7 +28,7 @@ expirytype = "weekly"  # Expiry type ("weekly" or "monthly")
 
 def get_expiry_dates(symbol: str, exchange: str, instrumenttype: str, expirytype: str):
     """
-    Fetch and categorize expiry dates from Tradeboard API.
+    Fetch and categorize expiry dates from TradeBoard API.
 
     Args:
         symbol: Index symbol (NIFTY, BANKNIFTY, SENSEX, etc.)
@@ -40,7 +40,7 @@ def get_expiry_dates(symbol: str, exchange: str, instrumenttype: str, expirytype
         For weekly: dict with current_week, next_week, current_month, next_month
         For monthly: dict with current_month, next_month, far_month
     """
-    # Fetch expiry dates from Tradeboard
+    # Fetch expiry dates from TradeBoard
     response = client.expiry(symbol=symbol, exchange=exchange, instrumenttype=instrumenttype)
 
     if response.get("status") != "success":

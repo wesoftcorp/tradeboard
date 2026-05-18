@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import {
   ColorType,
@@ -203,7 +203,7 @@ export default function IVChart() {
     (container: HTMLDivElement) => {
       const el = document.createElement('div')
       el.style.cssText = `position:absolute;z-index:2;font-family:Arial,sans-serif;font-size:28px;font-weight:bold;user-select:none;pointer-events:none;color:${isDarkMode ? 'rgba(166,173,187,0.12)' : 'rgba(0,0,0,0.06)'}`
-      el.textContent = 'OpenAlgo'
+      el.textContent = 'TradeBoard'
       container.appendChild(el)
       setTimeout(() => {
         el.style.left = `${container.offsetWidth / 2 - el.offsetWidth / 2}px`

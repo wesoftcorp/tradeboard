@@ -1,8 +1,8 @@
 import json
 import os
-from tokenize import Token
 import threading
 import time
+from tokenize import Token
 
 import httpx
 
@@ -72,14 +72,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -114,13 +114,12 @@ def _invalidate_position_cache(auth):
         _position_cache.pop(auth, None)
 
 
-
 def get_open_position(tradingsymbol, exchange, producttype, auth):
     """
     Get the net quantity for a given symbol from the position book.
     This should return the NetQty which represents the net position (positive for long, negative for short).
     """
-    # Convert Trading Symbol from Tradeboard Format to Broker Format Before Search in OpenPosition
+    # Convert Trading Symbol from TradeBoard Format to Broker Format Before Search in OpenPosition
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
     positions_data = _get_cached_positions(auth)
 
@@ -216,7 +215,7 @@ def place_order_api(data, auth):
 
 def place_smartorder_api(data: dict, auth: str) -> tuple:
     """
-    Place a smart order to achieve target position size based on the Tradeboard specification.
+    Place a smart order to achieve target position size based on the TradeBoard specification.
 
     The function compares the target position_size with current position and places
     appropriate BUY/SELL orders to match the target position.
@@ -260,7 +259,9 @@ def place_smartorder_api(data: dict, auth: str) -> tuple:
         # Per-symbol lock: serialize smart orders per symbol
         symbol_lock = _get_symbol_lock(symbol, exchange, product)
         with symbol_lock:
-            return _place_smartorder_locked_ibulls(data, AUTH_TOKEN, symbol, exchange, product, action)
+            return _place_smartorder_locked_ibulls(
+                data, AUTH_TOKEN, symbol, exchange, product, action
+            )
 
     except Exception as e:
         error_msg = f"Error in place_smartorder_api: {str(e)}"
@@ -417,7 +418,7 @@ def close_all_positions(current_api_key, auth):
             "orderQuantity": str(quantity),
             "limitPrice": "0",
             "stopPrice": "0",
-            "orderUniqueIdentifier": "tradeboard",
+            "orderUniqueIdentifier": "TradeBoard",
         }
 
         # Place the order to close the position
@@ -446,7 +447,7 @@ def cancel_order(orderid, auth):
     }
 
     # Prepare the payload
-    payload = json.dumps({"appOrderID": orderid, "orderUniqueIdentifier": "tradeboard"})
+    payload = json.dumps({"appOrderID": orderid, "orderUniqueIdentifier": "TradeBoard"})
 
     # Make the request using the shared client
     response = client.delete(f"{INTERACTIVE_URL}/orders?appOrderID={orderid}", headers=headers)

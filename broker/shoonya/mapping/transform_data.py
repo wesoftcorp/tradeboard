@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Shoonya Broking Parameters https://shoonya.com/api-documentation
 
 from database.token_db import get_br_symbol

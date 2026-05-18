@@ -1,6 +1,6 @@
 """
-Fyers WebSocket Adapter for Tradeboard WebSocket Proxy
-Integrates with the Tradeboard WebSocket proxy system
+Fyers WebSocket Adapter for TradeBoard WebSocket Proxy
+Integrates with the TradeBoard WebSocket proxy system
 """
 
 import json
@@ -39,7 +39,7 @@ from .fyers_tbt_websocket import FyersTbtWebSocket
 
 
 class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
-    """Fyers-specific implementation of the WebSocket adapter for Tradeboard proxy"""
+    """Fyers-specific implementation of the WebSocket adapter for TradeBoard proxy"""
 
     # Exchanges that support 50-level depth (Fyers TBT only supports NSE equity)
     TBT_SUPPORTED_EXCHANGES = {"NSE", "NFO"}
@@ -68,8 +68,8 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
         # TBT subscription tracking
         self.tbt_subscriptions = {}  # symbol -> {ticker, exchange, channel}
-        self.tbt_symbol_to_ticker = {}  # Tradeboard symbol -> Fyers ticker
-        self.tbt_ticker_to_symbol = {}  # Fyers ticker -> Tradeboard symbol
+        self.tbt_symbol_to_ticker = {}  # TradeBoard symbol -> Fyers ticker
+        self.tbt_ticker_to_symbol = {}  # Fyers ticker -> TradeBoard symbol
 
         # HSM batch queue: collects {data_type, exchange, symbol, callback}
         # entries from per-symbol subscribe() calls and flushes them together
@@ -270,7 +270,7 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
                     return {"status": "error", "message": "Failed to reconnect Fyers adapter"}
 
             with self.lock:
-                # Convert to Tradeboard format
+                # Convert to TradeBoard format
                 symbol_info = [{"exchange": exchange, "symbol": symbol}]
 
                 # Create a unique callback for this specific subscription
@@ -317,14 +317,10 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 # from the UI collapse into one FyersAdapter.subscribe_symbols
                 # call (and thus one Fyers symbol-token POST).
                 if mode == 1:  # LTP
-                    self._enqueue_hsm_subscribe(
-                        "SymbolUpdate", exchange, symbol, data_callback
-                    )
+                    self._enqueue_hsm_subscribe("SymbolUpdate", exchange, symbol, data_callback)
                     success = True
                 elif mode == 2:  # Quote
-                    self._enqueue_hsm_subscribe(
-                        "SymbolUpdate", exchange, symbol, data_callback
-                    )
+                    self._enqueue_hsm_subscribe("SymbolUpdate", exchange, symbol, data_callback)
                     success = True
                 elif mode == 3:  # Depth
                     # Check if 50-level depth is requested via symbol suffix (e.g., "TCS:50")
@@ -438,12 +434,8 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
                     # ticks (issue #1093).
                     full_symbol = f"{exchange}:{symbol}"
                     data_type_key = "DepthUpdate" if mode == 3 else "SymbolUpdate"
-                    self._hsm_callback_registry.pop(
-                        f"{data_type_key}_{full_symbol}", None
-                    )
-                    if self.fyers_adapter and hasattr(
-                        self.fyers_adapter, "subscription_callbacks"
-                    ):
+                    self._hsm_callback_registry.pop(f"{data_type_key}_{full_symbol}", None)
+                    if self.fyers_adapter and hasattr(self.fyers_adapter, "subscription_callbacks"):
                         self.fyers_adapter.subscription_callbacks.pop(
                             f"{data_type_key}_{full_symbol}", None
                         )
@@ -508,9 +500,7 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
             self.logger.error(f"Unsubscription error: {e}")
             return {"status": "error", "message": f"Unsubscription failed: {str(e)}"}
 
-    def _enqueue_hsm_subscribe(
-        self, data_type: str, exchange: str, symbol: str, callback
-    ) -> None:
+    def _enqueue_hsm_subscribe(self, data_type: str, exchange: str, symbol: str, callback) -> None:
         """Queue a single HSM subscribe and arm the batch flush timer."""
         with self._hsm_batch_lock:
             self._hsm_batch_queue.append(
@@ -568,17 +558,14 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
             for data_type, items in grouped.items():
                 symbol_info = [
-                    {"exchange": it["exchange"], "symbol": it["symbol"]}
-                    for it in items.values()
+                    {"exchange": it["exchange"], "symbol": it["symbol"]} for it in items.values()
                 ]
 
                 # Populate the SHARED registry BEFORE registering the dispatcher.
                 # Once subscribe_*() returns, ticks may start arriving immediately,
                 # and the dispatcher needs the registry entries to be visible.
                 for full_symbol, it in items.items():
-                    self._hsm_callback_registry[f"{data_type}_{full_symbol}"] = it[
-                        "callback"
-                    ]
+                    self._hsm_callback_registry[f"{data_type}_{full_symbol}"] = it["callback"]
 
                 # Capture data_type via default-arg to avoid Python's late-binding
                 # gotcha when this loop is iterated for multiple data_types.
@@ -586,9 +573,7 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
                     if not data:
                         return
                     full_symbol = f"{data.get('exchange')}:{data.get('symbol')}"
-                    cb = self._hsm_callback_registry.get(
-                        f"{_data_type}_{full_symbol}"
-                    )
+                    cb = self._hsm_callback_registry.get(f"{_data_type}_{full_symbol}")
                     if cb:
                         cb(data)
 
@@ -612,7 +597,7 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
         Subscribe to 50-level depth via TBT WebSocket
 
         Args:
-            symbol: Tradeboard symbol (actual symbol without suffix)
+            symbol: TradeBoard symbol (actual symbol without suffix)
             exchange: Exchange name
             callback: Data callback function
             original_symbol: Original symbol with :50 suffix for topic matching
@@ -686,7 +671,7 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
         Unsubscribe from 50-level depth via TBT WebSocket and cleanup mappings
 
         Args:
-            symbol: Tradeboard symbol (may include :50 suffix)
+            symbol: TradeBoard symbol (may include :50 suffix)
             exchange: Exchange name
 
         Returns:
@@ -737,10 +722,10 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
     def _convert_to_fyers_ticker(self, symbol: str, exchange: str) -> str | None:
         """
-        Convert Tradeboard symbol to Fyers ticker format using database lookup
+        Convert TradeBoard symbol to Fyers ticker format using database lookup
 
         Args:
-            symbol: Tradeboard symbol (e.g., 'RELIANCE', 'NIFTY24DEC25000CE')
+            symbol: TradeBoard symbol (e.g., 'RELIANCE', 'NIFTY24DEC25000CE')
             exchange: Exchange name (e.g., 'NSE', 'NFO')
 
         Returns:
@@ -806,13 +791,13 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 self.logger.warning(f"No subscription data for key: {subscription_key}")
                 return
 
-            # Map to Tradeboard format
+            # Map to TradeBoard format
             symbol = subscription["symbol"]
             exchange = subscription["exchange"]
 
             self.logger.debug(f"Mapping TBT depth for {exchange}:{symbol}")
 
-            mapped_data = self.data_mapper.map_tbt_depth_to_tradeboard(
+            mapped_data = self.data_mapper.map_tbt_depth_to_TradeBoard(
                 ticker, depth_data, symbol, exchange
             )
 
@@ -906,18 +891,18 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
             # Fallback: assume stock/future, divide by 100
             return round(price_value / 100.0, 2)
 
-    def _map_fyers_to_tradeboard(
+    def _map_fyers_to_TradeBoard(
         self, fyers_data: dict[str, Any], mode: int
     ) -> dict[str, Any] | None:
         """
-        Map Fyers data to Tradeboard WebSocket format
+        Map Fyers data to TradeBoard WebSocket format
 
         Args:
             fyers_data: Data from Fyers
             mode: Subscription mode
 
         Returns:
-            Mapped data in Tradeboard format
+            Mapped data in TradeBoard format
         """
         try:
             if not fyers_data:
@@ -931,8 +916,8 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 exchange = fyers_data.get("exchange", "NSE")
                 symbol_name = symbol
 
-            # Base Tradeboard format
-            tradeboard_data = {
+            # Base TradeBoard format
+            TradeBoard_data = {
                 "symbol": symbol_name,
                 "exchange": exchange,
                 "token": fyers_data.get("token", ""),
@@ -943,7 +928,7 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
             if mode == 1:  # LTP
                 raw_ltp = fyers_data.get("ltp", 0)
                 converted_ltp = self._convert_price_to_rupees(raw_ltp, fyers_data)
-                tradeboard_data.update({"ltp": converted_ltp, "data_type": "LTP"})
+                TradeBoard_data.update({"ltp": converted_ltp, "data_type": "LTP"})
             elif mode == 2:  # Quote
                 # Convert all price fields from paise to rupees using correct field names
                 raw_ltp = fyers_data.get("ltp", 0)
@@ -969,7 +954,7 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 # Return the already mapped data (no additional processing needed)
                 return fyers_data
             elif mode == 3:  # Depth
-                tradeboard_data.update(
+                TradeBoard_data.update(
                     {
                         "ltp": fyers_data.get("ltp", 0),
                         "depth": fyers_data.get("depth", {"buy": [], "sell": []}),
@@ -977,7 +962,7 @@ class FyersWebSocketAdapter(BaseBrokerWebSocketAdapter):
                     }
                 )
 
-            return tradeboard_data
+            return TradeBoard_data
 
         except Exception as e:
             self.logger.error(f"Error mapping Fyers data: {e}")

@@ -1,19 +1,19 @@
 """
 RELIANCE 5-Minute Chart with Williams Vix Fix (CM_Williams_Vix_Fix)
-Author : Tradeboard GPT
+Author : TradeBoard GPT
 Description: Plots RELIANCE candlestick with Williams Vix Fix indicator
-             Converted from Pine Script v3 to Python using Tradeboard ta library
+             Converted from Pine Script v3 to Python using TradeBoard ta library
 """
 
-print("🔁 Tradeboard Python Bot is running.")
+print("🔁 TradeBoard Python Bot is running.")
 
 from datetime import datetime
 
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from tradeboard import api, ta
 from plotly.subplots import make_subplots
+from TradeBoard import api, ta
 
 # ───────────────────────── CONFIG ─────────────────────────
 API_KEY = "3f75e26648a543a886c9b38332a6942e30e0710bbf0488cf432ef27745de8ae7"
@@ -60,7 +60,7 @@ def fetch_historical_data():
     # Print the raw response
     print(f"History Response: {response}")
 
-    # Tradeboard history() returns DataFrame directly (not a dict)
+    # TradeBoard history() returns DataFrame directly (not a dict)
     if isinstance(response, pd.DataFrame):
         df = response.copy()
     else:

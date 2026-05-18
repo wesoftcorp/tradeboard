@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -33,19 +33,19 @@
     
     <script src="../static/js/python-editor-simple.js"></script>
     <script>
-        const testCode = `from tradeboard import api
+        const testCode = `from TradeBoard import api
 import pandas as pd
 import numpy as np
 import time
 import threading
 from datetime import datetime, timedelta
 
-# Get API key from tradeboard portal
+# Get API key from TradeBoard portal
 api_key = '0cac7a0c936d0b49cfcd81ac6aad3793fbf26d006f04c6a62a05c8250fd109c5'
 
 # Set the strategy details and trading parameters
 strategy = "EMA Crossover Python"
-symbol = "BHEL"  # Tradeboard Symbol
+symbol = "BHEL"  # TradeBoard Symbol
 exchange = "NSE"
 product = "MIS"
 quantity = 1

@@ -4,9 +4,9 @@ Nubra exchange mapping and capability registry for WebSocket streaming.
 
 
 class NubraExchangeMapper:
-    """Maps Tradeboard exchange codes to Nubra-specific exchanges."""
+    """Maps TradeBoard exchange codes to Nubra-specific exchanges."""
 
-    # Tradeboard exchange -> Nubra WebSocket exchange
+    # TradeBoard exchange -> Nubra WebSocket exchange
     EXCHANGE_MAP = {
         "NSE": "NSE",
         "BSE": "BSE",
@@ -18,7 +18,7 @@ class NubraExchangeMapper:
 
     @staticmethod
     def to_nubra_exchange(exchange: str) -> str:
-        """Convert Tradeboard exchange to Nubra exchange."""
+        """Convert TradeBoard exchange to Nubra exchange."""
         return NubraExchangeMapper.EXCHANGE_MAP.get(exchange, "NSE")
 
     @staticmethod

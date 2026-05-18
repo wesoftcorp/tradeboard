@@ -1,6 +1,6 @@
-# New Broker Integration Guide
+﻿# New Broker Integration Guide
 
-This guide walks through every step required to add a new broker to Tradeboard. It covers the directory structure, authentication patterns, order/data APIs, symbol mapping, WebSocket streaming, master contract database, rate limiting, and all registration points across the codebase.
+This guide walks through every step required to add a new broker to TradeBoard. It covers the directory structure, authentication patterns, order/data APIs, symbol mapping, WebSocket streaming, master contract database, rate limiting, and all registration points across the codebase.
 
 ---
 
@@ -61,7 +61,7 @@ broker/
     │   ├── data.py                    # Quotes, depth, historical data (required)
     │   └── funds.py                   # Account balance and margins (required)
     ├── mapping/
-    │   ├── transform_data.py          # Tradeboard ↔ broker format mapping (required)
+    │   ├── transform_data.py          # TradeBoard ↔ broker format mapping (required)
     │   ├── order_data.py              # Order response mapping (required)
     │   └── margin_data.py             # Margin calculation data (optional)
     ├── database/
@@ -84,11 +84,11 @@ Create `broker/your_broker/plugin.json`:
 ```json
 {
     "Plugin Name": "your_broker",
-    "Plugin URI": "https://wesoftcorp.com",
-    "Description": "YourBroker Tradeboard Plugin",
+    "Plugin URI": "https://TradeBoard.in",
+    "Description": "YourBroker TradeBoard Plugin",
     "Version": "1.0",
     "Author": "Your Name",
-    "Author URI": "https://wesoftcorp.com"
+    "Author URI": "https://TradeBoard.in"
 }
 ```
 
@@ -479,7 +479,7 @@ def get_margin_data(auth):
 
 ### transform_data.py
 
-This is the critical translation layer between Tradeboard's unified format and the broker's API format.
+This is the critical translation layer between TradeBoard's unified format and the broker's API format.
 
 ```python
 # broker/your_broker/mapping/transform_data.py
@@ -488,9 +488,9 @@ from database.token_db import get_br_symbol
 
 def transform_data(data):
     """
-    Transform Tradeboard order request to broker-specific format.
+    Transform TradeBoard order request to broker-specific format.
 
-    Input (Tradeboard format):
+    Input (TradeBoard format):
         {
             "symbol": "SBIN",
             "exchange": "NSE",
@@ -525,28 +525,28 @@ def transform_modify_order_data(data):
     """Transform modify order request to broker format."""
 
 def map_order_type(pricetype):
-    """Map Tradeboard price type to broker price type."""
+    """Map TradeBoard price type to broker price type."""
     mapping = {"MARKET": "MARKET", "LIMIT": "LIMIT", "SL": "SL", "SL-M": "SL-M"}
     return mapping.get(pricetype, "MARKET")
 
 def map_product_type(product):
-    """Map Tradeboard product type to broker product type."""
+    """Map TradeBoard product type to broker product type."""
     mapping = {"CNC": "CNC", "NRML": "NRML", "MIS": "MIS"}
     return mapping.get(product, "MIS")
 
 def reverse_map_product_type(exchange, product):
-    """Reverse map broker product type to Tradeboard product type."""
+    """Reverse map broker product type to TradeBoard product type."""
     mapping = {"CNC": "CNC", "NRML": "NRML", "MIS": "MIS"}
     return mapping.get(product)
 ```
 
 ### order_data.py
 
-Maps broker order response fields to Tradeboard's standardized format:
+Maps broker order response fields to TradeBoard's standardized format:
 
 ```python
 def map_order_data(order):
-    """Map broker order data to Tradeboard format."""
+    """Map broker order data to TradeBoard format."""
     return {
         "orderid": order.get("order_id"),
         "symbol": order.get("tradingsymbol"),
@@ -565,7 +565,7 @@ def map_order_data(order):
 
 Create `broker/your_broker/database/master_contract_db.py`.
 
-This module downloads the broker's instrument/symbol master file and populates the `symtoken` table, which maps Tradeboard symbols to broker-specific symbols.
+This module downloads the broker's instrument/symbol master file and populates the `symtoken` table, which maps TradeBoard symbols to broker-specific symbols.
 
 ```python
 import os
@@ -623,7 +623,7 @@ def master_contract_download():
     This function:
     1. Downloads the instrument list from the broker API
     2. Transforms it to match the SymToken schema
-    3. Maps broker-specific symbols to Tradeboard's standardized format
+    3. Maps broker-specific symbols to TradeBoard's standardized format
     4. Bulk inserts into the database
     5. Emits a SocketIO event when complete
 
@@ -659,10 +659,10 @@ def master_contract_download():
 
 | SymToken Column | Description | Example |
 |----------------|-------------|---------|
-| `symbol` | Tradeboard standardized symbol | `SBIN-EQ`, `NIFTY24JAN24000CE` |
+| `symbol` | TradeBoard standardized symbol | `SBIN-EQ`, `NIFTY24JAN24000CE` |
 | `brsymbol` | Broker's native symbol | `SBIN`, `NIFTY24JAN24000CE` |
 | `name` | Human-readable name | `State Bank of India` |
-| `exchange` | Tradeboard exchange | `NSE`, `NFO`, `BSE`, `BFO`, `CDS`, `MCX` |
+| `exchange` | TradeBoard exchange | `NSE`, `NFO`, `BSE`, `BFO`, `CDS`, `MCX` |
 | `brexchange` | Broker's exchange code | Varies per broker |
 | `token` | Broker's instrument token | `779` |
 | `expiry` | Expiry date (derivatives) | `2024-01-25` |
@@ -939,7 +939,7 @@ class YourBrokerWebSocket:
 
 def map_feed_data(raw_data):
     """
-    Normalize broker-specific tick data to Tradeboard's unified format.
+    Normalize broker-specific tick data to TradeBoard's unified format.
 
     Returns:
         dict: {
@@ -1160,7 +1160,7 @@ The route `/broker/your_broker/totp` must be handled by the React router.
 
 ## 13. Authentication Patterns Reference
 
-Tradeboard supports five distinct authentication patterns:
+TradeBoard supports five distinct authentication patterns:
 
 ### Pattern A: OAuth2 Redirect Flow
 

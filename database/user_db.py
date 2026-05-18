@@ -114,6 +114,7 @@ class User(Base):
         plaintext).
         """
         from database.auth_db import safe_decrypt_token
+
         return safe_decrypt_token(self.totp_secret) or self.totp_secret
 
     def set_password(self, password):
@@ -137,7 +138,7 @@ class User(Base):
     def get_totp_uri(self):
         """Get the TOTP URI for QR code generation"""
         return pyotp.totp.TOTP(self.get_totp_secret()).provisioning_uri(
-            name=self.email, issuer_name="Tradeboard"
+            name=self.email, issuer_name="TradeBoard"
         )
 
     def verify_totp(self, token):
@@ -179,6 +180,7 @@ def add_user(username, email, password, is_admin=False):
         # auth_db Fernet (same pattern used for broker tokens, API keys).
         # See _totp_plaintext() for the read path.
         from database.auth_db import encrypt_token
+
         totp_secret = pyotp.random_base32()
         user = User(
             username=username,

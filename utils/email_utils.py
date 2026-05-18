@@ -1,5 +1,5 @@
 """
-Email Utility Functions for Tradeboard
+Email Utility Functions for TradeBoard
 
 This module provides email sending functionality for SMTP configuration testing
 and password reset notifications.
@@ -23,7 +23,7 @@ class EmailSendError(Exception):
     pass
 
 
-def send_test_email(recipient_email, sender_name="Tradeboard Admin"):
+def send_test_email(recipient_email, sender_name="TradeBoard Admin"):
     """
     Send a test email to verify SMTP configuration.
 
@@ -59,7 +59,7 @@ def send_test_email(recipient_email, sender_name="Tradeboard Admin"):
             }
 
         # Create test email content
-        subject = "Tradeboard - SMTP Test Successful"
+        subject = "TradeBoard - SMTP Test Successful"
 
         # Create modern minimalistic HTML email
         html_content = f"""
@@ -129,7 +129,7 @@ def send_test_email(recipient_email, sender_name="Tradeboard Admin"):
                                 {datetime.now().strftime("%B %d, %Y at %H:%M UTC")}
                             </p>
                             <p style="margin: 16px 0 0 0; font-size: 12px; color: #3f3f46;">
-                                Sent by <span style="color: #a1a1aa;">Tradeboard</span>
+                                Sent by <span style="color: #a1a1aa;">TradeBoard</span>
                             </p>
                         </td>
                     </tr>
@@ -145,7 +145,7 @@ def send_test_email(recipient_email, sender_name="Tradeboard Admin"):
         text_content = f"""
 SMTP Configuration Test - Success
 
-Your Tradeboard SMTP configuration is working correctly.
+Your TradeBoard SMTP configuration is working correctly.
 
 Server: {smtp_settings["smtp_server"]}:{smtp_settings["smtp_port"]}
 Security: {"TLS/SSL Enabled" if smtp_settings.get("smtp_use_tls") else "No Encryption"}
@@ -154,7 +154,7 @@ Sent to: {recipient_email}
 Date: {datetime.now().strftime("%B %d, %Y at %H:%M UTC")}
 
 --
-Sent by Tradeboard
+Sent by TradeBoard
         """
 
         # Send the email
@@ -198,7 +198,7 @@ def send_password_reset_email(recipient_email, reset_link, user_name="User"):
         if not smtp_settings:
             return {"success": False, "message": "SMTP not configured"}
 
-        subject = "Reset your Tradeboard password"
+        subject = "Reset your TradeBoard password"
 
         html_content = f"""
 <!DOCTYPE html>
@@ -279,7 +279,7 @@ def send_password_reset_email(recipient_email, reset_link, user_name="User"):
                                 Didn't request this? You can safely ignore this email.
                             </p>
                             <p style="margin: 16px 0 0 0; font-size: 12px; color: #3f3f46;">
-                                Sent by <span style="color: #a1a1aa;">Tradeboard</span>
+                                Sent by <span style="color: #a1a1aa;">TradeBoard</span>
                             </p>
                         </td>
                     </tr>
@@ -296,7 +296,7 @@ Reset your password
 
 Hi {user_name},
 
-We received a request to reset your Tradeboard password. Click the link below to set a new password:
+We received a request to reset your TradeBoard password. Click the link below to set a new password:
 
 {reset_link}
 
@@ -305,7 +305,7 @@ This link expires in 1 hour. Never share this link with anyone.
 If you didn't request this, you can safely ignore this email.
 
 --
-Sent by Tradeboard
+Sent by TradeBoard
         """
 
         return send_email(

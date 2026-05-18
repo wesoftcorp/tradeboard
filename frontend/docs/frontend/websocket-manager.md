@@ -1,4 +1,4 @@
-# WebSocket Connection Manager
+﻿# WebSocket Connection Manager
 
 ## Product Requirements Document (PRD)
 
@@ -11,7 +11,7 @@
 
 ### Problem Statement
 
-The Tradeboard React frontend requires real-time market data across multiple pages and components. Previously, each component that needed market data created its own WebSocket connection, leading to:
+The TradeBoard React frontend requires real-time market data across multiple pages and components. Previously, each component that needed market data created its own WebSocket connection, leading to:
 
 | Problem | Impact |
 |---------|--------|
@@ -70,7 +70,7 @@ When WebSocket connections fail (e.g., after market hours when the broker WebSoc
 
 2. **As a trader**, I want the WebSocket to pause when I switch to another browser tab to save bandwidth.
 
-3. **As a trader**, I want the connection to resume automatically when I return to the Tradeboard tab.
+3. **As a trader**, I want the connection to resume automatically when I return to the TradeBoard tab.
 
 4. **As a developer**, I want to use the same `useMarketData` hook API without worrying about connection management.
 

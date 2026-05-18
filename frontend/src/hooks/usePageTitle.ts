@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+﻿import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const PAGE_TITLES: Record<string, string> = {
@@ -96,7 +96,7 @@ function getPageTitle(pathname: string): string {
     }
   }
 
-  return 'Tradeboard'
+  return 'TradeBoard'
 }
 
 export function usePageTitle() {
@@ -104,6 +104,6 @@ export function usePageTitle() {
 
   useEffect(() => {
     const title = getPageTitle(pathname)
-    document.title = title === 'Tradeboard' ? 'Tradeboard' : `${title} | Tradeboard`
+    document.title = title === 'TradeBoard' ? 'TradeBoard' : `${title} | TradeBoard`
   }, [pathname])
 }

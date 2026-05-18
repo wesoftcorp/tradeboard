@@ -1,11 +1,11 @@
-# Tradeboard Deep Codebase Security Audit Report
+﻿# TradeBoard Deep Codebase Security Audit Report
 
 ## Metadata
-- **Project:** Tradeboard
+- **Project:** TradeBoard
 - **PR Context:** https://github.com/wesoftcorp/tradeboard/pull/947 (Crypto Exchange Integration)
 - **Audit date:** 2026-03-03
 - **Auditor:** Claude Opus 4.6
-- **Scope:** Full codebase audit of `tradeboard/services/`, `tradeboard/blueprints/`, `tradeboard/restx_api/`, `tradeboard/database/`, `tradeboard/sandbox/`, `tradeboard/broker/`, `tradeboard/upgrade/`
+- **Scope:** Full codebase audit of `TradeBoard/services/`, `TradeBoard/blueprints/`, `TradeBoard/restx_api/`, `TradeBoard/database/`, `TradeBoard/sandbox/`, `TradeBoard/broker/`, `TradeBoard/upgrade/`
 - **Focus:** SQL injection, input validation, security vulnerabilities, crypto integration impact on existing Indian broker functionality
 
 ---

@@ -1,6 +1,6 @@
 """OAuth 2.1 persistence for the Remote MCP feature.
 
-Three tables, all in db/tradeboard.db. Hashing pipeline is identical to the
+Three tables, all in db/TradeBoard.db. Hashing pipeline is identical to the
 existing API key flow in database/auth_db.py — Argon2id with the same
 API_KEY_PEPPER. We do NOT introduce a new secret material here.
 
@@ -33,7 +33,7 @@ from utils.logging import get_logger
 logger = get_logger(__name__)
 
 # Reuse the same DATABASE_URL + pepper as auth_db so the OAuth tables live
-# alongside users in db/tradeboard.db. No new secret material is introduced.
+# alongside users in db/TradeBoard.db. No new secret material is introduced.
 DATABASE_URL = os.getenv("DATABASE_URL")
 PEPPER = os.getenv("API_KEY_PEPPER")
 
@@ -195,7 +195,7 @@ def verify_secret(secret: str, hashed: str) -> bool:
 
 def init_db() -> None:
     """Create OAuth tables. Idempotent — safe to call repeatedly."""
-    logger.info("Initializing OAuth tables in db/tradeboard.db ...")
+    logger.info("Initializing OAuth tables in db/TradeBoard.db ...")
     Base.metadata.create_all(bind=engine)
     logger.info("OAuth tables ready.")
 
@@ -208,9 +208,8 @@ def init_db() -> None:
 def revoke_family(family_id: str, reason: str) -> int:
     """Revoke every refresh token in the given family. Returns count revoked."""
     now = datetime.utcnow()
-    rows = (
-        OAuthRefreshToken.query.filter_by(family_id=family_id, revoked_at=None)
-        .update({"revoked_at": now, "revoke_reason": reason})
+    rows = OAuthRefreshToken.query.filter_by(family_id=family_id, revoked_at=None).update(
+        {"revoked_at": now, "revoke_reason": reason}
     )
     db_session.commit()
     if rows:
@@ -221,9 +220,8 @@ def revoke_family(family_id: str, reason: str) -> int:
 def revoke_client(client_id: str, reason: str) -> int:
     """Revoke every refresh token for a client AND mark the client revoked."""
     now = datetime.utcnow()
-    rows = (
-        OAuthRefreshToken.query.filter_by(client_id=client_id, revoked_at=None)
-        .update({"revoked_at": now, "revoke_reason": reason})
+    rows = OAuthRefreshToken.query.filter_by(client_id=client_id, revoked_at=None).update(
+        {"revoked_at": now, "revoke_reason": reason}
     )
     OAuthClient.query.filter_by(client_id=client_id).update({"revoked_at": now})
     db_session.commit()

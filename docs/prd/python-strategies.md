@@ -1,10 +1,10 @@
-# PRD: Python Strategies - Automated Strategy Execution
+﻿# PRD: Python Strategies - Automated Strategy Execution
 
 > **Status:** ✅ Stable - Fully implemented, production-ready
 
 ## Overview
 
-Python Strategies enables traders to run custom Python trading algorithms within Tradeboard, with process isolation, market-aware scheduling, and comprehensive lifecycle management.
+Python Strategies enables traders to run custom Python trading algorithms within TradeBoard, with process isolation, market-aware scheduling, and comprehensive lifecycle management.
 
 ## Problem Statement
 
@@ -80,9 +80,9 @@ A subprocess-based strategy execution system that:
 ### FR6: API Integration
 | ID | Requirement | Priority |
 |----|-------------|----------|
-| FR6.1 | Tradeboard SDK available to strategies | P0 |
+| FR6.1 | TradeBoard SDK available to strategies | P0 |
 | FR6.2 | Environment variables for API key | P0 |
-| FR6.3 | Access to all Tradeboard API endpoints | P0 |
+| FR6.3 | Access to all TradeBoard API endpoints | P0 |
 
 ## Non-Functional Requirements
 
@@ -131,7 +131,7 @@ A subprocess-based strategy execution system that:
 │                          │                                  │
 │                          ▼                                  │
 │  ┌──────────────────────────────────────────────────────┐  │
-│  │              Tradeboard SDK (tradeboard)                   │  │
+│  │              TradeBoard SDK (TradeBoard)                   │  │
 │  │  • client.placesmartorder()                           │  │
 │  │  • client.history()                                   │  │
 │  │  • client.quotes()                                    │  │
@@ -148,11 +148,11 @@ Simple EMA Crossover Strategy Template
 """
 import os
 import time
-from tradeboard import api
+from TradeBoard import api
 
 # Configuration
-API_KEY = os.getenv('TRADEBOARD_APIKEY')
-HOST = os.getenv('TRADEBOARD_HOST', 'http://127.0.0.1:5000')
+API_KEY = os.getenv('TradeBoard_APIKEY')
+HOST = os.getenv('TradeBoard_HOST', 'http://127.0.0.1:5000')
 SYMBOL = 'SBIN'
 EXCHANGE = 'NSE'
 QUANTITY = 1
@@ -271,7 +271,7 @@ strategy_configs.json (file-based)
 ## Directory Structure
 
 ```
-tradeboard/
+TradeBoard/
 ├── strategies/
 │   ├── scripts/           # User-uploaded strategies
 │   ├── examples/          # Template strategies

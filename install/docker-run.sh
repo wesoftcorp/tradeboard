@@ -1,6 +1,6 @@
-#!/bin/bash
+﻿#!/bin/bash
 # ============================================================================
-# Tradeboard Docker Runner for macOS/Linux
+# TradeBoard Docker Runner for macOS/Linux
 # ============================================================================
 #
 # Quick Start (2 commands):
@@ -8,7 +8,7 @@
 #   2. Run:      ./docker-run.sh
 #
 # Commands:
-#   start    - Start Tradeboard container (default, runs setup if needed)
+#   start    - Start TradeBoard container (default, runs setup if needed)
 #   stop     - Stop and remove container
 #   restart  - Restart container
 #   logs     - View container logs (live)
@@ -33,12 +33,12 @@ NC='\033[0m' # No Color
 
 # Configuration
 IMAGE="wesoftcorp/tradeboard:latest"
-CONTAINER="tradeboard"
+CONTAINER="TradeBoard"
 ENV_FILE=".env"
 SAMPLE_ENV_URL="https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/.sample.env"
 # Use the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TRADEBOARD_DIR="$SCRIPT_DIR"
+TradeBoard_DIR="$SCRIPT_DIR"
 
 # XTS Brokers that require market data credentials
 XTS_BROKERS="fivepaisaxts,compositedge,ibulls,iifl,jainamxts,rmoney,wisdom"
@@ -49,7 +49,7 @@ VALID_BROKERS="fivepaisa,fivepaisaxts,aliceblue,angel,compositedge,definedge,del
 # Banner
 echo ""
 echo -e "${BLUE}  ========================================${NC}"
-echo -e "${BLUE}       Tradeboard Docker Runner${NC}"
+echo -e "${BLUE}       TradeBoard Docker Runner${NC}"
 echo -e "${BLUE}       Desktop Edition (macOS/Linux)${NC}"
 echo -e "${BLUE}  ========================================${NC}"
 echo ""
@@ -116,13 +116,13 @@ is_xts_broker() {
 
 # Setup function
 do_setup() {
-    log_info "Setting up Tradeboard in $TRADEBOARD_DIR..."
+    log_info "Setting up TradeBoard in $TradeBoard_DIR..."
     echo ""
 
     # Create db directory
-    if [ ! -d "$TRADEBOARD_DIR/db" ]; then
+    if [ ! -d "$TradeBoard_DIR/db" ]; then
         log_info "Creating database directory..."
-        mkdir -p "$TRADEBOARD_DIR/db"
+        mkdir -p "$TradeBoard_DIR/db"
         if [ $? -ne 0 ]; then
             log_error "Failed to create database directory"
             return 1
@@ -130,8 +130,8 @@ do_setup() {
     fi
 
     # Check if .env already exists
-    if [ -f "$TRADEBOARD_DIR/$ENV_FILE" ]; then
-        log_warn ".env file already exists at $TRADEBOARD_DIR/$ENV_FILE"
+    if [ -f "$TradeBoard_DIR/$ENV_FILE" ]; then
+        log_warn ".env file already exists at $TradeBoard_DIR/$ENV_FILE"
         read -p "Do you want to overwrite it? (y/n): " OVERWRITE
         if [[ ! "$OVERWRITE" =~ ^[Yy]$ ]]; then
             log_info "Setup cancelled. Using existing .env file."
@@ -141,7 +141,7 @@ do_setup() {
 
     # Download sample.env from GitHub
     log_info "Downloading configuration template from GitHub..."
-    if ! curl -sL "$SAMPLE_ENV_URL" -o "$TRADEBOARD_DIR/$ENV_FILE"; then
+    if ! curl -sL "$SAMPLE_ENV_URL" -o "$TradeBoard_DIR/$ENV_FILE"; then
         log_error "Failed to download configuration template!"
         echo "Please check your internet connection."
         return 1
@@ -175,12 +175,12 @@ do_setup() {
     log_info "Updating configuration with secure keys..."
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS sed syntax
-        sed -i '' "s/TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE/$APP_KEY/g" "$TRADEBOARD_DIR/$ENV_FILE"
-        sed -i '' "s/TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE/$API_KEY_PEPPER/g" "$TRADEBOARD_DIR/$ENV_FILE"
+        sed -i '' "s/TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE/$APP_KEY/g" "$TradeBoard_DIR/$ENV_FILE"
+        sed -i '' "s/TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE/$API_KEY_PEPPER/g" "$TradeBoard_DIR/$ENV_FILE"
     else
         # Linux sed syntax
-        sed -i "s/TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE/$APP_KEY/g" "$TRADEBOARD_DIR/$ENV_FILE"
-        sed -i "s/TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE/$API_KEY_PEPPER/g" "$TRADEBOARD_DIR/$ENV_FILE"
+        sed -i "s/TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE/$APP_KEY/g" "$TradeBoard_DIR/$ENV_FILE"
+        sed -i "s/TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE/$API_KEY_PEPPER/g" "$TradeBoard_DIR/$ENV_FILE"
     fi
     # .env is now bind-mounted read+write into the container so auto-rotation
     # of compromised APP_KEY/API_KEY_PEPPER (utils/env_check.py) can run.
@@ -190,14 +190,14 @@ do_setup() {
     # Docker Desktop handles UID mapping in its VM so chown is a no-op.
     if [ "$(uname)" = "Linux" ]; then
         if [ "$EUID" -ne 0 ] && command -v sudo >/dev/null 2>&1; then
-            sudo chown 1000:1000 "$TRADEBOARD_DIR/$ENV_FILE" 2>/dev/null || true
-            sudo chmod 600 "$TRADEBOARD_DIR/$ENV_FILE" 2>/dev/null || true
+            sudo chown 1000:1000 "$TradeBoard_DIR/$ENV_FILE" 2>/dev/null || true
+            sudo chmod 600 "$TradeBoard_DIR/$ENV_FILE" 2>/dev/null || true
         else
-            chown 1000:1000 "$TRADEBOARD_DIR/$ENV_FILE" 2>/dev/null || true
-            chmod 600 "$TRADEBOARD_DIR/$ENV_FILE" 2>/dev/null || true
+            chown 1000:1000 "$TradeBoard_DIR/$ENV_FILE" 2>/dev/null || true
+            chmod 600 "$TradeBoard_DIR/$ENV_FILE" 2>/dev/null || true
         fi
     else
-        chmod 600 "$TRADEBOARD_DIR/$ENV_FILE" 2>/dev/null || true
+        chmod 600 "$TradeBoard_DIR/$ENV_FILE" 2>/dev/null || true
     fi
     log_ok "Secure keys generated and saved."
 
@@ -269,23 +269,23 @@ do_setup() {
 
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS sed syntax
-        sed -i '' "s/BROKER_API_KEY = 'YOUR_BROKER_API_KEY'/BROKER_API_KEY = '$BROKER_API_KEY'/g" "$TRADEBOARD_DIR/$ENV_FILE"
-        sed -i '' "s/BROKER_API_SECRET = 'YOUR_BROKER_API_SECRET'/BROKER_API_SECRET = '$BROKER_API_SECRET'/g" "$TRADEBOARD_DIR/$ENV_FILE"
-        sed -i '' "s|<broker>|$BROKER_NAME|g" "$TRADEBOARD_DIR/$ENV_FILE"
+        sed -i '' "s/BROKER_API_KEY = 'YOUR_BROKER_API_KEY'/BROKER_API_KEY = '$BROKER_API_KEY'/g" "$TradeBoard_DIR/$ENV_FILE"
+        sed -i '' "s/BROKER_API_SECRET = 'YOUR_BROKER_API_SECRET'/BROKER_API_SECRET = '$BROKER_API_SECRET'/g" "$TradeBoard_DIR/$ENV_FILE"
+        sed -i '' "s|<broker>|$BROKER_NAME|g" "$TradeBoard_DIR/$ENV_FILE"
 
         if [ "$IS_XTS" -eq 1 ]; then
-            sed -i '' "s/BROKER_API_KEY_MARKET = 'YOUR_BROKER_MARKET_API_KEY'/BROKER_API_KEY_MARKET = '$BROKER_API_KEY_MARKET'/g" "$TRADEBOARD_DIR/$ENV_FILE"
-            sed -i '' "s/BROKER_API_SECRET_MARKET = 'YOUR_BROKER_MARKET_API_SECRET'/BROKER_API_SECRET_MARKET = '$BROKER_API_SECRET_MARKET'/g" "$TRADEBOARD_DIR/$ENV_FILE"
+            sed -i '' "s/BROKER_API_KEY_MARKET = 'YOUR_BROKER_MARKET_API_KEY'/BROKER_API_KEY_MARKET = '$BROKER_API_KEY_MARKET'/g" "$TradeBoard_DIR/$ENV_FILE"
+            sed -i '' "s/BROKER_API_SECRET_MARKET = 'YOUR_BROKER_MARKET_API_SECRET'/BROKER_API_SECRET_MARKET = '$BROKER_API_SECRET_MARKET'/g" "$TradeBoard_DIR/$ENV_FILE"
         fi
     else
         # Linux sed syntax
-        sed -i "s/BROKER_API_KEY = 'YOUR_BROKER_API_KEY'/BROKER_API_KEY = '$BROKER_API_KEY'/g" "$TRADEBOARD_DIR/$ENV_FILE"
-        sed -i "s/BROKER_API_SECRET = 'YOUR_BROKER_API_SECRET'/BROKER_API_SECRET = '$BROKER_API_SECRET'/g" "$TRADEBOARD_DIR/$ENV_FILE"
-        sed -i "s|<broker>|$BROKER_NAME|g" "$TRADEBOARD_DIR/$ENV_FILE"
+        sed -i "s/BROKER_API_KEY = 'YOUR_BROKER_API_KEY'/BROKER_API_KEY = '$BROKER_API_KEY'/g" "$TradeBoard_DIR/$ENV_FILE"
+        sed -i "s/BROKER_API_SECRET = 'YOUR_BROKER_API_SECRET'/BROKER_API_SECRET = '$BROKER_API_SECRET'/g" "$TradeBoard_DIR/$ENV_FILE"
+        sed -i "s|<broker>|$BROKER_NAME|g" "$TradeBoard_DIR/$ENV_FILE"
 
         if [ "$IS_XTS" -eq 1 ]; then
-            sed -i "s/BROKER_API_KEY_MARKET = 'YOUR_BROKER_MARKET_API_KEY'/BROKER_API_KEY_MARKET = '$BROKER_API_KEY_MARKET'/g" "$TRADEBOARD_DIR/$ENV_FILE"
-            sed -i "s/BROKER_API_SECRET_MARKET = 'YOUR_BROKER_MARKET_API_SECRET'/BROKER_API_SECRET_MARKET = '$BROKER_API_SECRET_MARKET'/g" "$TRADEBOARD_DIR/$ENV_FILE"
+            sed -i "s/BROKER_API_KEY_MARKET = 'YOUR_BROKER_MARKET_API_KEY'/BROKER_API_KEY_MARKET = '$BROKER_API_KEY_MARKET'/g" "$TradeBoard_DIR/$ENV_FILE"
+            sed -i "s/BROKER_API_SECRET_MARKET = 'YOUR_BROKER_MARKET_API_SECRET'/BROKER_API_SECRET_MARKET = '$BROKER_API_SECRET_MARKET'/g" "$TradeBoard_DIR/$ENV_FILE"
         fi
     fi
 
@@ -300,82 +300,82 @@ do_setup() {
     if [ "$IS_XTS" -eq 1 ]; then
         echo "  Type:           XTS API (with market data)"
     fi
-    echo "  Data directory: $TRADEBOARD_DIR"
-    echo "  Config file:    $TRADEBOARD_DIR/$ENV_FILE"
-    echo "  Database:       $TRADEBOARD_DIR/db/"
-    echo "  Strategies:     $TRADEBOARD_DIR/strategies/"
-    echo "  Logs:           $TRADEBOARD_DIR/log/"
+    echo "  Data directory: $TradeBoard_DIR"
+    echo "  Config file:    $TradeBoard_DIR/$ENV_FILE"
+    echo "  Database:       $TradeBoard_DIR/db/"
+    echo "  Strategies:     $TradeBoard_DIR/strategies/"
+    echo "  Logs:           $TradeBoard_DIR/log/"
     echo ""
     echo "  Redirect URL for broker portal:"
     echo "  http://127.0.0.1:5000/$BROKER_NAME/callback"
     echo ""
-    echo "  Documentation: https://docs.wesoftcorp.com"
+    echo "  Documentation: https://docs.TradeBoard.in"
     echo ""
 
     # Try to open .env in editor (non-blocking)
     read -p "Open .env in editor for review? (y/n): " OPEN_EDITOR
     if [[ "$OPEN_EDITOR" =~ ^[Yy]$ ]]; then
         if [[ "$OSTYPE" == "darwin"* ]]; then
-            open -t "$TRADEBOARD_DIR/$ENV_FILE"
+            open -t "$TradeBoard_DIR/$ENV_FILE"
         elif command -v xdg-open &> /dev/null; then
             # Linux with desktop environment - non-blocking
-            xdg-open "$TRADEBOARD_DIR/$ENV_FILE" &>/dev/null &
+            xdg-open "$TradeBoard_DIR/$ENV_FILE" &>/dev/null &
         elif command -v gedit &> /dev/null; then
-            gedit "$TRADEBOARD_DIR/$ENV_FILE" &>/dev/null &
+            gedit "$TradeBoard_DIR/$ENV_FILE" &>/dev/null &
         elif command -v code &> /dev/null; then
-            code "$TRADEBOARD_DIR/$ENV_FILE"
+            code "$TradeBoard_DIR/$ENV_FILE"
         else
-            echo "  Edit .env manually: $TRADEBOARD_DIR/$ENV_FILE"
+            echo "  Edit .env manually: $TradeBoard_DIR/$ENV_FILE"
         fi
     fi
 
     echo ""
-    log_ok "Setup complete! Run './docker-run.sh start' to launch Tradeboard."
+    log_ok "Setup complete! Run './docker-run.sh start' to launch TradeBoard."
     echo ""
     return 0
 }
 
 # Start function
 do_start() {
-    log_info "Starting Tradeboard..."
+    log_info "Starting TradeBoard..."
     echo ""
 
     # Check if setup is needed
-    if [ ! -f "$TRADEBOARD_DIR/$ENV_FILE" ]; then
+    if [ ! -f "$TradeBoard_DIR/$ENV_FILE" ]; then
         log_info "First time setup detected. Running setup..."
         echo ""
         if ! do_setup; then
             echo ""
-            log_error "Setup failed. Cannot start Tradeboard."
+            log_error "Setup failed. Cannot start TradeBoard."
             echo "Please fix the issues above and try again."
             exit 1
         fi
         echo ""
-        log_info "Starting Tradeboard after setup..."
+        log_info "Starting TradeBoard after setup..."
         echo ""
     fi
 
     # Create db, strategies, log, keys, and tmp directories if not exist
-    if [ ! -d "$TRADEBOARD_DIR/db" ]; then
+    if [ ! -d "$TradeBoard_DIR/db" ]; then
         log_info "Creating database directory..."
-        mkdir -p "$TRADEBOARD_DIR/db"
+        mkdir -p "$TradeBoard_DIR/db"
     fi
-    if [ ! -d "$TRADEBOARD_DIR/strategies" ]; then
+    if [ ! -d "$TradeBoard_DIR/strategies" ]; then
         log_info "Creating strategies directory..."
-        mkdir -p "$TRADEBOARD_DIR/strategies/scripts"
-        mkdir -p "$TRADEBOARD_DIR/strategies/examples"
+        mkdir -p "$TradeBoard_DIR/strategies/scripts"
+        mkdir -p "$TradeBoard_DIR/strategies/examples"
     fi
-    if [ ! -d "$TRADEBOARD_DIR/log" ]; then
+    if [ ! -d "$TradeBoard_DIR/log" ]; then
         log_info "Creating log directory..."
-        mkdir -p "$TRADEBOARD_DIR/log/strategies"
+        mkdir -p "$TradeBoard_DIR/log/strategies"
     fi
-    if [ ! -d "$TRADEBOARD_DIR/keys" ]; then
+    if [ ! -d "$TradeBoard_DIR/keys" ]; then
         log_info "Creating keys directory..."
-        mkdir -p "$TRADEBOARD_DIR/keys"
+        mkdir -p "$TradeBoard_DIR/keys"
     fi
-    if [ ! -d "$TRADEBOARD_DIR/tmp" ]; then
+    if [ ! -d "$TradeBoard_DIR/tmp" ]; then
         log_info "Creating temp directory..."
-        mkdir -p "$TRADEBOARD_DIR/tmp"
+        mkdir -p "$TradeBoard_DIR/tmp"
     fi
 
     # Pull latest image
@@ -440,29 +440,29 @@ do_start() {
         -e "NUMBA_NUM_THREADS=${THREAD_LIMIT}" \
         -e "STRATEGY_MEMORY_LIMIT_MB=${STRATEGY_MEM_LIMIT}" \
         -e "TZ=Asia/Kolkata" \
-        -v "$TRADEBOARD_DIR/db:/app/db" \
-        -v "$TRADEBOARD_DIR/strategies:/app/strategies" \
-        -v "$TRADEBOARD_DIR/log:/app/log" \
-        -v "$TRADEBOARD_DIR/keys:/app/keys" \
-        -v "$TRADEBOARD_DIR/tmp:/app/tmp" \
-        -v "$TRADEBOARD_DIR/.env:/app/.env" \
+        -v "$TradeBoard_DIR/db:/app/db" \
+        -v "$TradeBoard_DIR/strategies:/app/strategies" \
+        -v "$TradeBoard_DIR/log:/app/log" \
+        -v "$TradeBoard_DIR/keys:/app/keys" \
+        -v "$TradeBoard_DIR/tmp:/app/tmp" \
+        -v "$TradeBoard_DIR/.env:/app/.env" \
         --restart unless-stopped \
         "$IMAGE"; then
 
         echo ""
-        log_success "Tradeboard started successfully!"
+        log_success "TradeBoard started successfully!"
         echo ""
         echo -e "${GREEN}  ========================================${NC}"
         echo -e "${GREEN}  Web UI:     http://127.0.0.1:5000${NC}"
         echo -e "${GREEN}  WebSocket:  ws://127.0.0.1:8765${NC}"
         echo -e "${GREEN}  ========================================${NC}"
         echo ""
-        echo "  Data directory: $TRADEBOARD_DIR"
+        echo "  Data directory: $TradeBoard_DIR"
         echo ""
         echo "  Useful commands:"
         echo "    ./docker-run.sh logs     - View logs"
-        echo "    ./docker-run.sh stop     - Stop Tradeboard"
-        echo "    ./docker-run.sh restart  - Restart Tradeboard"
+        echo "    ./docker-run.sh stop     - Stop TradeBoard"
+        echo "    ./docker-run.sh restart  - Restart TradeBoard"
         echo ""
     else
         echo ""
@@ -471,7 +471,7 @@ do_start() {
         echo "Troubleshooting:"
         echo "  1. Check if ports 5000 and 8765 are available"
         echo "  2. Ensure Docker Desktop is running"
-        echo "  3. Check .env file: $TRADEBOARD_DIR/$ENV_FILE"
+        echo "  3. Check .env file: $TradeBoard_DIR/$ENV_FILE"
         echo ""
         exit 1
     fi
@@ -479,15 +479,15 @@ do_start() {
 
 # Stop function
 do_stop() {
-    log_info "Stopping Tradeboard..."
+    log_info "Stopping TradeBoard..."
     docker stop "$CONTAINER" >/dev/null 2>&1
     docker rm "$CONTAINER" >/dev/null 2>&1
-    log_ok "Tradeboard stopped."
+    log_ok "TradeBoard stopped."
 }
 
 # Restart function
 do_restart() {
-    log_info "Restarting Tradeboard..."
+    log_info "Restarting TradeBoard..."
     do_stop
     echo ""
     do_start
@@ -521,14 +521,14 @@ do_status() {
 
     # Check if container is running
     if docker ps --filter "name=$CONTAINER" --filter "status=running" | grep -q "$CONTAINER"; then
-        echo -e "${GREEN}[STATUS]${NC} Tradeboard is running."
+        echo -e "${GREEN}[STATUS]${NC} TradeBoard is running."
         echo ""
         echo "  Web UI: http://127.0.0.1:5000"
     else
-        echo -e "${YELLOW}[STATUS]${NC} Tradeboard is NOT running."
+        echo -e "${YELLOW}[STATUS]${NC} TradeBoard is NOT running."
     fi
     echo ""
-    echo "  Data directory: $TRADEBOARD_DIR"
+    echo "  Data directory: $TradeBoard_DIR"
 }
 
 # Shell function
@@ -554,7 +554,7 @@ do_help() {
     echo "Usage: ./docker-run.sh [command]"
     echo ""
     echo "Commands:"
-    echo "  start    Start Tradeboard (runs setup if needed, default)"
+    echo "  start    Start TradeBoard (runs setup if needed, default)"
     echo "  stop     Stop and remove container"
     echo "  restart  Restart container"
     echo "  logs     View container logs (live)"
@@ -575,11 +575,11 @@ do_help() {
     echo "     chmod +x docker-run.sh"
     echo "     ./docker-run.sh"
     echo ""
-    echo "Data Location: $TRADEBOARD_DIR"
-    echo "  - Config:     $TRADEBOARD_DIR/.env"
-    echo "  - Database:   $TRADEBOARD_DIR/db/"
-    echo "  - Strategies: $TRADEBOARD_DIR/strategies/"
-    echo "  - Logs:       $TRADEBOARD_DIR/log/"
+    echo "Data Location: $TradeBoard_DIR"
+    echo "  - Config:     $TradeBoard_DIR/.env"
+    echo "  - Database:   $TradeBoard_DIR/db/"
+    echo "  - Strategies: $TradeBoard_DIR/strategies/"
+    echo "  - Logs:       $TradeBoard_DIR/log/"
     echo ""
     echo "XTS Brokers (require market data credentials):"
     echo "  fivepaisaxts, compositedge, ibulls, iifl, jainamxts, rmoney, wisdom"

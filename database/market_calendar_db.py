@@ -62,7 +62,10 @@ DEFAULT_MARKET_TIMINGS = {
     "CDS": {"start_offset": 32400000, "end_offset": 61200000},  # 09:00 - 17:00
     "BCD": {"start_offset": 32400000, "end_offset": 61200000},  # 09:00 - 17:00
     "MCX": {"start_offset": 32400000, "end_offset": 86100000},  # 09:00 - 23:55
-    "NCO": {"start_offset": 32400000, "end_offset": 86100000},  # 09:00 - 23:55 (NSE Commodities mirrors MCX)
+    "NCO": {
+        "start_offset": 32400000,
+        "end_offset": 86100000,
+    },  # 09:00 - 23:55 (NSE Commodities mirrors MCX)
     "CRYPTO": {"start_offset": 0, "end_offset": 86399000},  # 00:00 - 23:59:59 (24/7)
 }
 
@@ -711,7 +714,7 @@ def get_market_timings_for_date(query_date: date) -> list[dict[str, Any]]:
         return []
 
 
-def get_special_session(query_date: date, exchange: str) -> Optional[Dict[str, Any]]:
+def get_special_session(query_date: date, exchange: str) -> dict[str, Any] | None:
     """
     Return the SPECIAL_SESSION window for (date, exchange) if one exists and
     the exchange is marked open. Returns None otherwise.
@@ -765,9 +768,7 @@ def get_special_session(query_date: date, exchange: str) -> Optional[Dict[str, A
         return None
 
 
-def get_holiday_exchange_window(
-    query_date: date, exchange: str
-) -> Optional[Dict[str, Any]]:
+def get_holiday_exchange_window(query_date: date, exchange: str) -> dict[str, Any] | None:
     """
     Return the open-window for (date, exchange) when a TRADING_HOLIDAY row
     explicitly leaves this exchange open with custom timings (e.g., MCX
@@ -820,9 +821,7 @@ def get_holiday_exchange_window(
         return None
 
 
-def get_effective_session_window(
-    query_date: date, exchange: str
-) -> Optional[Dict[str, Any]]:
+def get_effective_session_window(query_date: date, exchange: str) -> dict[str, Any] | None:
     """
     Single source of truth for "what is the trading window for <exchange> on
     <date>?".
@@ -1303,7 +1302,9 @@ def get_market_hours_status() -> dict[str, Any]:
 
             exchanges_status[exch] = {
                 "is_open": is_open,
-                "is_special": bool(window and window.get("is_special")) if exch not in CRYPTO_EXCHANGES else False,
+                "is_special": bool(window and window.get("is_special"))
+                if exch not in CRYPTO_EXCHANGES
+                else False,
                 "start_time": start_label,
                 "end_time": end_label,
                 "start_offset": start_offset,

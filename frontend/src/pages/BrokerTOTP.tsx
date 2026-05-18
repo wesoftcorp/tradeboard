@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowLeft, ExternalLink, Loader2, Shield } from 'lucide-react'
+﻿import { AlertTriangle, ArrowLeft, ExternalLink, Loader2, Shield } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { showToast } from '@/utils/toast'
@@ -504,7 +504,7 @@ export default function BrokerTOTP() {
                   Back to Broker Selection
                 </Link>
                 <a
-                  href="https://docs.openalgo.in"
+                  href="https://docs.TradeBoard.in"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline inline-flex items-center gap-1"

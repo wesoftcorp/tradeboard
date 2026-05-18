@@ -1,8 +1,8 @@
-# 43 - Telegram Bot Configuration
+﻿# 43 - Telegram Bot Configuration
 
 ## Overview
 
-Tradeboard integrates with Telegram to provide real-time trading notifications, account information, and bot commands. Users can configure their Telegram bot to receive order alerts, position updates, and execute queries.
+TradeBoard integrates with Telegram to provide real-time trading notifications, account information, and bot commands. Users can configure their Telegram bot to receive order alerts, position updates, and execute queries.
 
 ## Architecture Diagram
 
@@ -31,7 +31,7 @@ Tradeboard integrates with Telegram to provide real-time trading notifications, 
                              │
                              ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Tradeboard Backend                                      │
+│                        TradeBoard Backend                                      │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │                    Telegram Blueprint                                │   │
@@ -66,7 +66,7 @@ Tradeboard integrates with Telegram to provide real-time trading notifications, 
 │  │  │  /stoppython - Stop running Python strategies                 │  │   │
 │  │  │  /mode       - Toggle Live / Analyze mode                     │  │   │
 │  │  │  /menu       - Interactive menu                               │  │   │
-│  │  │  /link       - Link Tradeboard account                          │  │   │
+│  │  │  /link       - Link TradeBoard account                          │  │   │
 │  │  │  /unlink     - Unlink account                                 │  │   │
 │  │  └──────────────────────────────────────────────────────────────┘  │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
@@ -91,7 +91,7 @@ Tradeboard integrates with Telegram to provide real-time trading notifications, 
 │ Column           │ Type         │ Description                  │
 ├──────────────────┼──────────────┼──────────────────────────────┤
 │ id               │ INTEGER PK   │ Auto-increment               │
-│ user_id          │ VARCHAR(255) │ Tradeboard user ID             │
+│ user_id          │ VARCHAR(255) │ TradeBoard user ID             │
 │ telegram_id      │ BIGINT       │ Telegram chat ID             │
 │ username         │ VARCHAR(255) │ Telegram username            │
 │ first_name       │ VARCHAR(255) │ User's first name            │
@@ -110,7 +110,7 @@ Tradeboard integrates with Telegram to provide real-time trading notifications, 
 │ Column           │ Type         │ Description                  │
 ├──────────────────┼──────────────┼──────────────────────────────┤
 │ id               │ INTEGER PK   │ Auto-increment               │
-│ user_id          │ VARCHAR(255) │ Tradeboard user ID (unique)    │
+│ user_id          │ VARCHAR(255) │ TradeBoard user ID (unique)    │
 │ bot_token        │ TEXT         │ Encrypted bot token          │
 │ webhook_url      │ VARCHAR(500) │ Webhook endpoint             │
 │ is_enabled       │ BOOLEAN      │ Bot enabled status           │
@@ -164,7 +164,7 @@ Tradeboard integrates with Telegram to provide real-time trading notifications, 
 |---------|-------------|---------|
 | /start | Initialize bot and link account | /start |
 | /help | Display available commands | /help |
-| /link `<api_key> <host_url>` | Link your Tradeboard account | /link abc123 http://127.0.0.1:5000 |
+| /link `<api_key> <host_url>` | Link your TradeBoard account | /link abc123 http://127.0.0.1:5000 |
 | /unlink | Unlink your account | /unlink |
 | /status | Check broker connection | /status |
 | /funds | Get account balance and margin | /funds |
@@ -212,7 +212,7 @@ If no strategies are running, the bot replies `ℹ️ No Python strategies runni
 │           └──► Receive bot token                                           │
 │                       │                                                     │
 │                       ▼                                                     │
-│  2. Configure in Tradeboard ─────────────────────────────────────────────►   │
+│  2. Configure in TradeBoard ─────────────────────────────────────────────►   │
 │           │                                                                 │
 │           ├──► Go to Settings > Telegram                                   │
 │           ├──► Enter bot token                                             │

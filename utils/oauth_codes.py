@@ -18,7 +18,6 @@ import time
 from dataclasses import dataclass, field
 from typing import Optional
 
-
 # Default per the PRD. Configurable via MCP_OAUTH_CODE_TTL but capped at
 # 5 minutes regardless — RFC 6749 §4.1.2 recommends "very short".
 _DEFAULT_TTL = 60
@@ -130,7 +129,7 @@ class _CodeStore:
             return len(self._codes)
 
 
-# Module-level singleton — single store per process. Fine for Tradeboard's
+# Module-level singleton — single store per process. Fine for TradeBoard's
 # single-eventlet-worker production model. Multi-worker deployments
 # would need a shared backend (Redis), but the broader architecture
 # already mandates -w 1 for SocketIO.

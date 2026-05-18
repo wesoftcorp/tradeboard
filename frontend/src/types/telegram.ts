@@ -1,4 +1,4 @@
-// Telegram types
+﻿// Telegram types
 
 export interface TelegramBotStatus {
   is_running: boolean
@@ -19,7 +19,7 @@ export interface TelegramUser {
   id: number
   telegram_id: number
   telegram_username: string | null
-  tradeboard_username: string | null
+  TradeBoard_username: string | null
   first_name: string | null
   last_name: string | null
   notifications_enabled: boolean

@@ -1,8 +1,8 @@
-# 13 - Chartink Architecture
+﻿# 13 - Chartink Architecture
 
 ## Overview
 
-Chartink integration allows Tradeboard to receive trading signals from Chartink screener alerts via webhooks. When a stock appears in a Chartink scanner, it triggers a webhook that Tradeboard processes to place trades automatically.
+Chartink integration allows TradeBoard to receive trading signals from Chartink screener alerts via webhooks. When a stock appears in a Chartink scanner, it triggers a webhook that TradeBoard processes to place trades automatically.
 
 > **Note**: The Chartink integration uses a "Strategy" concept (not "Scanner") where each strategy has symbol-level configuration with time-based trading controls.
 
@@ -27,7 +27,7 @@ Chartink integration allows Tradeboard to receive trading signals from Chartink 
                               │ HTTP POST
                               ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     Tradeboard Chartink Webhook                                │
+│                     TradeBoard Chartink Webhook                                │
 │                     POST /chartink/webhook                                   │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
@@ -126,12 +126,12 @@ class ChartinkSymbolMapping(Base):
 
 ```json
 {
-    "webhook_id": "your_webhook_id_from_tradeboard",
+    "webhook_id": "your_webhook_id_from_TradeBoard",
     "stocks": "{stocks}"
 }
 ```
 
-### Tradeboard Setup
+### TradeBoard Setup
 
 1. Navigate to `/chartink`
 2. Create new strategy
@@ -302,21 +302,21 @@ STRATEGY_RATE_LIMIT=200 per minute
 
 ```
 Chartink: Stocks crossing 20 DMA with volume spike
-Tradeboard: Auto-buy with MIS product, qty=100
+TradeBoard: Auto-buy with MIS product, qty=100
 ```
 
 ### Breakout Scanner
 
 ```
 Chartink: Stocks breaking 52-week high
-Tradeboard: Auto-buy with CNC product for delivery
+TradeBoard: Auto-buy with CNC product for delivery
 ```
 
 ### Exit Scanner
 
 ```
 Chartink: Stocks falling below support
-Tradeboard: Auto-sell to close positions
+TradeBoard: Auto-sell to close positions
 ```
 
 ## Key Files Reference

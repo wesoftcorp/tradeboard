@@ -1,7 +1,7 @@
-# Tradeboard Advanced Docker Installation (Multi-Instance & Custom SSL)
+﻿# TradeBoard Advanced Docker Installation (Multi-Instance & Custom SSL)
 
 This guide covers the advanced installation script (`install-docker-multi-custom-ssl.sh`), which is designed for power users who need:
-- **Multiple Tradeboard instances** on a single server.
+- **Multiple TradeBoard instances** on a single server.
 - **Custom SSL Certificates** (e.g., Wildcard SSLs).
 - **Portainer** for container management.
 - **Robust Healthchecks** and automatic error recovery.
@@ -29,7 +29,7 @@ When you run the script, it will interactively prompt you for:
 
 1.  **Instance Name**:
     - You can give each installation a unique name (e.g., `algo1`, `fyers-bot`).
-    - This allows you to run multiple independent copies of Tradeboard side-by-side.
+    - This allows you to run multiple independent copies of TradeBoard side-by-side.
 
 2.  **Domain & Broker**:
     - Choose your domain (e.g., `bot1.example.com`).
@@ -72,10 +72,10 @@ Since this script supports multiple instances, docker compose commands need to b
 **Directory Structure:**
 ```
 /opt/
-  ├── tradeboard-algo1/       # Instance 1
+  ├── TradeBoard-algo1/       # Instance 1
   │   ├── docker-compose.yaml
   │   └── .env
-  └── tradeboard-fyers-bot/   # Instance 2 (Different Broker/Strategy)
+  └── TradeBoard-fyers-bot/   # Instance 2 (Different Broker/Strategy)
       ├── docker-compose.yaml
       └── .env
 ```
@@ -83,7 +83,7 @@ Since this script supports multiple instances, docker compose commands need to b
 **Managing a Specific Instance:**
 ```bash
 # Go to the instance directory
-cd /opt/tradeboard-algo1
+cd /opt/TradeBoard-algo1
 
 # Start/Stop/Restart
 docker compose up -d
@@ -135,6 +135,6 @@ If Portainer is already running, the script will:
 3.  **WebSocket 403 Errors**:
     - If you experience disconnects after broker re-login, restart the specific instance:
       ```bash
-      cd /opt/tradeboard-INSTANCE_NAME
+      cd /opt/TradeBoard-INSTANCE_NAME
       docker compose restart
       ```

@@ -1,8 +1,8 @@
 import json
 import os
-from tokenize import Token
 import threading
 import time
+from tokenize import Token
 
 import httpx
 
@@ -73,14 +73,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -115,13 +115,12 @@ def _invalidate_position_cache(auth):
         _position_cache.pop(auth, None)
 
 
-
 def get_open_position(tradingsymbol, exchange, producttype, auth):
-    # Convert Trading Symbol from Tradeboard Format to Broker Format Before Search in OpenPosition
+    # Convert Trading Symbol from TradeBoard Format to Broker Format Before Search in OpenPosition
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
     positions_data = _get_cached_positions(auth)
 
-    # Map exchange from Tradeboard format to XTS format
+    # Map exchange from TradeBoard format to XTS format
     exchange_mapping = {
         "NSE": "NSECM",
         "BSE": "BSECM",
@@ -204,7 +203,6 @@ def place_order_api(data, auth):
             "error": "Invalid JSON response from server",
             "raw_response": response.text,
         }
-
 
     orderid = (
         response_data.get("result", {}).get("AppOrderID")
@@ -348,7 +346,7 @@ def close_all_positions(current_api_key, auth):
             "orderQuantity": str(quantity),
             "limitPrice": "0",
             "stopPrice": "0",
-            "orderUniqueIdentifier": "tradeboard",
+            "orderUniqueIdentifier": "TradeBoard",
         }
 
         # Place the order to close the position
@@ -373,7 +371,7 @@ def cancel_order(orderid, auth):
     }
 
     # Prepare the payload
-    payload = json.dumps({"appOrderID": orderid, "orderUniqueIdentifier": "tradeboard"})
+    payload = json.dumps({"appOrderID": orderid, "orderUniqueIdentifier": "TradeBoard"})
 
     # Make the request using the shared client
     response = client.delete(f"{INTERACTIVE_URL}/orders?appOrderID={orderid}", headers=headers)

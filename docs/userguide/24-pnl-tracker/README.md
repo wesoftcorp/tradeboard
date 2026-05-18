@@ -1,8 +1,8 @@
-# 24 - PnL Tracker
+﻿# 24 - PnL Tracker
 
 ## Introduction
 
-The PnL (Profit and Loss) Tracker in Tradeboard provides comprehensive analytics on your trading performance. Track realized and unrealized P&L, analyze trade statistics, and monitor your equity curve over time.
+The PnL (Profit and Loss) Tracker in TradeBoard provides comprehensive analytics on your trading performance. Track realized and unrealized P&L, analyze trade statistics, and monitor your equity curve over time.
 
 ## Accessing PnL Tracker
 

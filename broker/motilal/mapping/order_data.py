@@ -33,27 +33,27 @@ def map_order_data(order_data):
             # Extract the instrument_token and exchange for the current order
             symboltoken = order["symboltoken"]
             motilal_exchange = order["exchange"]
-            # Convert Motilal exchange (NSEFO) to Tradeboard exchange (NFO) for database lookup
-            tradeboard_exchange = reverse_map_exchange(motilal_exchange)
+            # Convert Motilal exchange (NSEFO) to TradeBoard exchange (NFO) for database lookup
+            TradeBoard_exchange = reverse_map_exchange(motilal_exchange)
 
             # Use the get_symbol function to fetch the symbol from the database
-            # Use Tradeboard exchange format for lookup
-            symbol_from_db = get_symbol(symboltoken, tradeboard_exchange)
+            # Use TradeBoard exchange format for lookup
+            symbol_from_db = get_symbol(symboltoken, TradeBoard_exchange)
 
             # Check if a symbol was found; if so, update the trading_symbol in the current order
             if symbol_from_db:
                 order["symbol"] = symbol_from_db  # Motilal uses 'symbol' field
-                # Convert exchange to Tradeboard format for display
-                order["exchange"] = tradeboard_exchange
+                # Convert exchange to TradeBoard format for display
+                order["exchange"] = TradeBoard_exchange
 
-                # Map Motilal product types to Tradeboard format
-                if tradeboard_exchange in ["NSE", "BSE"]:
+                # Map Motilal product types to TradeBoard format
+                if TradeBoard_exchange in ["NSE", "BSE"]:
                     if order["producttype"] == "DELIVERY":
                         order["producttype"] = "CNC"
                     elif order["producttype"] == "VALUEPLUS":
                         order["producttype"] = "MIS"  # Motilal uses VALUEPLUS for margin intraday
 
-                elif tradeboard_exchange in ["NFO", "MCX", "CDS", "BFO"]:
+                elif TradeBoard_exchange in ["NFO", "MCX", "CDS", "BFO"]:
                     # F&O segment product mapping
                     if order["producttype"] == "NORMAL":
                         order["producttype"] = "MIS"  # Motilal uses NORMAL for F&O intraday
@@ -61,10 +61,10 @@ def map_order_data(order_data):
                         order["producttype"] = "NRML"
             else:
                 logger.info(
-                    f"Symbol not found for token {symboltoken} and exchange {tradeboard_exchange}. Keeping original trading symbol."
+                    f"Symbol not found for token {symboltoken} and exchange {TradeBoard_exchange}. Keeping original trading symbol."
                 )
-                # Still convert exchange to Tradeboard format
-                order["exchange"] = tradeboard_exchange
+                # Still convert exchange to TradeBoard format
+                order["exchange"] = TradeBoard_exchange
 
     return order_data
 
@@ -128,9 +128,9 @@ def transform_order_data(orders):
             )
             continue
 
-        # Map Motilal order types to Tradeboard standard format
+        # Map Motilal order types to TradeBoard standard format
         # Motilal returns: Market, Limit, Stoploss (title case)
-        # Tradeboard standard: MARKET, LIMIT, SL, SL-M (uppercase)
+        # TradeBoard standard: MARKET, LIMIT, SL, SL-M (uppercase)
         ordertype = order.get("ordertype", "")
         if ordertype == "Stoploss" or ordertype == "STOPLOSS":
             # Determine if it's SL or SL-M based on trigger price
@@ -146,9 +146,9 @@ def transform_order_data(orders):
             # Default to uppercase if unrecognized
             ordertype = ordertype.upper()
 
-        # Map Motilal order status to Tradeboard standard format
+        # Map Motilal order status to TradeBoard standard format
         # Motilal returns: Traded, Confirm, Sent, Error, Rejected, Cancel (title case)
-        # Tradeboard standard: complete, open, rejected, cancelled (lowercase)
+        # TradeBoard standard: complete, open, rejected, cancelled (lowercase)
         order_status = order.get("orderstatus", "")
         if order_status == "Traded" or order_status == "Complete":
             order_status = "complete"
@@ -232,42 +232,42 @@ def map_trade_data(trade_data):
             # Extract the instrument_token and exchange for the current order
             symbol = order["symbol"]  # Motilal uses 'symbol'
             motilal_exchange = order["exchange"]
-            # Convert Motilal exchange to Tradeboard exchange for database lookup
-            tradeboard_exchange = reverse_map_exchange(motilal_exchange)
+            # Convert Motilal exchange to TradeBoard exchange for database lookup
+            TradeBoard_exchange = reverse_map_exchange(motilal_exchange)
 
             # Use the get_symbol function to fetch the symbol from the database
-            symbol_from_db = get_oa_symbol(symbol, tradeboard_exchange)
+            symbol_from_db = get_oa_symbol(symbol, TradeBoard_exchange)
 
             # Check if a symbol was found; if so, update the trading_symbol in the current order
             if symbol_from_db:
                 order["symbol"] = symbol_from_db
-                # Convert exchange to Tradeboard format
-                order["exchange"] = tradeboard_exchange
+                # Convert exchange to TradeBoard format
+                order["exchange"] = TradeBoard_exchange
 
-                # Map Motilal product types to Tradeboard format
-                if tradeboard_exchange in ["NSE", "BSE"]:
+                # Map Motilal product types to TradeBoard format
+                if TradeBoard_exchange in ["NSE", "BSE"]:
                     if order["producttype"] == "DELIVERY":
                         order["producttype"] = "CNC"
                     elif order["producttype"] == "VALUEPLUS":
                         order["producttype"] = "MIS"  # Motilal uses VALUEPLUS for margin intraday
 
-                elif tradeboard_exchange in ["NFO", "MCX", "CDS", "BFO"]:
+                elif TradeBoard_exchange in ["NFO", "MCX", "CDS", "BFO"]:
                     if order["producttype"] == "NORMAL":
                         order["producttype"] = "MIS"  # Motilal uses NORMAL for F&O intraday
                     elif order["producttype"] == "VALUEPLUS":
                         order["producttype"] = "NRML"
             else:
                 logger.info(
-                    f"Unable to find the symbol {symbol} and exchange {tradeboard_exchange}. Keeping original trading symbol."
+                    f"Unable to find the symbol {symbol} and exchange {TradeBoard_exchange}. Keeping original trading symbol."
                 )
-                order["exchange"] = tradeboard_exchange
+                order["exchange"] = TradeBoard_exchange
 
     return trade_data
 
 
 def transform_tradebook_data(tradebook_data):
     """
-    Transforms Motilal Oswal tradebook data to Tradeboard format.
+    Transforms Motilal Oswal tradebook data to TradeBoard format.
     Motilal field names: symbol, buyorsell, tradeqty, tradeprice, tradetime, etc.
     """
     transformed_data = []
@@ -311,23 +311,23 @@ def map_position_data(position_data):
             # Extract the symboltoken and exchange for the current position
             symboltoken = position.get("symboltoken")
             motilal_exchange = position.get("exchange")
-            # Convert Motilal exchange to Tradeboard exchange for database lookup
-            tradeboard_exchange = reverse_map_exchange(motilal_exchange)
+            # Convert Motilal exchange to TradeBoard exchange for database lookup
+            TradeBoard_exchange = reverse_map_exchange(motilal_exchange)
 
             # Use the get_symbol function to fetch the symbol from the database
-            symbol_from_db = get_symbol(symboltoken, tradeboard_exchange)
+            symbol_from_db = get_symbol(symboltoken, TradeBoard_exchange)
 
             # Check if a symbol was found; if so, update the symbol in the current position
             if symbol_from_db:
                 position["symbol"] = symbol_from_db
-                # Convert exchange to Tradeboard format
-                position["exchange"] = tradeboard_exchange
+                # Convert exchange to TradeBoard format
+                position["exchange"] = TradeBoard_exchange
 
-                # Map Motilal product types to Tradeboard format
+                # Map Motilal product types to TradeBoard format
                 # Motilal uses 'productname' field for positions instead of 'producttype'
                 productname = position.get("productname", "")
 
-                if tradeboard_exchange in ["NSE", "BSE"]:
+                if TradeBoard_exchange in ["NSE", "BSE"]:
                     # Cash segment product mapping
                     if productname == "DELIVERY":
                         position["productname"] = "CNC"
@@ -336,7 +336,7 @@ def map_position_data(position_data):
                             "MIS"  # Motilal uses VALUEPLUS for margin intraday
                         )
 
-                elif tradeboard_exchange in ["NFO", "MCX", "CDS", "BFO"]:
+                elif TradeBoard_exchange in ["NFO", "MCX", "CDS", "BFO"]:
                     # F&O segment product mapping
                     if productname == "NORMAL":
                         position["productname"] = "MIS"  # Motilal uses NORMAL for F&O intraday
@@ -344,16 +344,16 @@ def map_position_data(position_data):
                         position["productname"] = "NRML"
             else:
                 logger.info(
-                    f"Symbol not found for token {symboltoken} and exchange {tradeboard_exchange}. Keeping original symbol."
+                    f"Symbol not found for token {symboltoken} and exchange {TradeBoard_exchange}. Keeping original symbol."
                 )
-                position["exchange"] = tradeboard_exchange
+                position["exchange"] = TradeBoard_exchange
 
     return position_data_list
 
 
 def transform_positions_data(positions_data):
     """
-    Transforms Motilal Oswal positions data to Tradeboard format.
+    Transforms Motilal Oswal positions data to TradeBoard format.
     Motilal doesn't have netqty - calculate from buyquantity and sellquantity.
     """
     transformed_data = []
@@ -389,7 +389,7 @@ def transform_positions_data(positions_data):
 
 def transform_holdings_data(holdings_data):
     """
-    Transforms Motilal Oswal holdings data to Tradeboard format.
+    Transforms Motilal Oswal holdings data to TradeBoard format.
     Motilal holdings response has: scripname, dpquantity, buyavgprice, nsesymboltoken, bsescripcode
     """
     transformed_data = []
@@ -399,7 +399,7 @@ def transform_holdings_data(holdings_data):
     )
 
     for holdings in holdings_list:
-        # Get the mapped Tradeboard symbol and exchange from map_portfolio_data
+        # Get the mapped TradeBoard symbol and exchange from map_portfolio_data
         symbol = holdings.get("symbol", "")  # Already mapped by map_portfolio_data
         exchange = holdings.get("exchange", "NSE")  # Already determined by map_portfolio_data
 
@@ -437,7 +437,7 @@ def map_portfolio_data(portfolio_data):
     - portfolio_data: A dictionary containing holdings data
 
     Returns:
-    - The modified portfolio_data with mapped fields (Tradeboard symbols and exchange).
+    - The modified portfolio_data with mapped fields (TradeBoard symbols and exchange).
     """
     # Log the raw response for debugging
     logger.info(
@@ -501,7 +501,7 @@ def map_portfolio_data(portfolio_data):
                 holding["product"] = "CNC"
                 continue
 
-            # Use get_symbol to fetch the Tradeboard symbol from database
+            # Use get_symbol to fetch the TradeBoard symbol from database
             symbol_from_db = get_symbol(token, exchange)
 
             if symbol_from_db:

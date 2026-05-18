@@ -1,4 +1,4 @@
-# Option Symbol and Options Order API Tests
+﻿# Option Symbol and Options Order API Tests
 
 This folder contains test scripts for the Option Symbol and Options Order APIs.
 
@@ -9,12 +9,12 @@ This folder contains test scripts for the Option Symbol and Options Order APIs.
 
 ## Prerequisites
 
-1. **Tradeboard must be running**
-   - Start Tradeboard application
+1. **TradeBoard must be running**
+   - Start TradeBoard application
    - Ensure it's accessible at `http://127.0.0.1:5000`
 
 2. **API Key**
-   - Get your API key from Tradeboard settings
+   - Get your API key from TradeBoard settings
    - Replace `"your_api_key_here"` in the test files with your actual API key
 
 ## How to Run Tests
@@ -23,7 +23,7 @@ This folder contains test scripts for the Option Symbol and Options Order APIs.
 
 ```bash
 # Navigate to test directory
-cd D:/tradeboard-sandbox-test/tradeboard/test
+cd D:/TradeBoard-sandbox-test/TradeBoard/test
 
 # Run Option Symbol API tests
 python test_option_symbol_api.py
@@ -36,7 +36,7 @@ python test_options_order_api.py
 
 ```bash
 # Navigate to project root
-cd D:/tradeboard-sandbox-test/tradeboard
+cd D:/TradeBoard-sandbox-test/TradeBoard
 
 # Run Option Symbol API tests
 python test/test_option_symbol_api.py
@@ -49,7 +49,7 @@ python test/test_options_order_api.py
 
 ```bash
 # From project root
-cd D:/tradeboard-sandbox-test/tradeboard
+cd D:/TradeBoard-sandbox-test/TradeBoard
 
 # Run tests with uv
 uv run python test/test_option_symbol_api.py
@@ -70,7 +70,7 @@ API_KEY = "your_api_key_here"        # Replace with your actual API key
 
 ### Testing with Analyze Mode (Sandbox)
 
-1. Enable **Analyze Mode** in Tradeboard settings
+1. Enable **Analyze Mode** in TradeBoard settings
 2. Run the tests
 3. Orders will be placed in sandbox (sandbox trading)
 4. Check sandbox dashboard for results
@@ -78,7 +78,7 @@ API_KEY = "your_api_key_here"        # Replace with your actual API key
 
 ### Testing with Live Mode
 
-1. Disable **Analyze Mode** in Tradeboard settings
+1. Disable **Analyze Mode** in TradeBoard settings
 2. Run the tests
 3. **⚠️ WARNING**: Orders will be placed with real broker
 4. Ensure you want to place real orders before testing
@@ -168,18 +168,18 @@ API_KEY = "your_api_key_here"        # Replace with your actual API key
 ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
 ```
 
-**Solution**: Make sure Tradeboard is running at `http://127.0.0.1:5000`
+**Solution**: Make sure TradeBoard is running at `http://127.0.0.1:5000`
 
 ### Invalid API Key Error
 
 ```json
 {
   "status": "error",
-  "message": "Invalid tradeboard apikey"
+  "message": "Invalid TradeBoard apikey"
 }
 ```
 
-**Solution**: Replace API key in test file with your actual API key from Tradeboard settings
+**Solution**: Replace API key in test file with your actual API key from TradeBoard settings
 
 ### Module Import Errors
 
@@ -219,7 +219,7 @@ uv pip install requests
 ## Support
 
 For issues or questions:
-- Check Tradeboard logs for detailed error messages
+- Check TradeBoard logs for detailed error messages
 - Verify API endpoint is accessible
 - Ensure master contract data is up to date
 - Review API documentation in `docs/` folder

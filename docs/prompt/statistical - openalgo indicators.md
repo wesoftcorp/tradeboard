@@ -1,19 +1,19 @@
-# Statistical
+﻿# Statistical
 
-## Tradeboard Statistical Indicators Documentation
+## TradeBoard Statistical Indicators Documentation
 
 Statistical indicators analyze price data using mathematical and statistical methods to identify patterns, relationships, and forecast future price movements.
 
 ### Import Statement
 
 ```python
-from tradeboard import ta
+from TradeBoard import ta
 ```
 
 ### Getting Market Data
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 
 client = api(api_key='your_api_key_here', host='http://127.0.0.1:5000')
 
@@ -384,7 +384,7 @@ df['VOLUME_MODE'] = volume_mode
 
 ```python
 import pandas as pd
-from tradeboard import api, ta
+from TradeBoard import api, ta
 
 # Get market data
 client = api(api_key='your_api_key_here', host='http://127.0.0.1:5000')
@@ -564,7 +564,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.wesoftcorp.com/trading-platform/python/indicators/statistical.md?ask=<question>
+GET https://docs.TradeBoard.in/trading-platform/python/indicators/statistical.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

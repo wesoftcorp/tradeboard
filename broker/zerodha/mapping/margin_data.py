@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Zerodha Margin API https://kite.trade/docs/connect/v3/margins/
 
 from database.token_db import get_br_symbol
@@ -9,10 +9,10 @@ logger = get_logger(__name__)
 
 def transform_margin_positions(positions):
     """
-    Transform Tradeboard margin position format to Zerodha margin format.
+    Transform TradeBoard margin position format to Zerodha margin format.
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
 
     Returns:
         List of positions in Zerodha format
@@ -82,9 +82,9 @@ def transform_margin_positions(positions):
 
 def map_product_type(product):
     """
-    Maps Tradeboard product type to Zerodha product type.
+    Maps TradeBoard product type to Zerodha product type.
 
-    Tradeboard: CNC, NRML, MIS
+    TradeBoard: CNC, NRML, MIS
     Zerodha: CNC, NRML, MIS (Direct mapping - no transformation needed)
     """
     product_type_mapping = {
@@ -97,9 +97,9 @@ def map_product_type(product):
 
 def map_order_type(pricetype):
     """
-    Maps Tradeboard price type to Zerodha order type.
+    Maps TradeBoard price type to Zerodha order type.
 
-    Tradeboard: MARKET, LIMIT, SL, SL-M
+    TradeBoard: MARKET, LIMIT, SL, SL-M
     Zerodha: MARKET, LIMIT, SL, SL-M (Direct mapping - no transformation needed)
     """
     order_type_mapping = {"MARKET": "MARKET", "LIMIT": "LIMIT", "SL": "SL", "SL-M": "SL-M"}
@@ -108,7 +108,7 @@ def map_order_type(pricetype):
 
 def parse_margin_response(response_data):
     """
-    Parse Zerodha margin response to Tradeboard standard format.
+    Parse Zerodha margin response to TradeBoard standard format.
 
     Zerodha basket margin response structure:
     - data.initial: Total margins from basket calculation (partially optimized)
@@ -141,7 +141,7 @@ def parse_margin_response(response_data):
         response_data: Raw response from Zerodha API
 
     Returns:
-        Standardized margin response matching Tradeboard format
+        Standardized margin response matching TradeBoard format
     """
     try:
         if not response_data or not isinstance(response_data, dict):
@@ -274,7 +274,7 @@ def parse_margin_response(response_data):
                 f"Orders margin: total={total_margin_required}, span={span_margin}, exposure={exposure_margin}"
             )
 
-        # Return standardized format matching Tradeboard API specification
+        # Return standardized format matching TradeBoard API specification
         response_data = {
             "status": "success",
             "data": {

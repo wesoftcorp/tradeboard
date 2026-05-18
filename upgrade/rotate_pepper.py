@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Tradeboard PEPPER Rotation Migration (DESTRUCTIVE)
+TradeBoard PEPPER Rotation Migration (DESTRUCTIVE)
 =================================================
 
 This script rotates API_KEY_PEPPER and re-encrypts every field that is
@@ -23,20 +23,20 @@ It must be run explicitly by the operator at a controlled moment:
     uv run rotate_pepper.py --yes      # non-interactive
 
 Pre-flight:
-  1. Stop Tradeboard (kill the running process / systemctl stop tradeboard).
-  2. Back up db/tradeboard.db (the script also creates a backup, but
+  1. Stop TradeBoard (kill the running process / systemctl stop TradeBoard).
+  2. Back up db/TradeBoard.db (the script also creates a backup, but
      belt-and-braces).
   3. Make sure no other writer is touching the DB.
 
 Post-flight:
-  1. Restart Tradeboard.
+  1. Restart TradeBoard.
   2. Visit /auth/reset-password and use your TOTP code to set a new
      password (your TOTP secret survives the rotation; only password
      hashes are invalidated).
   3. Confirm you can log in with the new password.
 
 Columns rotated:
-  auth_db Fernet (PBKDF2-SHA256, salt=b"tradeboard_static_salt"):
+  auth_db Fernet (PBKDF2-SHA256, salt=b"TradeBoard_static_salt"):
     - auth.auth
     - auth.feed_token
     - auth.secret_api_key  (was plaintext for some installs)
@@ -87,12 +87,13 @@ load_dotenv(ENV_PATH)
 
 # ---------- Fernet key derivations (must match the three modules) ----------
 
+
 def _auth_db_fernet(pepper: str) -> Fernet:
     """Match database/auth_db.py:get_encryption_key()."""
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
-        salt=b"tradeboard_static_salt",
+        salt=b"TradeBoard_static_salt",
         iterations=100000,
     )
     key = base64.urlsafe_b64encode(kdf.derive(pepper.encode()))
@@ -101,7 +102,7 @@ def _auth_db_fernet(pepper: str) -> Fernet:
 
 def _telegram_db_fernet(pepper: str) -> Fernet:
     """Match database/telegram_db.py:get_encryption_key()."""
-    salt = os.getenv("TELEGRAM_KEY_SALT", "telegram-tradeboard-salt").encode()
+    salt = os.getenv("TELEGRAM_KEY_SALT", "telegram-TradeBoard-salt").encode()
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
@@ -122,9 +123,10 @@ def _settings_db_fernet(pepper: str) -> Fernet:
 
 # ---------- Helpers ----------
 
+
 def _resolve_db_path() -> str:
     """Resolve DATABASE_URL to an absolute SQLite path."""
-    db_url = os.getenv("DATABASE_URL", "sqlite:///db/tradeboard.db")
+    db_url = os.getenv("DATABASE_URL", "sqlite:///db/TradeBoard.db")
     m = re.match(r"sqlite:///(.+)", db_url)
     if not m:
         sys.stderr.write(
@@ -142,7 +144,7 @@ def _atomic_rewrite_env_pepper(env_path: str, old_pepper: str, new_pepper: str) 
     """Replace API_KEY_PEPPER in .env atomically, preserving all other
     content and line endings. Same pattern as utils/env_check.py.
     """
-    with open(env_path, "r", encoding="utf-8", newline="") as f:
+    with open(env_path, encoding="utf-8", newline="") as f:
         content = f.read()
 
     if old_pepper not in content:
@@ -157,8 +159,7 @@ def _atomic_rewrite_env_pepper(env_path: str, old_pepper: str, new_pepper: str) 
         )
         if n != 1:
             raise RuntimeError(
-                "Could not locate API_KEY_PEPPER line in .env to update. "
-                "Manual edit required."
+                "Could not locate API_KEY_PEPPER line in .env to update. Manual edit required."
             )
         content = new_content
     else:
@@ -202,6 +203,7 @@ def _encrypt(fernet: Fernet, plaintext: str) -> str:
 
 
 # ---------- Per-table rotation logic ----------
+
 
 class Rotator:
     """Walks the DB rotating ciphertexts from old_pepper to new_pepper."""
@@ -299,7 +301,9 @@ class Rotator:
                         )
                         self.stats["auth.feed_token"] += 1
                     else:
-                        print(f"  WARN: auth.feed_token row {row_id}: cannot decrypt, leaving alone")
+                        print(
+                            f"  WARN: auth.feed_token row {row_id}: cannot decrypt, leaving alone"
+                        )
                 if samco_v:
                     pt, was_enc = _try_decrypt(self.old_auth, samco_v)
                     self.conn.execute(
@@ -312,15 +316,15 @@ class Rotator:
 
         # ---- apikeys: decrypt with old, re-encrypt with new, RE-HASH ----
         if self._table_exists("api_keys"):
-            cur = self.conn.execute(
-                "SELECT id, api_key_encrypted, api_key_hash FROM api_keys"
-            )
+            cur = self.conn.execute("SELECT id, api_key_encrypted, api_key_hash FROM api_keys")
             for row_id, enc_v, _hash_v in cur.fetchall():
                 if enc_v is None:
                     continue
                 pt, was_enc = _try_decrypt(self.old_auth, enc_v)
                 if not was_enc:
-                    print(f"  WARN: apikeys row {row_id}: api_key_encrypted does not decrypt, leaving alone")
+                    print(
+                        f"  WARN: apikeys row {row_id}: api_key_encrypted does not decrypt, leaving alone"
+                    )
                     continue
                 # Re-encrypt with new pepper
                 new_ct = _encrypt(self.new_auth, pt)
@@ -357,7 +361,9 @@ class Rotator:
                 try:
                     pt = self.old_settings.decrypt(smtp_v.encode()).decode()
                 except (InvalidToken, ValueError):
-                    print(f"  WARN: settings.smtp_password_encrypted row {row_id}: cannot decrypt, leaving alone")
+                    print(
+                        f"  WARN: settings.smtp_password_encrypted row {row_id}: cannot decrypt, leaving alone"
+                    )
                     continue
                 new_ct = self.new_settings.encrypt(pt.encode()).decode()
                 self.conn.execute(
@@ -375,7 +381,9 @@ class Rotator:
                 try:
                     pt = self.old_telegram.decrypt(tg_v.encode()).decode()
                 except (InvalidToken, ValueError):
-                    print(f"  WARN: telegram_users.encrypted_api_key row {row_id}: cannot decrypt, leaving alone")
+                    print(
+                        f"  WARN: telegram_users.encrypted_api_key row {row_id}: cannot decrypt, leaving alone"
+                    )
                     continue
                 new_ct = self.new_telegram.encrypt(pt.encode()).decode()
                 self.conn.execute(
@@ -423,12 +431,21 @@ class Rotator:
 
 # ---------- Main ----------
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Rotate API_KEY_PEPPER and re-encrypt all dependent fields")
-    parser.add_argument("--yes", action="store_true", help="Skip the interactive confirmation prompt")
+    parser = argparse.ArgumentParser(
+        description="Rotate API_KEY_PEPPER and re-encrypt all dependent fields"
+    )
+    parser.add_argument(
+        "--yes", action="store_true", help="Skip the interactive confirmation prompt"
+    )
     parser.add_argument("--db", help="Path to SQLite DB (defaults to DATABASE_URL from .env)")
     parser.add_argument("--env", help="Path to .env file to update (defaults to project root .env)")
-    parser.add_argument("--dry-run", action="store_true", help="Run rotation in a DB transaction but rollback at the end (no .env update)")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Run rotation in a DB transaction but rollback at the end (no .env update)",
+    )
     args = parser.parse_args()
 
     env_path = args.env or ENV_PATH
@@ -445,7 +462,7 @@ def main():
 
     print()
     print("=" * 72)
-    print("  Tradeboard PEPPER Rotation Migration")
+    print("  TradeBoard PEPPER Rotation Migration")
     print("=" * 72)
     print(f"  DB path     : {db_path}")
     print(f"  .env path   : {env_path}")
@@ -477,7 +494,7 @@ def main():
         backup_dir = os.path.join(os.path.dirname(db_path), "backups")
         os.makedirs(backup_dir, exist_ok=True)
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        backup_path = os.path.join(backup_dir, f"tradeboard.db.before-rotate-pepper-{ts}")
+        backup_path = os.path.join(backup_dir, f"TradeBoard.db.before-rotate-pepper-{ts}")
         shutil.copy2(db_path, backup_path)
         print(f"  DB backup   : {backup_path}")
 
@@ -533,7 +550,7 @@ def main():
             print(f"    {k:48s} {v:>5d}")
     print()
     print("  Next steps:")
-    print("    1. Restart Tradeboard: uv run app.py  (or systemctl restart …)")
+    print("    1. Restart TradeBoard: uv run app.py  (or systemctl restart …)")
     print("    2. Open the web UI and go to /auth/reset-password")
     print("    3. Reset your password using your TOTP code")
     print("    4. Log in normally with the new password")

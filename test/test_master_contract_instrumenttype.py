@@ -24,7 +24,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Set DATABASE_URL if not already set
 if not os.getenv("DATABASE_URL"):
     db_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "db", "tradeboard.db"
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "db", "TradeBoard.db"
     )
     os.environ["DATABASE_URL"] = f"sqlite:///{db_path}"
 
@@ -248,7 +248,9 @@ def main():
     except Exception as e:
         print(red(f"\nFailed to connect to database: {e}"))
         print(
-            yellow("Make sure Tradeboard is properly configured and master contracts are downloaded.")
+            yellow(
+                "Make sure TradeBoard is properly configured and master contracts are downloaded."
+            )
         )
         return 1
 

@@ -1,5 +1,5 @@
 """
-Nubra WebSocket streaming adapter for Tradeboard.
+Nubra WebSocket streaming adapter for TradeBoard.
 
 Extends BaseBrokerWebSocketAdapter to provide real-time market data
 from Nubra's WebSocket API via ZeroMQ.
@@ -15,7 +15,7 @@ Channel strategy (per Nubra API docs):
 
 Data Flow:
     Nubra WS -> NubraWebSocket (protobuf decode) -> callback override
-      -> nubra_adapter.py (transform to Tradeboard format)
+      -> nubra_adapter.py (transform to TradeBoard format)
       -> BaseBrokerWebSocketAdapter.publish_market_data(topic, data)
       -> ZeroMQ -> websocket_proxy/server.py -> WebSocket clients
 """
@@ -32,16 +32,15 @@ from utils.logging import get_logger
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
 
-from websocket_proxy.base_adapter import BaseBrokerWebSocketAdapter
-
-from .nubra_mapping import NubraCapabilityRegistry, NubraExchangeMapper
-
 # Import the existing working Nubra WebSocket client
 from broker.nubra.api.nubrawebsocket import (
     INDEX_NAME_MAP,
     SUBSCRIPTION_MAP,
     NubraWebSocket,
 )
+from websocket_proxy.base_adapter import BaseBrokerWebSocketAdapter
+
+from .nubra_mapping import NubraCapabilityRegistry, NubraExchangeMapper
 
 logger = get_logger(__name__)
 
@@ -102,26 +101,36 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
         self.lock = threading.Lock()
 
         # Subscription tracking
-        self.subscribed_symbols: Dict[str, dict] = {}  # "exchange:symbol" -> info
+        self.subscribed_symbols: dict[str, dict] = {}  # "exchange:symbol" -> info
 
         # Reverse maps for incoming data routing
         # Index channel: maps uppercased subscription name -> (symbol, exchange)
-        self.index_name_to_sub: Dict[str, Tuple[str, str]] = {}
+        self.index_name_to_sub: dict[str, tuple[str, str]] = {}
         # Orderbook channel: maps ref_id -> (symbol, exchange)
-        self.ref_id_to_symbol: Dict[int, Tuple[str, str]] = {}
+        self.ref_id_to_symbol: dict[int, tuple[str, str]] = {}
 
         # Track which modes each symbol is subscribed to
-        self.symbol_modes: Dict[str, Set[int]] = {}  # "exchange:symbol" -> {mode_ints}
+        self.symbol_modes: dict[str, set[int]] = {}  # "exchange:symbol" -> {mode_ints}
 
         # Track whether index channel is already subscribed per symbol
-        self.index_channel_subscribed: Set[str] = set()  # "exchange:symbol"
+        self.index_channel_subscribed: set[str] = set()  # "exchange:symbol"
         # Track whether orderbook channel is already subscribed per ref_id
-        self.orderbook_subscribed: Set[int] = set()  # ref_ids
+        self.orderbook_subscribed: set[int] = set()  # ref_ids
         # Track OHLCV subscriptions per nubra exchange
-        self.ohlcv_channel_subscribed: Set[str] = set()  # "exchange:symbol"
+        self.ohlcv_channel_subscribed: set[str] = set()  # "exchange:symbol"
 
         # Cache OHLCV open values keyed by uppercased symbol name
-        self.ohlcv_cache: Dict[str, dict] = {}  # "NAME" -> {"open": ..., "close": ...}
+        self.ohlcv_cache: dict[str, dict] = {}  # "NAME" -> {"open": ..., "close": ...}
+
+        # Subscribe coalescing queue (issue #1366) — collects per-symbol
+        # subscribe() calls into a 500ms window and dispatches batched SDK
+        # calls grouped by (channel, exchange). Mirrors the Zerodha pattern
+        # from broker/zerodha/streaming/zerodha_adapter.py:60-62, 151-194,
+        # adapted for Nubra's three call sites: subscribe_index,
+        # subscribe_ohlcv, subscribe_orderbook.
+        self.subscription_queue: list[dict] = []
+        self.batch_timer: threading.Timer | None = None
+        self.batch_delay = 0.5  # seconds — fleet norm
 
     def initialize(
         self, broker_name: str, user_id: str, auth_data: dict[str, str] | None = None
@@ -134,9 +143,7 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
             # Get auth token from database
             auth_token = get_auth_token(user_id)
             if not auth_token:
-                return self._create_error_response(
-                    "AUTH_ERROR", "Authentication token not found"
-                )
+                return self._create_error_response("AUTH_ERROR", "Authentication token not found")
 
             # Create streaming WebSocket client (extends existing NubraWebSocket)
             self.ws_client = _StreamingNubraWebSocket(
@@ -157,9 +164,7 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
     def connect(self) -> dict[str, Any]:
         """Connect to Nubra WebSocket."""
         if not self.ws_client:
-            return self._create_error_response(
-                "NOT_INITIALIZED", "Call initialize() first"
-            )
+            return self._create_error_response("NOT_INITIALIZED", "Call initialize() first")
 
         try:
             with self.lock:
@@ -180,12 +185,98 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
             self.logger.error(f"Error connecting: {e}")
             return self._create_error_response("CONNECT_ERROR", str(e))
 
+    def _enqueue_subscribe(self, item: dict) -> None:
+        """Append a subscription request to the coalescing queue and arm the
+        flush timer if this is the first item in an empty queue.
+
+        Caller MUST hold self.lock — invoked from within the lock-protected
+        sections of _subscribe_via_index_channel and _subscribe_via_orderbook_channel.
+        """
+        self.subscription_queue.append(item)
+        if len(self.subscription_queue) == 1:
+            self._start_batch_timer()
+
+    def _start_batch_timer(self) -> None:
+        """Arm a fresh threading.Timer that will fire _process_batch_subscriptions
+        after batch_delay seconds. Cancels any prior timer first.
+        """
+        if self.batch_timer is not None:
+            self.batch_timer.cancel()
+        self.batch_timer = threading.Timer(self.batch_delay, self._process_batch_subscriptions)
+        self.batch_timer.daemon = True
+        self.batch_timer.start()
+
+    def _process_batch_subscriptions(self) -> None:
+        """Drain the queue and emit batched SDK calls grouped by
+        (channel, exchange). Single 100-symbol burst becomes:
+            - 1 subscribe_index per nubra_exchange
+            - 1 subscribe_ohlcv per nubra_exchange
+            - 1 subscribe_orderbook for all ref_ids
+        instead of 100 of each.
+
+        State invariants: dedup sets (index_channel_subscribed,
+        ohlcv_channel_subscribed, orderbook_subscribed) are already
+        populated by the per-call subscribe path, so we just send the
+        SDK calls. If a call fails, the dedup state is unchanged so
+        the next subscribe() retry will re-enqueue.
+        """
+        with self.lock:
+            if not self.subscription_queue:
+                self.batch_timer = None
+                return
+            pending = list(self.subscription_queue)
+            self.subscription_queue.clear()
+            self.batch_timer = None
+            ws_client = self.ws_client
+
+        if not ws_client:
+            self.logger.warning(f"Dropping batch of {len(pending)} subscriptions — ws_client gone")
+            return
+
+        # Group: index/OHLCV by nubra_exchange, orderbook ref_ids in one bucket
+        index_by_exchange: dict[str, list[str]] = {}
+        orderbook_ref_ids: list[int] = []
+        for item in pending:
+            if item["channel"] == "index":
+                index_by_exchange.setdefault(item["nubra_exchange"], []).append(item["sub_name"])
+            elif item["channel"] == "orderbook":
+                orderbook_ref_ids.append(item["ref_id"])
+
+        # Index + OHLCV bulk calls per nubra_exchange
+        for nubra_exchange, sub_names in index_by_exchange.items():
+            try:
+                ws_client.subscribe_index(sub_names, exchange=nubra_exchange)
+                ws_client.subscribe_ohlcv(sub_names, interval="1d", exchange=nubra_exchange)
+                self.logger.info(
+                    f"Batch subscribed {len(sub_names)} symbols on index+OHLCV "
+                    f"channel ({nubra_exchange})"
+                )
+            except Exception as e:
+                self.logger.error(f"Batch index/OHLCV subscribe failed for {nubra_exchange}: {e}")
+
+        # Orderbook bulk call (single channel, no per-exchange split)
+        if orderbook_ref_ids:
+            try:
+                ws_client.subscribe_orderbook(orderbook_ref_ids)
+                self.logger.info(
+                    f"Batch subscribed {len(orderbook_ref_ids)} ref_ids on orderbook channel"
+                )
+            except Exception as e:
+                self.logger.error(f"Batch orderbook subscribe failed: {e}")
+
     def disconnect(self) -> dict[str, Any]:
         """Disconnect and clean up."""
         try:
             with self.lock:
                 self.running = False
                 self.connected = False
+
+                # Cancel pending batch flush so the timer thread does not
+                # fire after ws_client is gone (issue #1366).
+                if self.batch_timer is not None:
+                    self.batch_timer.cancel()
+                    self.batch_timer = None
+                self.subscription_queue.clear()
 
                 if self.ws_client:
                     self.ws_client.close()
@@ -232,9 +323,7 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
             depth_level: Market depth level (5 for Nubra orderbook)
         """
         if not self.ws_client:
-            return self._create_error_response(
-                "NOT_INITIALIZED", "WebSocket not initialized"
-            )
+            return self._create_error_response("NOT_INITIALIZED", "WebSocket not initialized")
 
         if not self.running:
             return self._create_error_response(
@@ -260,9 +349,7 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
             if mode in (1, 2):
                 # LTP / Quote -> use index channel for ALL symbols
-                return self._subscribe_via_index_channel(
-                    symbol, exchange, mode, key, is_index
-                )
+                return self._subscribe_via_index_channel(symbol, exchange, mode, key, is_index)
             else:
                 # Depth -> use orderbook channel
                 return self._subscribe_via_orderbook_channel(
@@ -308,20 +395,23 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
         # Hold lock for entire subscribe + tracking to prevent race with callbacks
         with self.lock:
             if not self.ws_client:
-                return self._create_error_response(
-                    "NOT_CONNECTED", "WebSocket client disconnected"
-                )
+                return self._create_error_response("NOT_CONNECTED", "WebSocket client disconnected")
 
-            # Only send WebSocket subscription if not already on index channel
+            # Queue for batched index + OHLCV subscribe (issue #1366). Mark
+            # tracking sets eagerly so a duplicate subscribe() call for the
+            # same key does not enqueue twice. The actual SDK calls
+            # (subscribe_index + subscribe_ohlcv) are dispatched together
+            # by _process_batch_subscriptions() after the coalescing window.
             if key not in self.index_channel_subscribed:
-                self.ws_client.subscribe_index([sub_name], exchange=nubra_exchange)
-                self.index_channel_subscribed.add(key)
-
-            # Also subscribe to index_bucket (OHLCV) to get open/close values
-            if key not in self.ohlcv_channel_subscribed:
-                self.ws_client.subscribe_ohlcv(
-                    [sub_name], interval="1d", exchange=nubra_exchange
+                self._enqueue_subscribe(
+                    {
+                        "channel": "index",
+                        "key": key,
+                        "sub_name": sub_name,
+                        "nubra_exchange": nubra_exchange,
+                    }
                 )
+                self.index_channel_subscribed.add(key)
                 self.ohlcv_channel_subscribed.add(key)
 
             # Register the subscription name for data routing
@@ -395,21 +485,27 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
         is_fallback = False
         actual_depth = depth_level
         if not NubraCapabilityRegistry.is_depth_level_supported(exchange, depth_level):
-            actual_depth = NubraCapabilityRegistry.get_fallback_depth_level(
-                exchange, depth_level
-            )
+            actual_depth = NubraCapabilityRegistry.get_fallback_depth_level(exchange, depth_level)
             is_fallback = True
 
         # Hold lock for entire subscribe + tracking to prevent race with callbacks
         with self.lock:
             if not self.ws_client:
-                return self._create_error_response(
-                    "NOT_CONNECTED", "WebSocket client disconnected"
-                )
+                return self._create_error_response("NOT_CONNECTED", "WebSocket client disconnected")
 
-            # Subscribe to orderbook channel if not already
+            # Queue for batched orderbook subscribe (issue #1366). Eager add
+            # to the dedup set prevents duplicate enqueue when subscribe()
+            # is called twice for the same ref_id within the coalescing
+            # window. The actual SDK call is dispatched together with any
+            # other queued ref_ids by _process_batch_subscriptions().
             if ref_id not in self.orderbook_subscribed:
-                self.ws_client.subscribe_orderbook([ref_id])
+                self._enqueue_subscribe(
+                    {
+                        "channel": "orderbook",
+                        "key": key,
+                        "ref_id": ref_id,
+                    }
+                )
                 self.orderbook_subscribed.add(ref_id)
 
             self.ref_id_to_symbol[ref_id] = (symbol, exchange)
@@ -442,9 +538,7 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
             is_fallback=is_fallback,
         )
 
-    def unsubscribe(
-        self, symbol: str, exchange: str, mode: int = 2
-    ) -> dict[str, Any]:
+    def unsubscribe(self, symbol: str, exchange: str, mode: int = 2) -> dict[str, Any]:
         """Unsubscribe from market data."""
         try:
             key = f"{exchange}:{symbol}"
@@ -478,9 +572,7 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
                                 NubraExchangeMapper.to_nubra_exchange(exchange),
                             )
                             if ws:
-                                ws.unsubscribe_index(
-                                    [sub_name], exchange=nubra_exchange
-                                )
+                                ws.unsubscribe_index([sub_name], exchange=nubra_exchange)
                             self.index_channel_subscribed.discard(key)
 
                         # Unsubscribe from index_bucket (OHLCV) channel
@@ -534,7 +626,7 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
         Handle incoming index data from Nubra WebSocket.
 
         This callback fires for BOTH index and instrument symbols subscribed
-        via the index channel. Transforms to Tradeboard format and publishes
+        via the index channel. Transforms to TradeBoard format and publishes
         to ZMQ topic: {exchange}_{symbol}_{LTP|QUOTE}
         """
         try:
@@ -651,7 +743,7 @@ class NubraWebSocketAdapter(BaseBrokerWebSocketAdapter):
         Handle incoming orderbook data from Nubra WebSocket.
 
         This callback fires for instruments subscribed via the orderbook
-        channel (mode 3 / Depth). Transforms to Tradeboard format and publishes
+        channel (mode 3 / Depth). Transforms to TradeBoard format and publishes
         to ZMQ topic: {exchange}_{symbol}_DEPTH
         """
         try:

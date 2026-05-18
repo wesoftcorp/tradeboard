@@ -1,4 +1,4 @@
-tunnel: tradeboard
+﻿tunnel: TradeBoard
 credentials-file: <ABSOLUTE_PATH_TO_JSON>
 
 ingress:

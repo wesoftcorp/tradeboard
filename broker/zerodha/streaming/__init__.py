@@ -1,8 +1,8 @@
 """
-Zerodha WebSocket streaming module for Tradeboard.
+Zerodha WebSocket streaming module for TradeBoard.
 
 This module provides WebSocket integration with Zerodha's market data streaming API,
-following the Tradeboard WebSocket proxy architecture.
+following the TradeBoard WebSocket proxy architecture.
 """
 
 from .zerodha_adapter import ZerodhaWebSocketAdapter

@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Motilal Oswal Parameters - See Motilal_Oswal.md documentation
 
 from database.token_db import get_br_symbol, get_symbol_info
@@ -10,9 +10,9 @@ logger = get_logger(__name__)
 
 def map_exchange(exchange):
     """
-    Maps Tradeboard exchange names to Motilal Oswal exchange names.
+    Maps TradeBoard exchange names to Motilal Oswal exchange names.
 
-    Tradeboard uses: NSE, BSE, NFO, CDS, MCX, BFO
+    TradeBoard uses: NSE, BSE, NFO, CDS, MCX, BFO
     Motilal uses: NSE, BSE, NSEFO, NSECD, MCX, BSEFO
     """
     exchange_mapping = {
@@ -31,7 +31,7 @@ def map_exchange(exchange):
 
 def reverse_map_exchange(exchange):
     """
-    Reverse maps Motilal Oswal exchange names to Tradeboard exchange names.
+    Reverse maps Motilal Oswal exchange names to TradeBoard exchange names.
     """
     reverse_exchange_mapping = {
         "NSE": "NSE",
@@ -46,7 +46,7 @@ def reverse_map_exchange(exchange):
 
 def transform_data(data, token, auth_token=None):
     """
-    Transforms the Tradeboard API request structure to Motilal Oswal expected structure.
+    Transforms the TradeBoard API request structure to Motilal Oswal expected structure.
 
     Motilal blocks MARKET / SL-M orders on vendor (algo) channels with errorcode M01108
     ("Cannot place Market orders for Algo Orders"). To keep order intent intact we apply
@@ -55,8 +55,8 @@ def transform_data(data, token, auth_token=None):
         SL-M   -> STOPLOSS (SL) at trigger +/- slab%
     """
     symbol = get_br_symbol(data["symbol"], data["exchange"])
-    tradeboard_exchange = data["exchange"]
-    motilal_exchange = map_exchange(tradeboard_exchange)
+    TradeBoard_exchange = data["exchange"]
+    motilal_exchange = map_exchange(TradeBoard_exchange)
     action = data["action"].upper()
     pricetype = data["pricetype"]
 
@@ -68,20 +68,20 @@ def transform_data(data, token, auth_token=None):
     if pricetype == "MARKET":
         logger.info(
             f"MPP: MARKET order detected for Symbol={data['symbol']}, "
-            f"Exchange={tradeboard_exchange}, Action={action}"
+            f"Exchange={TradeBoard_exchange}, Action={action}"
         )
         try:
             if auth_token:
                 from broker.motilal.api.data import BrokerData
 
                 broker_data = BrokerData(auth_token)
-                quote_data = broker_data.get_quotes(data["symbol"], tradeboard_exchange)
+                quote_data = broker_data.get_quotes(data["symbol"], TradeBoard_exchange)
                 ltp = float(quote_data.get("ltp", 0)) if quote_data else 0
 
                 if ltp > 0:
                     instrument_type = get_instrument_type_from_symbol(data["symbol"])
                     tick_size = None
-                    symbol_info = get_symbol_info(data["symbol"], tradeboard_exchange)
+                    symbol_info = get_symbol_info(data["symbol"], TradeBoard_exchange)
                     if symbol_info and symbol_info.tick_size:
                         tick_size = symbol_info.tick_size
 
@@ -103,13 +103,9 @@ def transform_data(data, token, auth_token=None):
                         f"MPP: LTP unavailable for {data['symbol']}, sending MARKET as-is"
                     )
             else:
-                logger.warning(
-                    f"MPP: No auth_token for {data['symbol']}, cannot fetch LTP"
-                )
+                logger.warning(f"MPP: No auth_token for {data['symbol']}, cannot fetch LTP")
         except Exception as e:
-            logger.error(
-                f"MPP Error for MARKET {data['symbol']}: {e}. Sending MARKET as-is"
-            )
+            logger.error(f"MPP Error for MARKET {data['symbol']}: {e}. Sending MARKET as-is")
 
     # MPP for SL-M orders: convert to STOPLOSS with protected limit price
     elif pricetype == "SL-M":
@@ -121,7 +117,7 @@ def transform_data(data, token, auth_token=None):
             try:
                 instrument_type = get_instrument_type_from_symbol(data["symbol"])
                 tick_size = None
-                symbol_info = get_symbol_info(data["symbol"], tradeboard_exchange)
+                symbol_info = get_symbol_info(data["symbol"], TradeBoard_exchange)
                 if symbol_info and symbol_info.tick_size:
                     tick_size = symbol_info.tick_size
 
@@ -139,13 +135,9 @@ def transform_data(data, token, auth_token=None):
                     f"OrderType=SL-M->STOPLOSS, Trigger={tp}, LimitPrice={protected_price}"
                 )
             except Exception as e:
-                logger.error(
-                    f"MPP Error for SL-M {data['symbol']}: {e}. Sending SL-M as-is"
-                )
+                logger.error(f"MPP Error for SL-M {data['symbol']}: {e}. Sending SL-M as-is")
         else:
-            logger.warning(
-                f"MPP: trigger_price=0 for SL-M {data['symbol']}, sending as-is"
-            )
+            logger.warning(f"MPP: trigger_price=0 for SL-M {data['symbol']}, sending as-is")
 
     # Basic mapping for Motilal Oswal
     transformed = {
@@ -155,8 +147,8 @@ def transform_data(data, token, auth_token=None):
         "exchange": motilal_exchange,
         "ordertype": order_type,
         "producttype": map_product_type(
-            data["product"], tradeboard_exchange
-        ),  # Pass Tradeboard exchange for context
+            data["product"], TradeBoard_exchange
+        ),  # Pass TradeBoard exchange for context
         "orderduration": "DAY",  # Motilal uses 'orderduration' instead of 'duration'
         "price": price,
         "triggerprice": trigger_price,
@@ -178,7 +170,7 @@ def transform_modify_order_data(data, token, lastmodifiedtime, qtytradedtoday):
     Motilal uses different field names compared to Angel Broking.
 
     Args:
-        data: Tradeboard modify order request data
+        data: TradeBoard modify order request data
         token: Symbol token for the instrument
         lastmodifiedtime: Last modified time from order book (dd-MMM-yyyy HH:mm:ss format)
         qtytradedtoday: Quantity traded today from order book
@@ -202,7 +194,7 @@ def transform_modify_order_data(data, token, lastmodifiedtime, qtytradedtoday):
 
 def map_order_type(pricetype):
     """
-    Maps Tradeboard pricetype to Motilal Oswal order type.
+    Maps TradeBoard pricetype to Motilal Oswal order type.
     Motilal supports: LIMIT, MARKET, STOPLOSS
     """
     order_type_mapping = {
@@ -216,7 +208,7 @@ def map_order_type(pricetype):
 
 def map_product_type(product, exchange=None):
     """
-    Maps Tradeboard product type to Motilal Oswal product type based on exchange.
+    Maps TradeBoard product type to Motilal Oswal product type based on exchange.
     Motilal supports: NORMAL, DELIVERY, VALUEPLUS, SELLFROMDP, BTST, MTF
 
     Product type mapping:
@@ -234,11 +226,11 @@ def map_product_type(product, exchange=None):
     Accounts may have specific product authorizations based on their configuration.
 
     Args:
-        product: Tradeboard product type (CNC, MIS, NRML)
-        exchange: Tradeboard exchange name (NSE, BSE, NFO, CDS, MCX, BFO)
+        product: TradeBoard product type (CNC, MIS, NRML)
+        exchange: TradeBoard exchange name (NSE, BSE, NFO, CDS, MCX, BFO)
     """
     # Determine if this is a cash segment or derivative segment
-    # Using Tradeboard exchange names
+    # Using TradeBoard exchange names
     is_cash_segment = exchange in ["NSE", "BSE"]
     is_fo_segment = exchange in ["NFO", "MCX", "CDS", "BFO", "NSEFO", "NSECD", "BSEFO"]
 
@@ -272,7 +264,7 @@ def map_product_type(product, exchange=None):
 
 def reverse_map_product_type(product, exchange=None):
     """
-    Reverse maps Motilal Oswal product type to Tradeboard product type.
+    Reverse maps Motilal Oswal product type to TradeBoard product type.
     Context:
     - Motilal uses DELIVERY for cash delivery (CNC)
     - Motilal uses VALUEPLUS for margin intraday (MIS)

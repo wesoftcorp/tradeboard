@@ -1,4 +1,4 @@
-# OrderStatus
+﻿# OrderStatus
 
 Get the current status of a specific order by its order ID.
 
@@ -58,7 +58,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/orderstatus \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | orderid | Order ID to query | Mandatory | - |
 | strategy | Strategy identifier | Optional | - |
 

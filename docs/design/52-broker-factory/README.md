@@ -1,6 +1,6 @@
-# Broker Factory Implementation
+﻿# Broker Factory Implementation
 
-This document describes the broker factory design that enables Tradeboard to work with any of the 29 supported brokers while maintaining a single common interface for the WebSocket proxy system. Tradeboard allows one user to connect to one broker at a time, and the broker factory ensures consistent implementation across all supported brokers.
+This document describes the broker factory design that enables TradeBoard to work with any of the 29 supported brokers while maintaining a single common interface for the WebSocket proxy system. TradeBoard allows one user to connect to one broker at a time, and the broker factory ensures consistent implementation across all supported brokers.
 
 ## Architecture Overview
 
@@ -279,7 +279,7 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
 ## Data Normalization
 
-All adapters normalize broker data to Tradeboard format:
+All adapters normalize broker data to TradeBoard format:
 
 ```python
 # Normalized LTP message

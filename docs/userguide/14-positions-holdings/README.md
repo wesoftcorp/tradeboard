@@ -1,8 +1,8 @@
-# 14 - Positions & Holdings
+﻿# 14 - Positions & Holdings
 
 ## Introduction
 
-Understanding the difference between positions and holdings is fundamental to trading. This guide explains both concepts and how to manage them in Tradeboard.
+Understanding the difference between positions and holdings is fundamental to trading. This guide explains both concepts and how to manage them in TradeBoard.
 
 ## Positions vs Holdings
 
@@ -109,7 +109,7 @@ Holdings are stocks you own in your demat account:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Viewing in Tradeboard
+## Viewing in TradeBoard
 
 ### Positions Page
 

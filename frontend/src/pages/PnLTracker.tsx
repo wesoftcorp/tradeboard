@@ -1,4 +1,4 @@
-import { AlertTriangle, Camera, RefreshCw, TrendingDown, TrendingUp } from 'lucide-react'
+﻿import { AlertTriangle, Camera, RefreshCw, TrendingDown, TrendingUp } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { showToast } from '@/utils/toast'
 import { Button } from '@/components/ui/button'
@@ -159,7 +159,7 @@ export default function PnLTracker() {
     watermark.style.fontWeight = 'bold'
     watermark.style.userSelect = 'none'
     watermark.style.pointerEvents = 'none'
-    watermark.textContent = 'OpenAlgo'
+    watermark.textContent = 'TradeBoard'
     container.appendChild(watermark)
     watermarkRef.current = watermark
 

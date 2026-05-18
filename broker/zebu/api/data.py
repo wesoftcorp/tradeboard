@@ -13,14 +13,17 @@ from database.token_db import get_br_symbol, get_oa_symbol, get_token
 from utils.httpx_client import get_httpx_client
 from utils.logging import get_logger
 
+
 # Auto-detect eventlet environment (Docker/standalone uses gunicorn+eventlet)
 # asyncio.run() cannot be called under eventlet's monkey-patched event loop
 def _is_eventlet_patched():
     try:
         import eventlet.patcher
+
         return eventlet.patcher.is_monkey_patched("socket")
     except (ImportError, AttributeError):
         return False
+
 
 USE_ASYNC = not _is_eventlet_patched()
 
@@ -95,7 +98,7 @@ class BrokerData:
             br_symbol = get_br_symbol(symbol, exchange)
             token = get_token(symbol, exchange)
 
-            # Convert Tradeboard exchange to broker exchange for API calls
+            # Convert TradeBoard exchange to broker exchange for API calls
             api_exchange = exchange
             if exchange == "NSE_INDEX":
                 api_exchange = "NSE"
@@ -415,7 +418,7 @@ class BrokerData:
             br_symbol = get_br_symbol(symbol, exchange)
             token = get_token(symbol, exchange)
 
-            # Convert Tradeboard exchange to broker exchange for API calls
+            # Convert TradeBoard exchange to broker exchange for API calls
             api_exchange = exchange
             if exchange == "NSE_INDEX":
                 api_exchange = "NSE"
@@ -496,14 +499,14 @@ class BrokerData:
 
             # Convert symbol to broker format and get token
             br_symbol = get_br_symbol(symbol, exchange)
-            
-            # Convert Tradeboard exchange to broker exchange for API calls
+
+            # Convert TradeBoard exchange to broker exchange for API calls
             api_exchange = exchange
             if exchange == "NSE_INDEX":
                 api_exchange = "NSE"
             elif exchange == "BSE_INDEX":
                 api_exchange = "BSE"
-            
+
             token = get_token(symbol, exchange)
 
             # Convert dates to epoch timestamps

@@ -39,7 +39,7 @@ def map_order_data(order_data):
             # Update fields in place
             order["action"] = "BUY" if order_info.get("side") == "buy" else "SELL"
             order["exchange"] = order_info.get("exchange", "")
-            # Map Tradejini status to Tradeboard status
+            # Map Tradejini status to TradeBoard status
             raw_status = order_info.get("status", "").lower()
             status_map = {
                 "completed": "complete",
@@ -118,13 +118,13 @@ def calculate_order_statistics(order_data):
 
 def transform_order_data(orders):
     """
-    Processes and modifies a list of order dictionaries into the final Tradeboard format.
+    Processes and modifies a list of order dictionaries into the final TradeBoard format.
 
     Parameters:
     - orders: List of orders with modified fields
 
     Returns:
-    - Dictionary with orders in Tradeboard format
+    - Dictionary with orders in TradeBoard format
     """
     # print(f"[DEBUG] transform_order_data - Input orders: {orders}")
 
@@ -136,7 +136,7 @@ def transform_order_data(orders):
     transformed_orders = []
 
     for order in orders:
-        # Convert to Tradeboard format if needed
+        # Convert to TradeBoard format if needed
         transformed_order = {
             "action": order.get("action", ""),
             "exchange": order.get("exchange", ""),
@@ -175,7 +175,7 @@ def map_trade_data(trade_data):
         # If it's already a list of trades, just return it
         return trade_data
 
-    # Handle Tradeboard format with status and data fields
+    # Handle TradeBoard format with status and data fields
     if (
         isinstance(trade_data, dict)
         and "status" in trade_data
@@ -233,7 +233,7 @@ def map_trade_data(trade_data):
                 "trade_value": trade.get("fillValue", 0.0),
                 "orderid": trade.get("orderId", ""),
                 "timestamp": trade.get("time", ""),
-                "sym_id": symbol.get("id", ""),  # Store symbol ID for Tradeboard lookup
+                "sym_id": symbol.get("id", ""),  # Store symbol ID for TradeBoard lookup
             }
 
             # Add optional fields if present
@@ -250,19 +250,19 @@ def map_trade_data(trade_data):
 
 def transform_tradebook_data(trades):
     """
-    Transforms mapped trade data to Tradeboard format.
+    Transforms mapped trade data to TradeBoard format.
 
     Args:
         trades: List of mapped trade dictionaries or raw API response
 
     Returns:
-        dict: Trade book data in Tradeboard format with {'data': [...], 'status': 'success'}
+        dict: Trade book data in TradeBoard format with {'data': [...], 'status': 'success'}
     """
     logger.debug(f"transform_tradebook_data - Input trades type: {type(trades)}")
 
-    # Check if already in Tradeboard format
+    # Check if already in TradeBoard format
     if isinstance(trades, dict) and "status" in trades and "data" in trades:
-        logger.debug("transform_tradebook_data - Already in Tradeboard format")
+        logger.debug("transform_tradebook_data - Already in TradeBoard format")
         # Extract just the data array without the wrapper
         return trades["data"]
 
@@ -317,12 +317,12 @@ def transform_tradebook_data(trades):
             exchange = trade.get("exchange", "")
             trading_symbol = trade.get("symbol", "")
 
-        # Get Tradeboard symbol if possible
+        # Get TradeBoard symbol if possible
         try:
-            tradeboard_symbol = get_oa_symbol(symbol=sym_id, exchange=exchange)
+            TradeBoard_symbol = get_oa_symbol(symbol=sym_id, exchange=exchange)
         except Exception as e:
             logger.warning(f"Symbol lookup failed: {str(e)}")
-            tradeboard_symbol = None
+            TradeBoard_symbol = None
 
         # Map product type if needed
         if "product" in trade:
@@ -358,7 +358,7 @@ def transform_tradebook_data(trades):
         else:
             action = ""  # Can't determine
 
-        # Create transformed trade - match Tradeboard format exactly
+        # Create transformed trade - match TradeBoard format exactly
         transformed_trade = {
             "action": action,
             "average_price": float(trade.get("fillPrice", trade.get("average_price", 0.0))),
@@ -437,48 +437,48 @@ def map_position_data(position_data):
                 f"Position data: symId={symbol_id}, tradingsymbol={tradingsymbol}, exchange={exchange}"
             )
 
-            # Get Tradeboard symbol - follow same approach as the main implementation
-            tradeboard_symbol = None
+            # Get TradeBoard symbol - follow same approach as the main implementation
+            TradeBoard_symbol = None
             try:
                 # First try with the symbol ID from sym object
                 symid_from_object = sym.get("id", "") if sym else ""
                 if symid_from_object:
-                    tradeboard_symbol = get_oa_symbol(symid_from_object, exchange)
+                    TradeBoard_symbol = get_oa_symbol(symid_from_object, exchange)
                     logger.info(
-                        f"Symbol lookup with sym.id: {symid_from_object} -> {tradeboard_symbol}"
+                        f"Symbol lookup with sym.id: {symid_from_object} -> {TradeBoard_symbol}"
                     )
 
                 # If not found and we have the position symId, try that
-                if not tradeboard_symbol and symbol_id:
-                    tradeboard_symbol = get_oa_symbol(symbol_id, "")
+                if not TradeBoard_symbol and symbol_id:
+                    TradeBoard_symbol = get_oa_symbol(symbol_id, "")
                     logger.info(
-                        f"Symbol lookup with position.symId: {symbol_id} -> {tradeboard_symbol}"
+                        f"Symbol lookup with position.symId: {symbol_id} -> {TradeBoard_symbol}"
                     )
 
                 # If still not found, try with exchange symbol
-                if not tradeboard_symbol:
-                    tradeboard_symbol = get_oa_symbol(exchange_symbol, exchange)
+                if not TradeBoard_symbol:
+                    TradeBoard_symbol = get_oa_symbol(exchange_symbol, exchange)
                     logger.info(
-                        f"Symbol lookup with exchange symbol: {exchange_symbol} -> {tradeboard_symbol}"
+                        f"Symbol lookup with exchange symbol: {exchange_symbol} -> {TradeBoard_symbol}"
                     )
 
             except Exception as e:
                 logger.warning(f"Symbol lookup failed: {str(e)}")
-                tradeboard_symbol = None
+                TradeBoard_symbol = None
 
             # Determine the final symbol to use
             final_symbol = ""
-            if tradeboard_symbol:
-                final_symbol = tradeboard_symbol
-                logger.info(f"Using Tradeboard symbol: {final_symbol}")
+            if TradeBoard_symbol:
+                final_symbol = TradeBoard_symbol
+                logger.info(f"Using TradeBoard symbol: {final_symbol}")
             else:
-                # Fallback to exchange symbol if Tradeboard symbol isn't available
+                # Fallback to exchange symbol if TradeBoard symbol isn't available
                 final_symbol = exchange_symbol
                 logger.info(f"Fallback to exchange symbol: {final_symbol}")
 
             # Create mapped position - without tradingsymbol field as requested
             mapped_position = {
-                "symbol": final_symbol,  # Use final symbol (Tradeboard or fallback)
+                "symbol": final_symbol,  # Use final symbol (TradeBoard or fallback)
                 "exchange": exchange,
                 "product": product,
                 "quantity": int(position.get("netQty", 0)),
@@ -499,7 +499,7 @@ def map_position_data(position_data):
 
 def transform_positions_data(positions_data):
     """
-    Transform mapped position data to Tradeboard format.
+    Transform mapped position data to TradeBoard format.
     DEPRECATED: This function is kept for backward compatibility only.
     Position transformation is now done directly in get_positions function.
     """
@@ -688,13 +688,13 @@ def calculate_portfolio_statistics(holdings_data):
 
 def transform_holdings_data(holdings_data):
     """
-    Transforms Tradejini holdings data to Tradeboard format.
+    Transforms Tradejini holdings data to TradeBoard format.
 
     Args:
         holdings_data (list): List of holdings dictionaries from TradeJini API
 
     Returns:
-        dict: Holdings data in Tradeboard format
+        dict: Holdings data in TradeBoard format
         {
             "data": {
                 "holdings": [

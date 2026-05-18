@@ -1,4 +1,4 @@
-# Version 2.0.0.7 Released
+﻿# Version 2.0.0.7 Released
 
 **Date: 30th Apr 2026**
 
@@ -34,7 +34,7 @@ This is a stability and performance update covering **26 commits** since v2.0.0.
 **Fyers**
 
 * `671b8548` — `fix(fyers/ws): batch HSM subscribes to collapse N symbol-token POSTs into one`
-* `5eb7baaa` — `fix(fyers/ws): join HSM<->Tradeboard mapping through brsymbol, not positional index`
+* `5eb7baaa` — `fix(fyers/ws): join HSM<->TradeBoard mapping through brsymbol, not positional index`
 * `55129e6c` — `fix(fyers/ws): use shared dispatcher registry so multi-flush reconnects don't drop ticks`
 * `15c2c63b` — `fix(fyers/multiquotes): per-symbol OI for FNO only, skip when >50 symbols`
 * `81cecdbd` — `fix(fyers/oi-tracker): raise multiquote OI ceiling to 100, narrow OI tracker to 47 strikes`
@@ -103,7 +103,7 @@ The "price crosses trigger but pending sandbox order never fires" pattern report
 * `d2baab90` — `docs(audit): add per-broker WebSocket keepalive/reconnect audit`
 * `eb46e99c` — `docs(plans): expand GTT plan's Action Center coverage`
 * `6f06329e` — `docs(claude): bump broker count from 24+ to 30+`
-* `4a3b7861` — `chore(release): bump platform version to 2.0.0.7 and document bump procedure` — adds a Version Bumping section to `CLAUDE.md` clarifying the platform version (`utils/version.py` + `pyproject.toml`) is independent of the Tradeboard Python SDK pin (`openalgo==1.0.49` in `requirements*.txt` and `pyproject.toml` dependencies).
+* `4a3b7861` — `chore(release): bump platform version to 2.0.0.7 and document bump procedure` — adds a Version Bumping section to `CLAUDE.md` clarifying the platform version (`utils/version.py` + `pyproject.toml`) is independent of the TradeBoard Python SDK pin (`TradeBoard==1.0.49` in `requirements*.txt` and `pyproject.toml` dependencies).
 
 ***
 
@@ -116,9 +116,9 @@ The "price crosses trigger but pending sandbox order never fires" pattern report
 **Links**
 
 * **Repository**: <https://github.com/wesoftcorp/tradeboard>
-* **Documentation**: <https://docs.wesoftcorp.com>
-* **Discord**: <https://www.wesoftcorp.com/discord>
-* **YouTube**: <https://www.youtube.com/@tradeboard>
+* **Documentation**: <https://docs.TradeBoard.in>
+* **Discord**: <https://www.TradeBoard.in/discord>
+* **YouTube**: <https://www.youtube.com/@TradeBoard>
 * **Issue tracker**: <https://github.com/wesoftcorp/tradeboard/issues>
 
 ***
@@ -133,7 +133,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.wesoftcorp.com/change-log/release/version-2.0.0.7-released.md?ask=<question>
+GET https://docs.TradeBoard.in/change-log/release/version-2.0.0.7-released.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

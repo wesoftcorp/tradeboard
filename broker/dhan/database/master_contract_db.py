@@ -243,22 +243,66 @@ def process_dhan_csv(path):
 
     df["symbol"] = df.apply(reformat_symbol, axis=1)
 
-    # Normalize NSE_INDEX symbols: uppercase, remove spaces, only for symbols in Tradeboard docs
+    # Normalize NSE_INDEX symbols: uppercase, remove spaces, only for symbols in TradeBoard docs
     nse_idx_mask = df["exchange"] == "NSE_INDEX"
     valid_nse_symbols = {
-        "NIFTY", "NIFTYNXT50", "FINNIFTY", "BANKNIFTY", "MIDCPNIFTY", "INDIAVIX",
-        "HANGSENGBEESNAV", "NIFTY100", "NIFTY200", "NIFTY500", "NIFTYALPHA50",
-        "NIFTYAUTO", "NIFTYCOMMODITIES", "NIFTYCONSUMPTION", "NIFTYCPSE",
-        "NIFTYDIVOPPS50", "NIFTYENERGY", "NIFTYFMCG", "NIFTYGROWSECT15",
-        "NIFTYGS10YR", "NIFTYGS10YRCLN", "NIFTYGS1115YR", "NIFTYGS15YRPLUS",
-        "NIFTYGS48YR", "NIFTYGS813YR", "NIFTYGSCOMPSITE", "NIFTYINFRA", "NIFTYIT",
-        "NIFTYMEDIA", "NIFTYMETAL", "NIFTYMIDLIQ15", "NIFTYMIDCAP100",
-        "NIFTYMIDCAP150", "NIFTYMIDCAP50", "NIFTYMIDSML400", "NIFTYMNC",
-        "NIFTYPHARMA", "NIFTYPSE", "NIFTYPSUBANK", "NIFTYPVTBANK", "NIFTYREALTY",
-        "NIFTYSERVSECTOR", "NIFTYSMLCAP100", "NIFTYSMLCAP250", "NIFTYSMLCAP50",
-        "NIFTY100EQLWGT", "NIFTY100LIQ15", "NIFTY100LOWVOL30", "NIFTY100QUALTY30",
-        "NIFTY200QUALTY30", "NIFTY50DIVPOINT", "NIFTY50EQLWGT", "NIFTY50PR1XINV",
-        "NIFTY50PR2XLEV", "NIFTY50TR1XINV", "NIFTY50TR2XLEV", "NIFTY50VALUE20",
+        "NIFTY",
+        "NIFTYNXT50",
+        "FINNIFTY",
+        "BANKNIFTY",
+        "MIDCPNIFTY",
+        "INDIAVIX",
+        "HANGSENGBEESNAV",
+        "NIFTY100",
+        "NIFTY200",
+        "NIFTY500",
+        "NIFTYALPHA50",
+        "NIFTYAUTO",
+        "NIFTYCOMMODITIES",
+        "NIFTYCONSUMPTION",
+        "NIFTYCPSE",
+        "NIFTYDIVOPPS50",
+        "NIFTYENERGY",
+        "NIFTYFMCG",
+        "NIFTYGROWSECT15",
+        "NIFTYGS10YR",
+        "NIFTYGS10YRCLN",
+        "NIFTYGS1115YR",
+        "NIFTYGS15YRPLUS",
+        "NIFTYGS48YR",
+        "NIFTYGS813YR",
+        "NIFTYGSCOMPSITE",
+        "NIFTYINFRA",
+        "NIFTYIT",
+        "NIFTYMEDIA",
+        "NIFTYMETAL",
+        "NIFTYMIDLIQ15",
+        "NIFTYMIDCAP100",
+        "NIFTYMIDCAP150",
+        "NIFTYMIDCAP50",
+        "NIFTYMIDSML400",
+        "NIFTYMNC",
+        "NIFTYPHARMA",
+        "NIFTYPSE",
+        "NIFTYPSUBANK",
+        "NIFTYPVTBANK",
+        "NIFTYREALTY",
+        "NIFTYSERVSECTOR",
+        "NIFTYSMLCAP100",
+        "NIFTYSMLCAP250",
+        "NIFTYSMLCAP50",
+        "NIFTY100EQLWGT",
+        "NIFTY100LIQ15",
+        "NIFTY100LOWVOL30",
+        "NIFTY100QUALTY30",
+        "NIFTY200QUALTY30",
+        "NIFTY50DIVPOINT",
+        "NIFTY50EQLWGT",
+        "NIFTY50PR1XINV",
+        "NIFTY50PR2XLEV",
+        "NIFTY50TR1XINV",
+        "NIFTY50TR2XLEV",
+        "NIFTY50VALUE20",
     }
     original_nse = df.loc[nse_idx_mask, "symbol"].copy()
     df.loc[nse_idx_mask, "symbol"] = (
@@ -280,12 +324,12 @@ def process_dhan_csv(path):
             "NIFTYMID100FREE": "NIFTYMIDCAP100",
         }
     )
-    # Revert symbols not in the Tradeboard standard set
+    # Revert symbols not in the TradeBoard standard set
     not_valid = ~df.loc[nse_idx_mask, "symbol"].isin(valid_nse_symbols)
     revert_idx = not_valid[not_valid].index
     df.loc[revert_idx, "symbol"] = original_nse.loc[revert_idx]
 
-    # Normalize BSE_INDEX symbols to Tradeboard standard format
+    # Normalize BSE_INDEX symbols to TradeBoard standard format
     bse_idx_mask = df["exchange"] == "BSE_INDEX"
     bse_index_map = {
         "SENSEX": "SENSEX",

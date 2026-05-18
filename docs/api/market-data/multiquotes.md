@@ -1,4 +1,4 @@
-# MultiQuotes
+﻿# MultiQuotes
 
 Get real-time quotes for multiple symbols in a single API call.
 
@@ -97,7 +97,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/multiquotes \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | symbols | Array of symbol objects | Mandatory | - |
 
 ### Symbol Object Fields

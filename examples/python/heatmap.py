@@ -1,16 +1,16 @@
 import pandas as pd
 import plotly.express as px
-from tradeboard import api
+from TradeBoard import api
 
 # ---------------------------------------------------
-# Tradeboard Client
+# TradeBoard Client
 # ---------------------------------------------------
 client = api(
     api_key="7371cc58b9d30204e5fee1d143dc8cd926bcad90c24218201ad81735384d2752",
     host="http://127.0.0.1:5000",
 )
 
-print("🔁 Tradeboard Python Bot is running.")
+print("🔁 TradeBoard Python Bot is running.")
 
 # ---------------------------------------------------
 # NIFTY 50 SYMBOLS

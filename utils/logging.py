@@ -314,6 +314,7 @@ class JSONErrorFormatter(logging.Formatter):
         # Capture Flask request context if available
         try:
             from flask import has_request_context, request
+
             if has_request_context():
                 entry["request"] = {
                     "method": request.method,
@@ -385,7 +386,7 @@ def setup_logging():
         cleanup_old_logs(log_path, log_retention)
 
         # Create file handler with daily rotation
-        log_file = log_path / f"tradeboard_{datetime.now().strftime('%Y-%m-%d')}.log"
+        log_file = log_path / f"TradeBoard_{datetime.now().strftime('%Y-%m-%d')}.log"
         file_handler = TimedRotatingFileHandler(
             filename=str(log_file),
             when="midnight",
@@ -406,9 +407,7 @@ def setup_logging():
         if errors_file.exists() and errors_file.stat().st_size > 0:
             lines = errors_file.read_text(encoding="utf-8").splitlines()
             if len(lines) > 1000:
-                errors_file.write_text(
-                    "\n".join(lines[-1000:]) + "\n", encoding="utf-8"
-                )
+                errors_file.write_text("\n".join(lines[-1000:]) + "\n", encoding="utf-8")
     except Exception:
         pass
     json_handler = logging.FileHandler(

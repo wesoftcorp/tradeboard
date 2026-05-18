@@ -13,7 +13,7 @@ def calculate_margin_api(positions, auth):
     Calculate margin requirement for a basket of positions using mStock Type B API.
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
         auth: Authentication token for mStock
 
     Returns:

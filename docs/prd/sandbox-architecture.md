@@ -1,4 +1,4 @@
-# Sandbox Architecture
+﻿# Sandbox Architecture
 
 Detailed architecture documentation for the Sandbox (Analyzer Mode) sandbox trading system.
 
@@ -289,7 +289,7 @@ CREATE TABLE sandbox_funds (
 
 ## API Integration
 
-All standard Tradeboard API endpoints work seamlessly when Analyzer Mode is enabled:
+All standard TradeBoard API endpoints work seamlessly when Analyzer Mode is enabled:
 
 ```python
 # In analyzer mode, these automatically route to sandbox

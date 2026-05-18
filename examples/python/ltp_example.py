@@ -1,10 +1,10 @@
 """
-Tradeboard WebSocket Feed Example
+TradeBoard WebSocket Feed Example
 """
 
 import time
 
-from tradeboard import api
+from TradeBoard import api
 
 # Initialize feed client with explicit parameters
 client = api(

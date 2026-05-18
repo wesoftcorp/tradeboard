@@ -1,12 +1,12 @@
 """
-Tradeboard WebSocket 50-Level Market Depth Example
+TradeBoard WebSocket 50-Level Market Depth Example
 For brokers that support deep market depth (Fyers TBT, etc.)
 """
 
 import logging
 import time
 
-from tradeboard import api
+from TradeBoard import api
 
 # Configure logging to see WebSocket debug output
 logging.basicConfig(

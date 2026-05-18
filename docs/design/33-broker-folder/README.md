@@ -1,8 +1,8 @@
-# 33 - Broker Folder Explanations
+﻿# 33 - Broker Folder Explanations
 
 ## Overview
 
-Each broker in Tradeboard follows a standardized folder structure with consistent interfaces for authentication, order management, data retrieval, and symbol mapping.
+Each broker in TradeBoard follows a standardized folder structure with consistent interfaces for authentication, order management, data retrieval, and symbol mapping.
 
 ## Broker Directory Structure
 
@@ -136,7 +136,7 @@ def get_holdings(auth):
 
 ### 5. mapping/transform_data.py
 
-Convert Tradeboard format to broker format.
+Convert TradeBoard format to broker format.
 
 ```python
 def transform_data(data):
@@ -154,7 +154,7 @@ def transform_data(data):
     }
 
 def transform_response(response):
-    """Transform broker response to Tradeboard format"""
+    """Transform broker response to TradeBoard format"""
     return {
         "orderid": response['data']['order_id'],
         "status": "success" if response['status'] else "error"
@@ -171,7 +171,7 @@ def download_master_contract():
     pass
 
 def get_symbol(symbol, exchange):
-    """Get broker symbol from Tradeboard symbol"""
+    """Get broker symbol from TradeBoard symbol"""
     pass
 
 def get_token(symbol, exchange):
@@ -213,11 +213,11 @@ Broker metadata file. This is a simple metadata file (NOT configuration).
 ```json
 {
     "Plugin Name": "zerodha",
-    "Plugin URI": "https://wesoftcorp.com",
-    "Description": "Zerodha Tradeboard Plugin",
+    "Plugin URI": "https://TradeBoard.in",
+    "Description": "Zerodha TradeBoard Plugin",
     "Version": "1.0",
     "Author": "Rajandran R",
-    "Author URI": "https://wesoftcorp.com"
+    "Author URI": "https://TradeBoard.in"
 }
 ```
 
@@ -253,7 +253,7 @@ VALID_BROKERS=zerodha,dhan,angel,newbroker
 
 ### Price Type Mapping
 
-| Tradeboard | Zerodha | Dhan | Angel |
+| TradeBoard | Zerodha | Dhan | Angel |
 |----------|---------|------|-------|
 | MARKET | MARKET | MARKET | MARKET |
 | LIMIT | LIMIT | LIMIT | LIMIT |
@@ -262,7 +262,7 @@ VALID_BROKERS=zerodha,dhan,angel,newbroker
 
 ### Product Type Mapping
 
-| Tradeboard | Zerodha | Dhan | Angel |
+| TradeBoard | Zerodha | Dhan | Angel |
 |----------|---------|------|-------|
 | CNC | CNC | CNC | DELIVERY |
 | MIS | MIS | INTRADAY | INTRADAY |
@@ -270,7 +270,7 @@ VALID_BROKERS=zerodha,dhan,angel,newbroker
 
 ### Exchange Mapping
 
-| Tradeboard | Zerodha | Dhan | Angel |
+| TradeBoard | Zerodha | Dhan | Angel |
 |----------|---------|------|-------|
 | NSE | NSE | NSE_EQ | NSE |
 | NFO | NFO | NSE_FNO | NFO |

@@ -12,7 +12,7 @@ def calculate_margin_api(positions, auth):
     which is not suitable for calculating margin requirements for specific positions.
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
         auth: Authentication token for 5paisa
 
     Raises:

@@ -1,15 +1,15 @@
-# API Security Assessment
+﻿# API Security Assessment
 
 ## Overview
 
-This assessment covers the security of Tradeboard's REST API, focusing on protecting your trading operations from unauthorized access via webhooks.
+This assessment covers the security of TradeBoard's REST API, focusing on protecting your trading operations from unauthorized access via webhooks.
 
 **Risk Level**: Medium
 **Status**: Good
 
 ## Deployment Context
 
-Tradeboard API is accessed in two scenarios:
+TradeBoard API is accessed in two scenarios:
 
 | Scenario | Access Method | Security |
 |----------|---------------|----------|
@@ -86,7 +86,7 @@ POST https://yourdomain.com/api/v1/placeorder
           │
           ▼
 ┌─────────────────────────────────────┐
-│         Tradeboard API                 │
+│         TradeBoard API                 │
 │  1. Validate API key (hash compare)  │
 │  2. Validate input (Marshmallow)     │
 │  3. Check rate limits                │
@@ -196,7 +196,7 @@ Even for single-user:
 - [x] Security headers
 - [x] Firewall rules
 
-### Built into Tradeboard
+### Built into TradeBoard
 
 - [x] API key required for all endpoints
 - [x] API keys hashed in database
@@ -220,7 +220,7 @@ URL: https://yourdomain.com/api/v1/placeorder
 
 Message:
 {
-    "apikey": "your_tradeboard_api_key",
+    "apikey": "your_TradeBoard_api_key",
     "symbol": "{{ticker}}",
     "exchange": "NSE",
     "action": "{{strategy.order.action}}",
@@ -246,7 +246,7 @@ Message:
 - Security headers
 - Firewall
 
-**Built-in (Tradeboard)**:
+**Built-in (TradeBoard)**:
 - API key authentication
 - Input validation
 - Rate limiting

@@ -1,12 +1,12 @@
 """
-Tradeboard WebSocket 20-Level Market Depth Example
+TradeBoard WebSocket 20-Level Market Depth Example
 For brokers that support 20-level depth (Dhan NSE/NFO)
 """
 
 import logging
 import time
 
-from tradeboard import api
+from TradeBoard import api
 
 # Configure logging to see WebSocket debug output
 logging.basicConfig(

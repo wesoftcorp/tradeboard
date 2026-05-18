@@ -1,23 +1,23 @@
 """
 ===============================================================================
                 EMA CROSSOVER WITH FIXED DATETIME HANDLING
-                            Tradeboard Trading Bot
+                            TradeBoard Trading Bot
 ===============================================================================
 
 Run standalone:
-    export TRADEBOARD_API_KEY="your-api-key"
+    export TradeBoard_API_KEY="your-api-key"
     python emacrossover_strategy_python.py
 
-Run via Tradeboard's /python strategy runner:
-    TRADEBOARD_API_KEY            : injected per-strategy (PR #1247).
-    TRADEBOARD_STRATEGY_EXCHANGE  : set from the strategy's `exchange` config
+Run via TradeBoard's /python strategy runner:
+    TradeBoard_API_KEY            : injected per-strategy (PR #1247).
+    TradeBoard_STRATEGY_EXCHANGE  : set from the strategy's `exchange` config
                                   (NSE / BSE / NFO / BFO / MCX / BCD / CDS / CRYPTO).
                                   Drives both this script's trading exchange and
                                   the host's calendar/holiday gating, so the two
                                   always agree (no NSE-only orders on an MCX-gated
                                   strategy).
     STRATEGY_ID / STRATEGY_NAME : injected for log/order tagging.
-    HOST_SERVER / WEBSOCKET_URL : inherited from Tradeboard's .env.
+    HOST_SERVER / WEBSOCKET_URL : inherited from TradeBoard's .env.
     No code changes required.
 """
 
@@ -27,32 +27,32 @@ import time
 from datetime import datetime, timedelta
 
 import pandas as pd
-from tradeboard import api
+from TradeBoard import api
 
 # ===============================================================================
 # TRADING CONFIGURATION
 # ===============================================================================
 
 # API Configuration — read from environment with sensible fallbacks.
-# When launched via Tradeboard's /python runner, these come from the platform:
-#   TRADEBOARD_API_KEY : injected per-strategy (decrypted from DB)
-#   HOST_SERVER      : inherited from Tradeboard's .env
-#   WEBSOCKET_URL    : inherited from Tradeboard's .env
-API_KEY = os.getenv("TRADEBOARD_API_KEY", "tradeboard-apikey")
+# When launched via TradeBoard's /python runner, these come from the platform:
+#   TradeBoard_API_KEY : injected per-strategy (decrypted from DB)
+#   HOST_SERVER      : inherited from TradeBoard's .env
+#   WEBSOCKET_URL    : inherited from TradeBoard's .env
+API_KEY = os.getenv("TradeBoard_API_KEY", "TradeBoard-apikey")
 API_HOST = os.getenv("HOST_SERVER", "http://127.0.0.1:5000")
 WS_URL = os.getenv("WEBSOCKET_URL", "ws://127.0.0.1:8765")
 
 # Trade Settings
-# EXCHANGE prefers TRADEBOARD_STRATEGY_EXCHANGE (set by /python runner from the
+# EXCHANGE prefers TradeBoard_STRATEGY_EXCHANGE (set by /python runner from the
 # strategy's config) so the script trades on whichever exchange the host is
 # gating its calendar against. Falls back to EXCHANGE env var, then NSE.
-SYMBOL = os.getenv("SYMBOL", "NHPC")              # Stock to trade
+SYMBOL = os.getenv("SYMBOL", "NHPC")  # Stock to trade
 EXCHANGE = os.getenv(
-    "TRADEBOARD_STRATEGY_EXCHANGE",
+    "TradeBoard_STRATEGY_EXCHANGE",
     os.getenv("EXCHANGE", "NSE"),
-)                                                 # NSE, BSE, NFO, BFO, MCX, BCD, CDS, CRYPTO
-QUANTITY = int(os.getenv("QUANTITY", "1"))        # Number of shares
-PRODUCT = os.getenv("PRODUCT", "MIS")             # MIS (Intraday) or CNC (Delivery)
+)  # NSE, BSE, NFO, BFO, MCX, BCD, CDS, CRYPTO
+QUANTITY = int(os.getenv("QUANTITY", "1"))  # Number of shares
+PRODUCT = os.getenv("PRODUCT", "MIS")  # MIS (Intraday) or CNC (Delivery)
 
 # Strategy Parameters
 FAST_EMA_PERIOD = int(os.getenv("FAST_EMA_PERIOD", "2"))
@@ -117,16 +117,16 @@ class ConfigurableEMABot:
         else:
             self.lookback_days = LOOKBACK_DAYS
 
-        print("[BOT] Tradeboard Trading Bot Started")
+        print("[BOT] TradeBoard Trading Bot Started")
         print(f"[BOT] Host: {API_HOST} | WS: {WS_URL}")
         print(f"[BOT] Symbol: {SYMBOL} on {EXCHANGE}")
         print(f"[BOT] Direction Mode: {TRADE_DIRECTION}")
         print(f"[BOT] Strategy: {FAST_EMA_PERIOD} EMA x {SLOW_EMA_PERIOD} EMA")
         print(f"[BOT] Lookback Period: {self.lookback_days} days")
         print(f"[BOT] Signal Check Interval: {SIGNAL_CHECK_INTERVAL} seconds")
-        if os.getenv("TRADEBOARD_STRATEGY_EXCHANGE"):
+        if os.getenv("TradeBoard_STRATEGY_EXCHANGE"):
             print(
-                f"[BOT] Exchange resolved from TRADEBOARD_STRATEGY_EXCHANGE "
+                f"[BOT] Exchange resolved from TradeBoard_STRATEGY_EXCHANGE "
                 f"(host calendar = {EXCHANGE})"
             )
 
@@ -599,14 +599,14 @@ class ConfigurableEMABot:
 # ===============================================================================
 
 if __name__ == "__main__":
-    if not API_KEY or API_KEY == "tradeboard-apikey":
+    if not API_KEY or API_KEY == "TradeBoard-apikey":
         print(
-            "[WARNING] TRADEBOARD_API_KEY is not set in environment. "
+            "[WARNING] TradeBoard_API_KEY is not set in environment. "
             "Set it before running in live mode."
         )
 
     print("\n" + "=" * 60)
-    print(" OPENALGO EMA STRATEGY - READY TO RUN")
+    print(" TradeBoard EMA STRATEGY - READY TO RUN")
     print("=" * 60)
     print(f" Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f" Mode: {TRADE_DIRECTION}")

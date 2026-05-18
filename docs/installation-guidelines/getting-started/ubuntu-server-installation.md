@@ -1,4 +1,4 @@
-# Ubuntu Server Installation
+﻿# Ubuntu Server Installation
 
 ### Prerequisites
 
@@ -10,7 +10,7 @@
 * 1 vCPU
 * Clean installation recommended
 
-Tradeboard runs on Ubuntu, Debian, Raspbian, RHEL, Rocky, AlmaLinux, Amazon Linux, Fedora, and Arch — the installation script auto-detects the distro and uses the right package manager. The flow below uses Ubuntu as the example.
+TradeBoard runs on Ubuntu, Debian, Raspbian, RHEL, Rocky, AlmaLinux, Amazon Linux, Fedora, and Arch — the installation script auto-detects the distro and uses the right package manager. The flow below uses Ubuntu as the example.
 
 #### Domain and DNS Setup (Required)
 
@@ -42,7 +42,7 @@ Tradeboard runs on Ubuntu, Debian, Raspbian, RHEL, Rocky, AlmaLinux, Amazon Linu
 
 #### Broker Setup (Required)
 
-* Obtain your broker's API credentials per the Tradeboard documentation:
+* Obtain your broker's API credentials per the TradeBoard documentation:
   * API Key
   * API Secret
 * Prepare the redirect URL based on your domain and broker name:
@@ -69,8 +69,8 @@ ssh user@your_server_ip
 #### 1. Download the Installation Script
 
 ```bash
-mkdir -p ~/tradeboard-install
-cd ~/tradeboard-install
+mkdir -p ~/TradeBoard-install
+cd ~/TradeBoard-install
 
 wget https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/install/install.sh
 chmod +x install.sh
@@ -96,28 +96,28 @@ The installer will:
 * Install required packages, including Chromium (used for Telegram /chart rendering — non-fatal if unavailable)
 * Install the `uv` package manager (via snap on Ubuntu, or the Astral standalone installer on PEP 668 systems like Ubuntu 24.04+)
 * Configure Nginx with HTTPS via Let's Encrypt (Certbot)
-* Set up the Tradeboard application under `/var/python/tradeboard`
-* Create the systemd unit `tradeboard.service`
-* Generate timestamped installation logs in `~/tradeboard-install/logs/`
+* Set up the TradeBoard application under `/var/python/TradeBoard`
+* Create the systemd unit `TradeBoard.service`
+* Generate timestamped installation logs in `~/TradeBoard-install/logs/`
 
 #### Default Layout (single deployment)
 
 After a successful run, the install lives at:
 
 ```
-/var/python/tradeboard/                  cloned repo
-/var/python/tradeboard/.venv/            uv-managed Python virtual environment
-/var/python/tradeboard/.env              configuration
-/var/python/tradeboard/tradeboard.sock     Gunicorn Unix socket
-/etc/systemd/system/tradeboard.service   systemd unit
-/etc/nginx/sites-available/tradeboard.conf   Nginx vhost (stable name across domain changes)
+/var/python/TradeBoard/                  cloned repo
+/var/python/TradeBoard/.venv/            uv-managed Python virtual environment
+/var/python/TradeBoard/.env              configuration
+/var/python/TradeBoard/TradeBoard.sock     Gunicorn Unix socket
+/etc/systemd/system/TradeBoard.service   systemd unit
+/etc/nginx/sites-available/TradeBoard.conf   Nginx vhost (stable name across domain changes)
 ```
 
-The Nginx vhost name `tradeboard.conf` is intentionally fixed — `install/change-domain.sh` updates `server_name` in place rather than renaming the file.
+The Nginx vhost name `TradeBoard.conf` is intentionally fixed — `install/change-domain.sh` updates `server_name` in place rather than renaming the file.
 
 #### Multi-Domain Deployment (Optional)
 
-The default `install.sh` is single-deploy per server. If you need 2+ Tradeboard instances side by side (different broker per instance, etc.), use the dedicated multi-deploy installer:
+The default `install.sh` is single-deploy per server. If you need 2+ TradeBoard instances side by side (different broker per instance, etc.), use the dedicated multi-deploy installer:
 
 ```bash
 wget https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/install/install-multi.sh
@@ -128,37 +128,37 @@ sudo ./install-multi.sh
 Multi-deploy installs use a per-deployment layout:
 
 ```
-/var/python/tradeboard-flask/<domain-broker>/tradeboard/
-/var/python/tradeboard-flask/<domain-broker>/venv/
-tradeboard-<domain-broker>.service
+/var/python/TradeBoard-flask/<domain-broker>/TradeBoard/
+/var/python/TradeBoard-flask/<domain-broker>/venv/
+TradeBoard-<domain-broker>.service
 ```
 
-Each deployment gets its own service, configuration, virtual environment, SSL certificate, and log file. The single-deploy `update.sh` and `change-domain.sh` scripts also handle this layout transparently — they detect the simple path first and fall back to scanning `/var/python/tradeboard-flask/`.
+Each deployment gets its own service, configuration, virtual environment, SSL certificate, and log file. The single-deploy `update.sh` and `change-domain.sh` scripts also handle this layout transparently — they detect the simple path first and fall back to scanning `/var/python/TradeBoard-flask/`.
 
 #### 3. Verify the Installation
 
 1. **Check service status**
 
    ```bash
-   sudo systemctl status tradeboard
+   sudo systemctl status TradeBoard
    ```
 2. **Test the Nginx configuration**
 
    ```bash
    sudo nginx -t
-   ls -l /etc/nginx/sites-enabled/tradeboard.conf
+   ls -l /etc/nginx/sites-enabled/TradeBoard.conf
    ```
 3. **Open the dashboard** at `https://yourdomain.com`
 4. **View installation log**
 
    ```bash
-   ls -l ~/tradeboard-install/logs/
-   cat ~/tradeboard-install/logs/install_YYYYMMDD_HHMMSS.log
+   ls -l ~/TradeBoard-install/logs/
+   cat ~/TradeBoard-install/logs/install_YYYYMMDD_HHMMSS.log
    ```
 
 ### Remote MCP
 
-Remote MCP exposes `/mcp` and `/oauth/*` so hosted AI clients (claude.ai, chatgpt.com) can connect to your Tradeboard install over HTTPS. Local stdio MCP (Claude Desktop, Cursor, Windsurf) is unaffected — it works regardless of this setting.
+Remote MCP exposes `/mcp` and `/oauth/*` so hosted AI clients (claude.ai, chatgpt.com) can connect to your TradeBoard install over HTTPS. Local stdio MCP (Claude Desktop, Cursor, Windsurf) is unaffected — it works regardless of this setting.
 
 You can enable Remote MCP two ways:
 
@@ -167,7 +167,7 @@ You can enable Remote MCP two ways:
 2. **From the admin UI** — visit `https://yourdomain.com/admin/remote-mcp`. The settings card at the top of the page lets you flip Remote MCP on or off, edit the public HTTPS origin, and adjust the OAuth posture toggles. Saving writes the new values to `.env`; a yellow banner then prompts you to restart the service:
 
    ```bash
-   sudo systemctl restart tradeboard
+   sudo systemctl restart TradeBoard
    ```
 
    The banner clears automatically once the running process picks up the new values.
@@ -199,13 +199,13 @@ The MCP URL to give your AI client is the same as your dashboard URL with `/mcp`
 
    ```bash
    # View live logs
-   sudo journalctl -fu tradeboard
+   sudo journalctl -fu TradeBoard
 
    # Last 100 lines
-   sudo journalctl -n 100 -u tradeboard
+   sudo journalctl -n 100 -u TradeBoard
 
    # Restart
-   sudo systemctl restart tradeboard
+   sudo systemctl restart TradeBoard
    ```
 
 3. **Nginx issues**
@@ -227,8 +227,8 @@ The MCP URL to give your AI client is the same as your dashboard URL with `/mcp`
 4. **Installation logs**
 
    ```bash
-   ls -l ~/tradeboard-install/logs/
-   cat ~/tradeboard-install/logs/$(ls -t ~/tradeboard-install/logs/ | head -1)
+   ls -l ~/TradeBoard-install/logs/
+   cat ~/TradeBoard-install/logs/$(ls -t ~/TradeBoard-install/logs/ | head -1)
    ```
 
 5. **`uv` install failed with `externally-managed-environment`**
@@ -236,7 +236,7 @@ The MCP URL to give your AI client is the same as your dashboard URL with `/mcp`
    This is PEP 668 enforcement on Ubuntu 24.04+ / Debian 12+. The current `install.sh` falls through to the Astral standalone installer automatically; if you're on an older copy, refresh the script and re-run:
 
    ```bash
-   cd ~/tradeboard-install
+   cd ~/TradeBoard-install
    rm -f install.sh
    wget https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/install/install.sh
    chmod +x install.sh
@@ -247,16 +247,16 @@ The MCP URL to give your AI client is the same as your dashboard URL with `/mcp`
 
    ```bash
    # Repo
-   ls /var/python/tradeboard
+   ls /var/python/TradeBoard
 
    # Effective configuration
-   sudo cat /var/python/tradeboard/.env
+   sudo cat /var/python/TradeBoard/.env
 
    # Application logs
-   sudo tail -f /var/python/tradeboard/log/tradeboard_$(date +%F).log
+   sudo tail -f /var/python/TradeBoard/log/TradeBoard_$(date +%F).log
 
    # JSON-formatted error log (always-on)
-   sudo tail -f /var/python/tradeboard/log/errors.jsonl
+   sudo tail -f /var/python/TradeBoard/log/errors.jsonl
    ```
 
 #### Multi-Domain Deployment Notes
@@ -264,32 +264,32 @@ The MCP URL to give your AI client is the same as your dashboard URL with `/mcp`
 If you ran `install-multi.sh` (per-deployment layout), substitute the deployment-specific names everywhere:
 
 ```bash
-# List all Tradeboard services on this host
-systemctl list-units 'tradeboard*'
+# List all TradeBoard services on this host
+systemctl list-units 'TradeBoard*'
 
 # Manage a specific deployment (example: trading1.yourdomain.com + Fyers)
-sudo systemctl status tradeboard-trading1-yourdomain-com-fyers
-sudo journalctl -fu tradeboard-trading1-yourdomain-com-fyers
+sudo systemctl status TradeBoard-trading1-yourdomain-com-fyers
+sudo journalctl -fu TradeBoard-trading1-yourdomain-com-fyers
 
 # Per-deployment install directories
-ls /var/python/tradeboard-flask/
+ls /var/python/TradeBoard-flask/
 ```
 
 ### Updating
 
 ```bash
-cd ~/tradeboard-install
+cd ~/TradeBoard-install
 wget https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/install/update.sh
 chmod +x update.sh
 sudo ./update.sh
 ```
 
-The update script detects both layouts (single-deploy at `/var/python/tradeboard` and legacy multi-deploy under `/var/python/tradeboard-flask/`) and asks which to update if multiple are present. It runs `git pull`, `uv sync`, and restarts the service.
+The update script detects both layouts (single-deploy at `/var/python/TradeBoard` and legacy multi-deploy under `/var/python/TradeBoard-flask/`) and asks which to update if multiple are present. It runs `git pull`, `uv sync`, and restarts the service.
 
 ### Changing the Domain
 
 ```bash
-cd ~/tradeboard-install
+cd ~/TradeBoard-install
 wget https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/install/change-domain.sh
 chmod +x change-domain.sh
 sudo ./change-domain.sh
@@ -327,7 +327,7 @@ The script updates `.env` (`HOST_SERVER`, `WEBSOCKET_URL`), the Nginx vhost's `s
 
 5. **Single user per deployment**
 
-   Tradeboard is designed for one trader per server. There is no multi-user model — server access equals full control of the broker session. Don't share the host.
+   TradeBoard is designed for one trader per server. There is no multi-user model — server access equals full control of the broker session. Don't share the host.
 
 ### Post-Installation
 
@@ -339,8 +339,8 @@ The script updates `.env` (`HOST_SERVER`, `WEBSOCKET_URL`), the Nginx vhost's `s
 ### Support
 
 * GitHub: [github.com/wesoftcorp/tradeboard](https://github.com/wesoftcorp/tradeboard)
-* Documentation: [docs.wesoftcorp.com](https://docs.wesoftcorp.com)
-* Discord: [wesoftcorp.com/discord](https://www.wesoftcorp.com/discord)
+* Documentation: [docs.TradeBoard.in](https://docs.TradeBoard.in)
+* Discord: [TradeBoard.in/discord](https://www.TradeBoard.in/discord)
 
 Remember to:
 
@@ -358,7 +358,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.wesoftcorp.com/installation-guidelines/getting-started/ubuntu-server-installation.md?ask=<question>
+GET https://docs.TradeBoard.in/installation-guidelines/getting-started/ubuntu-server-installation.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

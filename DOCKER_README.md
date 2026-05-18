@@ -1,6 +1,6 @@
-# Tradeboard - Algorithmic Trading Platform
+﻿# TradeBoard - Algorithmic Trading Platform
 
-Tradeboard is a production-ready algorithmic trading platform providing a unified API layer across 24+ Indian brokers. Seamlessly integrate with TradingView, Amibroker, Excel, Python, and AI agents.
+TradeBoard is a production-ready algorithmic trading platform providing a unified API layer across 24+ Indian brokers. Seamlessly integrate with TradingView, Amibroker, Excel, Python, and AI agents.
 
 ## Quick Start
 
@@ -33,8 +33,8 @@ Zerodha, Fyers, Angel One, Dhan, Delta Exchange, Upstox, Shoonya, Flattrade, Kot
 
 ```bash
 # Windows
-docker-run.bat start      # Start Tradeboard
-docker-run.bat stop       # Stop Tradeboard
+docker-run.bat start      # Start TradeBoard
+docker-run.bat stop       # Stop TradeBoard
 docker-run.bat restart    # Update & restart
 docker-run.bat logs       # View logs
 docker-run.bat status     # Check status
@@ -57,15 +57,15 @@ All data is stored locally in the script directory:
 
 ## Documentation
 
-- **Full Docs**: https://docs.wesoftcorp.com
+- **Full Docs**: https://docs.TradeBoard.in
 - **Installation Guide**: https://github.com/wesoftcorp/tradeboard/blob/main/install/Docker-install-readme.md
 - **GitHub**: https://github.com/wesoftcorp/tradeboard
 
 ## Community
 
 - **Discord**: https://discord.com/invite/UPh7QPsNhP
-- **YouTube**: https://youtube.com/@tradeboardHQ
-- **Website**: https://wesoftcorp.com
+- **YouTube**: https://youtube.com/@TradeBoardHQ
+- **Website**: https://TradeBoard.in
 
 ## License
 

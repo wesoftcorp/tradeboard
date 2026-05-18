@@ -4,10 +4,10 @@ from typing import Dict, Set
 
 
 class UpstoxExchangeMapper:
-    """Maps between Tradeboard exchange codes and Upstox specific exchange types"""
+    """Maps between TradeBoard exchange codes and Upstox specific exchange types"""
 
     # Exchange type mapping for Upstox broker
-    # Format: {Tradeboard_Exchange: Upstox_Exchange_Code}
+    # Format: {TradeBoard_Exchange: Upstox_Exchange_Code}
     EXCHANGE_TYPES = {
         # NSE Segments
         "NSE": "NSE_EQ",  # NSE Cash Market
@@ -29,8 +29,8 @@ class UpstoxExchangeMapper:
         "MCX_FO": "MCX_FO",  # MCX F&O
     }
 
-    # Reverse mapping for converting Upstox exchange codes to Tradeboard format
-    # Format: {Upstox_Exchange_Code: Tradeboard_Exchange}
+    # Reverse mapping for converting Upstox exchange codes to TradeBoard format
+    # Format: {Upstox_Exchange_Code: TradeBoard_Exchange}
     REVERSE_EXCHANGE_TYPES = {
         "NSE_EQ": "NSE",  # NSE Cash Market
         "NSE_FO": "NFO",  # NSE F&O
@@ -45,7 +45,7 @@ class UpstoxExchangeMapper:
     @staticmethod
     def get_exchange_type(exchange):
         """
-        Convert Tradeboard exchange code to Upstox specific exchange type
+        Convert TradeBoard exchange code to Upstox specific exchange type
 
         Args:
             exchange: Exchange code (e.g., 'NSE', 'BSE', 'NFO')
@@ -72,15 +72,15 @@ class UpstoxExchangeMapper:
         return "NSE_EQ"
 
     @staticmethod
-    def get_tradeboard_exchange(upstox_code):
+    def get_TradeBoard_exchange(upstox_code):
         """
-        Convert Upstox exchange code to Tradeboard exchange code
+        Convert Upstox exchange code to TradeBoard exchange code
 
         Args:
             upstox_code (str): Upstox exchange code
 
         Returns:
-            str: Tradeboard exchange code
+            str: TradeBoard exchange code
         """
         return UpstoxExchangeMapper.REVERSE_EXCHANGE_TYPES.get(
             upstox_code, "NSE"

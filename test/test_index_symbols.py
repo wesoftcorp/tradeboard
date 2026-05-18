@@ -21,7 +21,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
 # ---------------------------------------------------------------------------
-# Expected Tradeboard standard symbols (from symbol_Openalgo.md)
+# Expected TradeBoard standard symbols (from symbol_TradeBoard.md)
 # ---------------------------------------------------------------------------
 
 EXPECTED_NSE_INDEX_SYMBOLS = {
@@ -161,7 +161,7 @@ def parse_env_value(line):
             return value[1:end]
     # Unquoted: strip inline comments
     if "#" in value:
-        value = value[:value.index("#")].strip()
+        value = value[: value.index("#")].strip()
     return value
 
 
@@ -186,10 +186,10 @@ def get_database_url(env_vars):
     db_url = env_vars.get("DATABASE_URL") or os.getenv("DATABASE_URL")
     if not db_url:
         return None
-    # Resolve relative sqlite paths (e.g. sqlite:///db/tradeboard.db)
+    # Resolve relative sqlite paths (e.g. sqlite:///db/TradeBoard.db)
     # to be relative to project root, not CWD
     if db_url.startswith("sqlite:///") and not db_url.startswith("sqlite:////"):
-        relative_path = db_url[len("sqlite:///"):]
+        relative_path = db_url[len("sqlite:///") :]
         absolute_path = os.path.join(get_project_root(), relative_path)
         db_url = f"sqlite:///{absolute_path}"
     return db_url
@@ -198,6 +198,7 @@ def get_database_url(env_vars):
 def get_broker_name(env_vars):
     """Get configured broker name from REDIRECT_URL in .env."""
     import re
+
     redirect_url = env_vars.get("REDIRECT_URL") or os.getenv("REDIRECT_URL", "")
     match = re.search(r"/([^/]+)/callback$", redirect_url)
     if match:
@@ -321,10 +322,14 @@ def run_tests(db_url, broker_name):
             bad_format.append((sym, "not uppercase"))
     if bad_format:
         for sym, reason in bad_format:
-            print(f"  [FAIL] '{sym}' - {reason} (brsymbol: {next((r['brsymbol'] for r in nse_rows if r['symbol'] == sym), '?')})")
+            print(
+                f"  [FAIL] '{sym}' - {reason} (brsymbol: {next((r['brsymbol'] for r in nse_rows if r['symbol'] == sym), '?')})"
+            )
             total_fail += 1
     else:
-        print("  [PASS] All NSE_INDEX symbols are properly formatted (uppercase, no spaces/hyphens)")
+        print(
+            "  [PASS] All NSE_INDEX symbols are properly formatted (uppercase, no spaces/hyphens)"
+        )
         total_pass += 1
 
     # Test 4: Check for duplicates
@@ -337,15 +342,15 @@ def run_tests(db_url, broker_name):
             print(f"  [FAIL] '{sym}' appears {count} times")
             total_fail += 1
     else:
-        print(f"  [PASS] No duplicate NSE_INDEX symbols")
+        print("  [PASS] No duplicate NSE_INDEX symbols")
         total_pass += 1
 
     # Test 5: Extra NSE_INDEX symbols - transformation detection
     print_section("Test 5: Extra NSE_INDEX symbols - transformation check")
     extra_nse = nse_symbols - EXPECTED_NSE_INDEX_SYMBOLS
     if extra_nse:
-        print(f"  Found {len(extra_nse)} extra symbols (not in Tradeboard doc)")
-        print(f"  Checking if unlisted symbols were preserved (only basic cleanup applied):\n")
+        print(f"  Found {len(extra_nse)} extra symbols (not in TradeBoard doc)")
+        print("  Checking if unlisted symbols were preserved (only basic cleanup applied):\n")
         nse_transformed = []
         nse_preserved = []
         for sym in sorted(extra_nse):
@@ -357,12 +362,16 @@ def run_tests(db_url, broker_name):
             else:
                 nse_transformed.append((sym, brsym, raw, cleaned))
         if nse_transformed:
-            print(f"  [WARN] {len(nse_transformed)} unlisted symbols were TRANSFORMED beyond basic cleanup:")
+            print(
+                f"  [WARN] {len(nse_transformed)} unlisted symbols were TRANSFORMED beyond basic cleanup:"
+            )
             for sym, brsym, raw, cleaned in nse_transformed:
                 print(f"    {brsym:40s} -> {sym:30s} (expected: {cleaned})")
             total_warn += len(nse_transformed)
         if nse_preserved:
-            print(f"  [PASS] {len(nse_preserved)} unlisted symbols preserved correctly (basic cleanup only)")
+            print(
+                f"  [PASS] {len(nse_preserved)} unlisted symbols preserved correctly (basic cleanup only)"
+            )
             total_pass += 1
     else:
         print("  No extra symbols beyond the expected list")
@@ -414,10 +423,14 @@ def run_tests(db_url, broker_name):
             bad_format.append((sym, "not uppercase"))
     if bad_format:
         for sym, reason in bad_format:
-            print(f"  [FAIL] '{sym}' - {reason} (brsymbol: {next((r['brsymbol'] for r in bse_rows if r['symbol'] == sym), '?')})")
+            print(
+                f"  [FAIL] '{sym}' - {reason} (brsymbol: {next((r['brsymbol'] for r in bse_rows if r['symbol'] == sym), '?')})"
+            )
             total_fail += 1
     else:
-        print("  [PASS] All BSE_INDEX symbols are properly formatted (uppercase, no spaces/hyphens)")
+        print(
+            "  [PASS] All BSE_INDEX symbols are properly formatted (uppercase, no spaces/hyphens)"
+        )
         total_pass += 1
 
     # Test 9: BSE duplicate check
@@ -430,15 +443,15 @@ def run_tests(db_url, broker_name):
             print(f"  [FAIL] '{sym}' appears {count} times")
             total_fail += 1
     else:
-        print(f"  [PASS] No duplicate BSE_INDEX symbols")
+        print("  [PASS] No duplicate BSE_INDEX symbols")
         total_pass += 1
 
     # Test 10: Extra BSE_INDEX symbols - transformation detection
     print_section("Test 10: Extra BSE_INDEX symbols - transformation check")
     extra_bse = bse_symbols - EXPECTED_BSE_INDEX_SYMBOLS
     if extra_bse:
-        print(f"  Found {len(extra_bse)} extra symbols (not in Tradeboard doc)")
-        print(f"  Checking if unlisted symbols were preserved (only basic cleanup applied):\n")
+        print(f"  Found {len(extra_bse)} extra symbols (not in TradeBoard doc)")
+        print("  Checking if unlisted symbols were preserved (only basic cleanup applied):\n")
         bse_transformed = []
         bse_preserved = []
         for sym in sorted(extra_bse):
@@ -450,12 +463,16 @@ def run_tests(db_url, broker_name):
             else:
                 bse_transformed.append((sym, brsym, raw, cleaned))
         if bse_transformed:
-            print(f"  [WARN] {len(bse_transformed)} unlisted symbols were TRANSFORMED beyond basic cleanup:")
+            print(
+                f"  [WARN] {len(bse_transformed)} unlisted symbols were TRANSFORMED beyond basic cleanup:"
+            )
             for sym, brsym, raw, cleaned in bse_transformed:
                 print(f"    {brsym:40s} -> {sym:30s} (expected: {cleaned})")
             total_warn += len(bse_transformed)
         if bse_preserved:
-            print(f"  [PASS] {len(bse_preserved)} unlisted symbols preserved correctly (basic cleanup only)")
+            print(
+                f"  [PASS] {len(bse_preserved)} unlisted symbols preserved correctly (basic cleanup only)"
+            )
             total_pass += 1
     else:
         print("  No extra symbols beyond the expected list")
@@ -474,14 +491,14 @@ def run_tests(db_url, broker_name):
         print(f"  {marker} {r['symbol']:<35} <- {r['brsymbol']}")
 
     # -----------------------------------------------------------------------
-    # Unlisted symbols log (broker symbols not in Tradeboard doc)
+    # Unlisted symbols log (broker symbols not in TradeBoard doc)
     # -----------------------------------------------------------------------
-    print_header("UNLISTED SYMBOLS (not in Tradeboard doc)")
+    print_header("UNLISTED SYMBOLS (not in TradeBoard doc)")
 
     print_section(f"Unlisted NSE_INDEX symbols ({len(extra_nse)})")
     if extra_nse:
         print(f"  {'#':<4} {'Symbol':<30} {'Broker Symbol':<40} {'Status'}")
-        print(f"  {'-'*4} {'-'*30} {'-'*40} {'-'*12}")
+        print(f"  {'-' * 4} {'-' * 30} {'-' * 40} {'-' * 12}")
         for i, sym in enumerate(sorted(extra_nse), 1):
             row = next((r for r in nse_rows if r["symbol"] == sym), None)
             brsym = row["brsymbol"] if row else "?"
@@ -495,7 +512,7 @@ def run_tests(db_url, broker_name):
     print_section(f"Unlisted BSE_INDEX symbols ({len(extra_bse)})")
     if extra_bse:
         print(f"  {'#':<4} {'Symbol':<30} {'Broker Symbol':<40} {'Status'}")
-        print(f"  {'-'*4} {'-'*30} {'-'*40} {'-'*12}")
+        print(f"  {'-' * 4} {'-' * 30} {'-' * 40} {'-' * 12}")
         for i, sym in enumerate(sorted(extra_bse), 1):
             row = next((r for r in bse_rows if r["symbol"] == sym), None)
             brsym = row["brsymbol"] if row else "?"
@@ -514,8 +531,12 @@ def run_tests(db_url, broker_name):
     print(f"  PASS:     {total_pass}")
     print(f"  FAIL:     {total_fail}")
     print(f"  WARNINGS: {total_warn}")
-    print(f"  NSE_INDEX: {len(nse_rows)} symbols ({len(nse_found)}/{len(EXPECTED_NSE_INDEX_SYMBOLS)} expected)")
-    print(f"  BSE_INDEX: {len(bse_rows)} symbols ({len(bse_found)}/{len(EXPECTED_BSE_INDEX_SYMBOLS)} expected)")
+    print(
+        f"  NSE_INDEX: {len(nse_rows)} symbols ({len(nse_found)}/{len(EXPECTED_NSE_INDEX_SYMBOLS)} expected)"
+    )
+    print(
+        f"  BSE_INDEX: {len(bse_rows)} symbols ({len(bse_found)}/{len(EXPECTED_BSE_INDEX_SYMBOLS)} expected)"
+    )
     print()
 
     if total_fail > 0:
@@ -523,7 +544,7 @@ def run_tests(db_url, broker_name):
     elif total_warn > 0:
         print(f"  RESULT: PASSED with warnings ({total_warn} missing optional symbols)")
     else:
-        print(f"  RESULT: ALL PASSED")
+        print("  RESULT: ALL PASSED")
 
     return total_fail == 0
 

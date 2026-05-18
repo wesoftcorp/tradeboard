@@ -135,7 +135,7 @@ def download_and_unzip_zebu_data(output_path):
 
 def process_zebu_nse_data(output_path):
     """
-    Processes the Zebu NSE data (NSE_symbols.txt) to generate Tradeboard symbols.
+    Processes the Zebu NSE data (NSE_symbols.txt) to generate TradeBoard symbols.
     Separates EQ, BE symbols, and Index symbols.
     """
     logger.info("Processing Zebu NSE Data")
@@ -164,19 +164,19 @@ def process_zebu_nse_data(output_path):
     # Add missing columns to ensure DataFrame matches the database structure
     df["symbol"] = df["brsymbol"]  # Initialize 'symbol' with 'brsymbol'
 
-    # Apply transformation for Tradeboard symbols
-    def get_tradeboard_symbol(broker_symbol):
+    # Apply transformation for TradeBoard symbols
+    def get_TradeBoard_symbol(broker_symbol):
         # Separate by hyphen and apply logic for EQ and BE
         if "-EQ" in broker_symbol:
             return broker_symbol.replace("-EQ", "")
         elif "-BE" in broker_symbol:
             return broker_symbol.replace("-BE", "")
         else:
-            # For other symbols (including index), Tradeboard symbol remains the same as broker symbol
+            # For other symbols (including index), TradeBoard symbol remains the same as broker symbol
             return broker_symbol
 
     # Update the 'symbol' column
-    df["symbol"] = df["brsymbol"].apply(get_tradeboard_symbol)
+    df["symbol"] = df["brsymbol"].apply(get_TradeBoard_symbol)
 
     # Define Exchange: 'NSE' for EQ and BE, 'NSE_INDEX' for indexes
     df["exchange"] = df.apply(
@@ -216,7 +216,7 @@ def process_zebu_nse_data(output_path):
     ]
     df_filtered = df[columns_to_keep]
 
-    # Map common NSE index symbols to Tradeboard format
+    # Map common NSE index symbols to TradeBoard format
     nse_index_mapping = {
         "NIFTY INDEX": "NIFTY",
         "NIFTY BANK": "BANKNIFTY",
@@ -237,7 +237,7 @@ def process_zebu_nse_data(output_path):
 
 def process_zebu_nfo_data(output_path):
     """
-    Processes the Zebu NFO data (NFO_symbols.txt) to generate Tradeboard symbols.
+    Processes the Zebu NFO data (NFO_symbols.txt) to generate TradeBoard symbols.
     Handles both futures and options formatting.
     """
     logger.info("Processing Zebu NFO Data")
@@ -291,11 +291,11 @@ def process_zebu_nfo_data(output_path):
 
     # Apply the expiry date format
     #  df["expiry"] = df["expiry"].apply(format_expiry_date)
-    
+
     # First convert string to datetime object using the original format '15-APR-2026'
-    df['expiry'] = pd.to_datetime(df['expiry'], format='%d-%b-%Y', errors='coerce')
+    df["expiry"] = pd.to_datetime(df["expiry"], format="%d-%b-%Y", errors="coerce")
     # Format the datetime object to the desired format '15-APR-26'
-    df['expiry'] = df['expiry'].dt.strftime('%d-%b-%y').str.upper().fillna("")
+    df["expiry"] = df["expiry"].dt.strftime("%d-%b-%y").str.upper().fillna("")
 
     # Replace the 'XX' option type with 'FUT' for futures
     df["instrumenttype"] = df.apply(
@@ -304,7 +304,9 @@ def process_zebu_nfo_data(output_path):
 
     # Format the symbol column based on the instrument type
     def format_symbol(row):
-        formated_expiry = row['expiry'].replace('-', '')  # Remove hyphens from expiry for symbol formatting
+        formated_expiry = row["expiry"].replace(
+            "-", ""
+        )  # Remove hyphens from expiry for symbol formatting
         if row["instrumenttype"] == "FUT":
             return f"{row['name']}{formated_expiry}FUT"
         else:
@@ -355,7 +357,7 @@ def process_zebu_nfo_data(output_path):
 
 def process_zebu_cds_data(output_path):
     """
-    Processes the Zebu CDS data (CDS_symbols.txt) to generate Tradeboard symbols.
+    Processes the Zebu CDS data (CDS_symbols.txt) to generate TradeBoard symbols.
     Handles both futures and options formatting.
     """
     logger.info("Processing Zebu CDS Data")
@@ -413,11 +415,11 @@ def process_zebu_cds_data(output_path):
 
     # Apply the expiry date format
     #  df["expiry"] = df["expiry"].apply(format_expiry_date)
-    
+
     # First convert string to datetime object using the original format '15-APR-2026'
-    df['expiry'] = pd.to_datetime(df['expiry'], format='%d-%b-%Y', errors='coerce')
+    df["expiry"] = pd.to_datetime(df["expiry"], format="%d-%b-%Y", errors="coerce")
     # Format the datetime object to the desired format '15-APR-26'
-    df['expiry'] = df['expiry'].dt.strftime('%d-%b-%y').str.upper().fillna("")
+    df["expiry"] = df["expiry"].dt.strftime("%d-%b-%y").str.upper().fillna("")
 
     # Replace the 'XX' option type with 'FUT' for futures
     df["instrumenttype"] = df.apply(
@@ -426,15 +428,17 @@ def process_zebu_cds_data(output_path):
 
     # Update instrumenttype to 'CE' or 'PE' based on the option type
     df["instrumenttype"] = df.apply(
-        lambda row: row["optiontype"]
-        if row["instrumenttype"] == "OPTCUR"
-        else row["instrumenttype"],
+        lambda row: (
+            row["optiontype"] if row["instrumenttype"] == "OPTCUR" else row["instrumenttype"]
+        ),
         axis=1,
     )
 
     # Format the symbol column based on the instrument type
     def format_symbol(row):
-        formated_expiry = row['expiry'].replace('-', '')  # Remove hyphens from expiry for symbol formatting
+        formated_expiry = row["expiry"].replace(
+            "-", ""
+        )  # Remove hyphens from expiry for symbol formatting
         if row["instrumenttype"] == "FUT":
             return f"{row['name']}{formated_expiry}FUT"
         else:
@@ -481,7 +485,7 @@ def process_zebu_cds_data(output_path):
 
 def process_zebu_mcx_data(output_path):
     """
-    Processes the Zebu MCX data (MCX_symbols.txt) to generate Tradeboard symbols.
+    Processes the Zebu MCX data (MCX_symbols.txt) to generate TradeBoard symbols.
     Handles both futures and options formatting.
     """
     logger.info("Processing Zebu MCX Data")
@@ -537,11 +541,11 @@ def process_zebu_mcx_data(output_path):
 
     # Apply the expiry date format
     #  df["expiry"] = df["expiry"].apply(format_expiry_date)
-    
+
     # First convert string to datetime object using the original format '15-APR-2026'
-    df['expiry'] = pd.to_datetime(df['expiry'], format='%d-%b-%Y', errors='coerce')
+    df["expiry"] = pd.to_datetime(df["expiry"], format="%d-%b-%Y", errors="coerce")
     # Format the datetime object to the desired format '15-APR-26'
-    df['expiry'] = df['expiry'].dt.strftime('%d-%b-%y').str.upper().fillna("")
+    df["expiry"] = df["expiry"].dt.strftime("%d-%b-%y").str.upper().fillna("")
 
     # Replace the 'XX' option type with 'FUT' for futures
     df["instrumenttype"] = df.apply(
@@ -550,15 +554,17 @@ def process_zebu_mcx_data(output_path):
 
     # Update instrumenttype to 'CE' or 'PE' based on the option type
     df["instrumenttype"] = df.apply(
-        lambda row: row["optiontype"]
-        if row["instrumenttype"] == "OPTFUT"
-        else row["instrumenttype"],
+        lambda row: (
+            row["optiontype"] if row["instrumenttype"] == "OPTFUT" else row["instrumenttype"]
+        ),
         axis=1,
     )
 
     # Format the symbol column based on the instrument type
     def format_symbol(row):
-        formated_expiry = row['expiry'].replace('-', '')  # Remove hyphens from expiry for symbol formatting
+        formated_expiry = row["expiry"].replace(
+            "-", ""
+        )  # Remove hyphens from expiry for symbol formatting
         if row["instrumenttype"] == "FUT":
             return f"{row['name']}{formated_expiry}FUT"
         else:
@@ -605,7 +611,7 @@ def process_zebu_mcx_data(output_path):
 
 def process_zebu_bse_data(output_path):
     """
-    Processes the Zebu BSE data (BSE_symbols.txt) to generate Tradeboard symbols.
+    Processes the Zebu BSE data (BSE_symbols.txt) to generate TradeBoard symbols.
     Ensures that the instrument type is always 'EQ' (no BSE index symbols available from Zebu).
     """
     logger.info("Processing Zebu BSE Data")
@@ -637,12 +643,12 @@ def process_zebu_bse_data(output_path):
     # Add missing columns to ensure DataFrame matches the database structure
     df["symbol"] = df["brsymbol"]  # Initialize 'symbol' with 'brsymbol'
 
-    # Apply transformation for Tradeboard symbols (no special logic needed here)
-    def get_tradeboard_symbol(broker_symbol):
+    # Apply transformation for TradeBoard symbols (no special logic needed here)
+    def get_TradeBoard_symbol(broker_symbol):
         return broker_symbol
 
     # Update the 'symbol' column
-    df["symbol"] = df["brsymbol"].apply(get_tradeboard_symbol)
+    df["symbol"] = df["brsymbol"].apply(get_TradeBoard_symbol)
 
     # Set Exchange: 'BSE' for all rows (no BSE index symbols from Zebu)
     df["exchange"] = "BSE"
@@ -685,7 +691,7 @@ def process_zebu_bse_data(output_path):
 
 def process_zebu_bfo_data(output_path):
     """
-    Processes the Zebu BFO data (BFO_symbols.txt) to generate Tradeboard symbols and correctly extract the name column.
+    Processes the Zebu BFO data (BFO_symbols.txt) to generate TradeBoard symbols and correctly extract the name column.
     Handles both futures and options formatting, ensuring strike prices are handled as either float or integer.
     """
     logger.info("Processing Zebu BFO Data")

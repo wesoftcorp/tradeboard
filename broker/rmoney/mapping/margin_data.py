@@ -1,7 +1,11 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # RMoney XTS Margin Calculator API mappings
 
-from broker.rmoney.mapping.transform_data import map_exchange_numeric, map_order_type, map_product_type
+from broker.rmoney.mapping.transform_data import (
+    map_exchange_numeric,
+    map_order_type,
+    map_product_type,
+)
 from database.token_db import get_token
 from utils.logging import get_logger
 
@@ -18,7 +22,7 @@ def _safe_float(value, field_name, default=0.0):
 
 def transform_margin_positions(positions):
     """
-    Transform Tradeboard margin position format to RMoney XTS margin API format.
+    Transform TradeBoard margin position format to RMoney XTS margin API format.
 
     RMoney XTS Regular Order Margin API expects a portfolio array with:
     - exchange: Numeric exchange segment code (e.g., 1 for NSECM, 2 for NSEFO)
@@ -32,7 +36,7 @@ def transform_margin_positions(positions):
     - orderSessionType: Order session type (1 = DAY)
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
 
     Returns:
         List of positions in RMoney XTS portfolio format
@@ -84,7 +88,7 @@ def transform_margin_positions(positions):
 
 def parse_margin_response(response_data):
     """
-    Parse RMoney XTS margin calculator response to Tradeboard standard format.
+    Parse RMoney XTS margin calculator response to TradeBoard standard format.
 
     RMoney Response Structure:
     {
@@ -106,7 +110,7 @@ def parse_margin_response(response_data):
         response_data: Raw response from RMoney XTS margin calculator API
 
     Returns:
-        dict: Parsed margin data in Tradeboard format
+        dict: Parsed margin data in TradeBoard format
     """
     if not response_data or not isinstance(response_data, dict):
         return {
@@ -130,9 +134,7 @@ def parse_margin_response(response_data):
 
     margin_required = _safe_float(brokerage_details.get("MarginRequired", 0), "MarginRequired")
     margin_available = _safe_float(brokerage_details.get("MarginAvailable", 0), "MarginAvailable")
-    margin_shortfall = _safe_float(
-        brokerage_details.get("MarginShortfall", 0), "MarginShortfall"
-    )
+    margin_shortfall = _safe_float(brokerage_details.get("MarginShortfall", 0), "MarginShortfall")
     is_valid = brokerage_details.get("IsValid", False)
     error_message = brokerage_details.get("ErrorMessage", "")
 

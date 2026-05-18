@@ -4,9 +4,9 @@ Groww exchange mapping and capability registry for WebSocket streaming
 
 
 class GrowwExchangeMapper:
-    """Maps Tradeboard exchange codes to Groww exchange/segment format"""
+    """Maps TradeBoard exchange codes to Groww exchange/segment format"""
 
-    # Mapping from Tradeboard exchange to Groww exchange and segment
+    # Mapping from TradeBoard exchange to Groww exchange and segment
     EXCHANGE_MAP = {
         "NSE": {"exchange": "NSE", "segment": "CASH"},
         "BSE": {"exchange": "BSE", "segment": "CASH"},
@@ -20,46 +20,46 @@ class GrowwExchangeMapper:
     }
 
     @classmethod
-    def get_exchange(cls, tradeboard_exchange: str) -> str:
+    def get_exchange(cls, TradeBoard_exchange: str) -> str:
         """
-        Get Groww exchange from Tradeboard exchange code
+        Get Groww exchange from TradeBoard exchange code
 
         Args:
-            tradeboard_exchange: Tradeboard exchange code (e.g., 'NSE', 'NFO')
+            TradeBoard_exchange: TradeBoard exchange code (e.g., 'NSE', 'NFO')
 
         Returns:
             str: Groww exchange code
         """
-        mapping = cls.EXCHANGE_MAP.get(tradeboard_exchange, {})
-        return mapping.get("exchange", tradeboard_exchange)
+        mapping = cls.EXCHANGE_MAP.get(TradeBoard_exchange, {})
+        return mapping.get("exchange", TradeBoard_exchange)
 
     @classmethod
-    def get_segment(cls, tradeboard_exchange: str) -> str:
+    def get_segment(cls, TradeBoard_exchange: str) -> str:
         """
-        Get Groww segment from Tradeboard exchange code
+        Get Groww segment from TradeBoard exchange code
 
         Args:
-            tradeboard_exchange: Tradeboard exchange code (e.g., 'NSE', 'NFO')
+            TradeBoard_exchange: TradeBoard exchange code (e.g., 'NSE', 'NFO')
 
         Returns:
             str: Groww segment (CASH, FNO, COMM, CDS)
         """
-        mapping = cls.EXCHANGE_MAP.get(tradeboard_exchange, {})
+        mapping = cls.EXCHANGE_MAP.get(TradeBoard_exchange, {})
         return mapping.get("segment", "CASH")
 
     @classmethod
-    def get_exchange_segment(cls, tradeboard_exchange: str) -> tuple:
+    def get_exchange_segment(cls, TradeBoard_exchange: str) -> tuple:
         """
-        Get both exchange and segment from Tradeboard exchange code
+        Get both exchange and segment from TradeBoard exchange code
 
         Args:
-            tradeboard_exchange: Tradeboard exchange code
+            TradeBoard_exchange: TradeBoard exchange code
 
         Returns:
             tuple: (exchange, segment)
         """
-        mapping = cls.EXCHANGE_MAP.get(tradeboard_exchange, {})
-        return mapping.get("exchange", tradeboard_exchange), mapping.get("segment", "CASH")
+        mapping = cls.EXCHANGE_MAP.get(TradeBoard_exchange, {})
+        return mapping.get("exchange", TradeBoard_exchange), mapping.get("segment", "CASH")
 
 
 class GrowwCapabilityRegistry:

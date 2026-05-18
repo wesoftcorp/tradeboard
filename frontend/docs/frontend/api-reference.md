@@ -1,6 +1,6 @@
-# API Reference
+﻿# API Reference
 
-This document covers the API modules, stores, and hooks used in the Tradeboard frontend.
+This document covers the API modules, stores, and hooks used in the TradeBoard frontend.
 
 ## API Modules
 

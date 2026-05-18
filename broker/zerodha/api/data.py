@@ -14,19 +14,20 @@ from utils.logging import get_logger
 logger = get_logger(__name__)
 
 
-# Tradeboard→Kite exchange-prefix translation for /quote, /quote/ltp, /quote/ohlc.
+# TradeBoard→Kite exchange-prefix translation for /quote, /quote/ltp, /quote/ohlc.
 # Kite uses NSE/BSE/NFO/BFO/MCX/NCO/CDS/BCD/GLOBAL/NSEIX as the prefix in
-# `i=EXCHANGE:tradingsymbol`. NSE_INDEX/BSE_INDEX use NSE/BSE on the broker
-# side. GLOBAL_INDEX folds two Kite feeds (GLOBAL + NSEIX) — the per-row
-# brexchange column carries the original Kite exchange code.
+# `i=EXCHANGE:tradingsymbol`. NSE_INDEX/BSE_INDEX/MCX_INDEX use NSE/BSE/MCX on
+# the broker side. GLOBAL_INDEX folds two Kite feeds (GLOBAL + NSEIX) — the
+# per-row brexchange column carries the original Kite exchange code.
 _OA_INDEX_TO_KITE = {
     "NSE_INDEX": "NSE",
     "BSE_INDEX": "BSE",
+    "MCX_INDEX": "MCX",
 }
 
 
 def _kite_quote_exchange(oa_exchange: str, brexchange: str | None) -> str:
-    """Resolve the Tradeboard exchange + per-row brexchange to the Kite-side
+    """Resolve the TradeBoard exchange + per-row brexchange to the Kite-side
     exchange prefix used in /quote* endpoints."""
     if oa_exchange == "GLOBAL_INDEX":
         # brexchange holds the original Kite exchange code (GLOBAL or NSEIX).

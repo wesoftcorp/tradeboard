@@ -1,4 +1,4 @@
-# Symbol
+﻿# Symbol
 
 Get detailed information about a specific trading symbol including broker-specific symbol mapping.
 
@@ -91,8 +91,8 @@ curl -X POST http://127.0.0.1:5000/api/v1/symbol \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
-| symbol | Trading symbol in Tradeboard format | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
+| symbol | Trading symbol in TradeBoard format | Mandatory | - |
 | exchange | Exchange code: NSE, BSE, NFO, BFO, CDS, BCD, MCX | Mandatory | - |
 
 ## Response Fields
@@ -108,9 +108,9 @@ curl -X POST http://127.0.0.1:5000/api/v1/symbol \
 |-------|------|-------------|
 | id | number | Internal symbol ID |
 | name | string | Symbol name/underlying |
-| symbol | string | Tradeboard standard symbol |
+| symbol | string | TradeBoard standard symbol |
 | brsymbol | string | Broker-specific symbol |
-| exchange | string | Tradeboard exchange code |
+| exchange | string | TradeBoard exchange code |
 | brexchange | string | Broker-specific exchange code |
 | instrumenttype | string | Instrument type (EQ, FUT, CE, PE) |
 | expiry | string | Expiry date for F&O (DD-MMM-YY) |

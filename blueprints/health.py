@@ -70,7 +70,7 @@ def simple_health():
         "status": "pass"|"warn"|"fail",
         "version": "1.0",
         "releaseId": "...",
-        "serviceId": "tradeboard"
+        "serviceId": "TradeBoard"
     }
     """
     try:
@@ -88,8 +88,8 @@ def simple_health():
                 {
                     "status": health_status["status"],
                     "version": "1.0",
-                    "serviceId": "tradeboard",
-                    "description": "Tradeboard Trading Platform",
+                    "serviceId": "TradeBoard",
+                    "description": "TradeBoard Trading Platform",
                 }
             ),
             status_code,
@@ -113,10 +113,10 @@ def detailed_health_check():
     {
         "status": "pass"|"warn"|"fail",
         "version": "1.0",
-        "serviceId": "tradeboard",
+        "serviceId": "TradeBoard",
         "checks": {
             "database:connectivity": [{
-                "componentId": "tradeboard",
+                "componentId": "TradeBoard",
                 "status": "pass"|"fail",
                 "time": "2026-01-30T10:15:30Z"
             }],
@@ -217,8 +217,8 @@ def detailed_health_check():
                 {
                     "status": overall_status,
                     "version": "1.0",
-                    "serviceId": "tradeboard",
-                    "description": "Tradeboard Trading Platform",
+                    "serviceId": "TradeBoard",
+                    "description": "TradeBoard Trading Platform",
                     "checks": checks,
                 }
             ),
@@ -232,7 +232,7 @@ def detailed_health_check():
                 {
                     "status": "fail",
                     "version": "1.0",
-                    "serviceId": "tradeboard",
+                    "serviceId": "TradeBoard",
                     "description": str(e),
                 }
             ),
@@ -269,7 +269,9 @@ def get_current_metrics():
                 "fd": {
                     "count": metric.fd_count or 0,
                     "limit": metric.fd_limit,
-                    "usage_percent": metric.fd_usage_percent if metric.fd_usage_percent is not None else 0.0,
+                    "usage_percent": metric.fd_usage_percent
+                    if metric.fd_usage_percent is not None
+                    else 0.0,
                     "status": metric.fd_status or "unknown",
                 },
                 "memory": {

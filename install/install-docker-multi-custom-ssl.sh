@@ -1,6 +1,6 @@
-#!/bin/bash
+﻿#!/bin/bash
 
-# Tradeboard Docker Multi-Instance Installation with Custom SSL
+# TradeBoard Docker Multi-Instance Installation with Custom SSL
 # Supports deploying multiple instances with existing SSL certificates (including Wildcards)
 
 # Colors for output
@@ -11,21 +11,19 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Base Configuration
-INSTALL_BASE="/opt/tradeboard"
+INSTALL_BASE="/opt/TradeBoard"
 START_FLASK_PORT=5000
 START_WS_PORT=8765
 
-# Tradeboard Installation Banner
+# Script Banner
 echo -e "${BLUE}"
-echo " ████████╗██████╗  █████╗ ██████╗ ███████╗██████╗  ██████╗  █████╗ ██████╗ ██████╗ "
-echo "    ██╔══╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔══██╗"
-echo "    ██║   ██████╔╝███████║██║  ██║█████╗  ██████╔╝██║   ██║███████║██████╔╝██║  ██║"
-echo "    ██║   ██╔══██╗██╔══██║██║  ██║██╔══╝  ██╔══██╗██║   ██║██╔══██║██╔══██╗██║  ██║"
-echo "    ██║   ██║  ██║██║  ██║██████╔╝███████╗██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝"
-echo "    ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ "
-echo "                                                                                      "
-echo "                  Tradeboard -- Installation & Configuration Script                  "
-echo "                       Repository: wesoftcorp/tradeboard                             "
+echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
+echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
+echo " ██║   ██║██████╔╝███████╗██╔██╗ ██║███████║██║     ██║  ███╗██║   ██║"
+echo " ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══██║██║     ██║   ██║██║   ██║"
+echo " ╚██████╔╝██╗     ███████╗██║ ╚████║██║  ██║███████╗╚██████╔╝╚██████╔╝"
+echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ "
+echo "             MULTI-INSTANCE DOCKER + CUSTOM SSL INSTALLER               "
 echo -e "${NC}"
 
 # -----------------
@@ -724,7 +722,7 @@ for i in "${!CONF_DOMAINS[@]}"; do
     FLASK_PORT=${PORTS[0]}
     WS_PORT=${PORTS[1]}
     SANITIZED_NAME=$(sanitize_domain "$DOMAIN")
-    PROJECT_NAME="tradeboard-${SANITIZED_NAME}"
+    PROJECT_NAME="TradeBoard-${SANITIZED_NAME}"
 
     log " -> Ports: Flask=$FLASK_PORT, WS=$WS_PORT" "$GREEN"
     log " -> Dir: $INSTANCE_DIR" "$GREEN"
@@ -833,8 +831,16 @@ for i in "${!CONF_DOMAINS[@]}"; do
         sed -i "s|YOUR_BROKER_API_SECRET|$API_SECRET|g" "$ENV_FILE"
         sed -i "s|http://127.0.0.1:5000|https://$DOMAIN|g" "$ENV_FILE"
         sed -i "s|<broker>|$BROKER|g" "$ENV_FILE"
-        sed -i "s|TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$APP_KEY|g" "$ENV_FILE"
-        sed -i "s|TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$PEPPER|g" "$ENV_FILE"
+        sed -i "s|TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$APP_KEY|g" "$ENV_FILE"
+        sed -i "s|TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$PEPPER|g" "$ENV_FILE"
+
+        # Capture build-time git info for the diagnostics page (issue #1388).
+        # .git/ is dockerignored, so the running container has no .git/HEAD;
+        # surface the values via env from the cloned source instead.
+        GIT_BRANCH=$(cd "$INSTANCE_DIR" && git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+        GIT_COMMIT=$(cd "$INSTANCE_DIR" && git rev-parse --short HEAD 2>/dev/null || echo "")
+        echo "TradeBoard_GIT_BRANCH = '${GIT_BRANCH}'" >> "$ENV_FILE"
+        echo "TradeBoard_GIT_COMMIT = '${GIT_COMMIT}'" >> "$ENV_FILE"
         # Each instance is published only on 127.0.0.1 with nginx in front;
         # trust the proxy's X-Forwarded-For / X-Real-IP.
         sed -i "s|TRUST_PROXY_HEADERS = 'FALSE'|TRUST_PROXY_HEADERS = 'TRUE'|g" "$ENV_FILE"
@@ -871,7 +877,7 @@ for i in "${!CONF_DOMAINS[@]}"; do
     # 6. Docker Compose
     cat <<EOF > "$INSTANCE_DIR/docker-compose.yaml"
 services:
-  tradeboard:
+  TradeBoard:
     image: ${PROJECT_NAME}:latest
     build:
       context: .
@@ -881,11 +887,11 @@ services:
       - "127.0.0.1:${FLASK_PORT}:5000"
       - "127.0.0.1:${WS_PORT}:8765"
     volumes:
-      - tradeboard_db:/app/db
-      - tradeboard_log:/app/log
-      - tradeboard_strategies:/app/strategies
-      - tradeboard_keys:/app/keys
-      - tradeboard_tmp:/app/tmp
+      - TradeBoard_db:/app/db
+      - TradeBoard_log:/app/log
+      - TradeBoard_strategies:/app/strategies
+      - TradeBoard_keys:/app/keys
+      - TradeBoard_tmp:/app/tmp
       - ./.env:/app/.env
     environment:
       - FLASK_ENV=production
@@ -910,26 +916,26 @@ services:
     restart: unless-stopped
 
 volumes:
-  tradeboard_db:
+  TradeBoard_db:
     driver: local
-  tradeboard_log:
+  TradeBoard_log:
     driver: local
-  tradeboard_strategies:
+  TradeBoard_strategies:
     driver: local
-  tradeboard_keys:
+  TradeBoard_keys:
     driver: local
-  tradeboard_tmp:
+  TradeBoard_tmp:
     driver: local
 EOF
 
     # 7. Nginx Config
     cat <<EOF > "/etc/nginx/sites-available/$DOMAIN"
-upstream tradeboard_flask_${SANITIZED_NAME} {
+upstream TradeBoard_flask_${SANITIZED_NAME} {
     server 127.0.0.1:${FLASK_PORT};
     keepalive 64;
 }
 
-upstream tradeboard_websocket_${SANITIZED_NAME} {
+upstream TradeBoard_websocket_${SANITIZED_NAME} {
     server 127.0.0.1:${WS_PORT};
     keepalive 64;
 }
@@ -963,7 +969,7 @@ server {
 
     # Logic: WebSocket
     location = /ws {
-        proxy_pass http://tradeboard_websocket_${SANITIZED_NAME};
+        proxy_pass http://TradeBoard_websocket_${SANITIZED_NAME};
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -971,7 +977,7 @@ server {
         proxy_read_timeout 86400s;
     }
     location /ws/ {
-        proxy_pass http://tradeboard_websocket_${SANITIZED_NAME}/;
+        proxy_pass http://TradeBoard_websocket_${SANITIZED_NAME}/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -981,7 +987,7 @@ server {
 
     # Logic: Socket.IO (Flask-SocketIO real-time events)
     location /socket.io/ {
-        proxy_pass http://tradeboard_flask_${SANITIZED_NAME}/socket.io/;
+        proxy_pass http://TradeBoard_flask_${SANITIZED_NAME}/socket.io/;
         proxy_http_version 1.1;
         proxy_read_timeout 86400s;
         proxy_send_timeout 86400s;
@@ -996,7 +1002,7 @@ server {
 
     # Logic: Main App
     location / {
-        proxy_pass http://tradeboard_flask_${SANITIZED_NAME};
+        proxy_pass http://TradeBoard_flask_${SANITIZED_NAME};
         proxy_http_version 1.1;
         proxy_read_timeout 300s;
         proxy_connect_timeout 300s;
@@ -1037,11 +1043,11 @@ check_status "Nginx reload failed"
 # Management Tool
 # -----------------
 
-cat <<'EOF' > /usr/local/bin/tradeboard-ctl
+cat <<'EOF' > /usr/local/bin/TradeBoard-ctl
 #!/bin/bash
-# Tradeboard Manager
+# TradeBoard Manager
 
-INSTALL_BASE="/opt/tradeboard"
+INSTALL_BASE="/opt/TradeBoard"
 
 cmd=$1
 target=$2
@@ -1062,7 +1068,7 @@ list_instances() {
 }
 
 usage() {
-    echo "Usage: tradeboard-ctl <command> [domain]"
+    echo "Usage: TradeBoard-ctl <command> [domain]"
     echo "Commands:"
     echo "  list              - List all instances"
     echo "  restart <domain>  - Restart specific instance"
@@ -1109,16 +1115,16 @@ case "$cmd" in
 esac
 EOF
 
-chmod +x /usr/local/bin/tradeboard-ctl
+chmod +x /usr/local/bin/TradeBoard-ctl
 
 
 log "\n==============================================" "$GREEN"
 log " INSTALLATION COMPLETE" "$GREEN"
 log "==============================================" "$GREEN"
-log "Management Command: tradeboard-ctl" "$BLUE"
-log "  tradeboard-ctl list" "$BLUE"
-log "  tradeboard-ctl restart <domain.com>" "$BLUE"
-log "  tradeboard-ctl logs <domain.com>" "$BLUE"
+log "Management Command: TradeBoard-ctl" "$BLUE"
+log "  TradeBoard-ctl list" "$BLUE"
+log "  TradeBoard-ctl restart <domain.com>" "$BLUE"
+log "  TradeBoard-ctl logs <domain.com>" "$BLUE"
 
 log "\n[IMPORTANT] CLOUD FIREWALL SETTINGS:" "$YELLOW"
 log "Ensure the following Inbound Ports are OPEN in your Azure NSG / AWS Security Group:" "$RED"

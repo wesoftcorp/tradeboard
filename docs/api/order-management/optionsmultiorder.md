@@ -1,4 +1,4 @@
-# OptionsMultiOrder
+﻿# OptionsMultiOrder
 
 Place multiple option legs in a single request. Ideal for complex options strategies like Iron Condor, Strangles, Spreads, and more. BUY legs are executed before SELL legs for margin efficiency.
 
@@ -151,7 +151,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/optionsmultiorder \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | strategy | Strategy identifier | Optional | - |
 | underlying | Underlying symbol (NIFTY, BANKNIFTY, etc.) | Mandatory | - |
 | exchange | Exchange: NSE_INDEX, BSE_INDEX | Mandatory | - |

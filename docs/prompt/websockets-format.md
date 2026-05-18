@@ -1,18 +1,18 @@
-# Websockets
+﻿# Websockets
 
-## Tradeboard WebSocket Protocol Documentation
+## TradeBoard WebSocket Protocol Documentation
 
 ### Overview
 
-The Tradeboard WebSocket protocol allows clients to receive **real-time market data** using a standardized and broker-agnostic interface. It supports data streaming for **LTP (Last Traded Price)**, **Quotes (OHLC + Volume)**, and **Market Depth** (up to 50 levels depending on broker capability).
+The TradeBoard WebSocket protocol allows clients to receive **real-time market data** using a standardized and broker-agnostic interface. It supports data streaming for **LTP (Last Traded Price)**, **Quotes (OHLC + Volume)**, and **Market Depth** (up to 50 levels depending on broker capability).
 
-The protocol ensures efficient, scalable, and secure communication between client applications (such as trading bots, dashboards, or analytics tools) and the Tradeboard platform. Authentication is handled using the Tradeboard API key, and subscriptions are maintained per session.
+The protocol ensures efficient, scalable, and secure communication between client applications (such as trading bots, dashboards, or analytics tools) and the TradeBoard platform. Authentication is handled using the TradeBoard API key, and subscriptions are maintained per session.
 
 ### Version
 
 * Protocol Version: 1.0
 * Last Updated: May 28, 2025
-* Platform: Tradeboard Trading Framework
+* Platform: TradeBoard Trading Framework
 
 ### WebSocket URL
 
@@ -20,7 +20,7 @@ The protocol ensures efficient, scalable, and secure communication between clien
 ws://<host>:8765
 ```
 
-Replace `<host>` with the IP/domain of your Tradeboard instance. For local development setups, use thee hostname as`127.0.0.1`
+Replace `<host>` with the IP/domain of your TradeBoard instance. For local development setups, use thee hostname as`127.0.0.1`
 
 ```
 ws://127.0.0.1:8765
@@ -49,7 +49,7 @@ All WebSocket sessions must begin with API key authentication:
 ```json
 {
   "action": "authenticate", 
-  "api_key": "YOUR_TRADEBOARD_API_KEY"
+  "api_key": "YOUR_TradeBoard_API_KEY"
 }
 ```
 
@@ -213,7 +213,7 @@ If a client requests a depth level not supported by their broker:
 * Rate limits may apply to prevent abuse.
 * TLS encryption recommended for production deployments.
 
-The Tradeboard WebSocket feed provides a reliable and structured method for receiving real-time trading data. Proper mode selection and parsing allow efficient integration into trading algorithms and monitoring systems.
+The TradeBoard WebSocket feed provides a reliable and structured method for receiving real-time trading data. Proper mode selection and parsing allow efficient integration into trading algorithms and monitoring systems.
 
 
 ---
@@ -225,7 +225,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.wesoftcorp.com/api-documentation/v1/websockets.md?ask=<question>
+GET https://docs.TradeBoard.in/api-documentation/v1/websockets.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

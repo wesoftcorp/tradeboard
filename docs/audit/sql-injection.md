@@ -1,15 +1,15 @@
-# SQL Injection Assessment
+﻿# SQL Injection Assessment
 
 ## Overview
 
-This assessment verifies that Tradeboard is protected against SQL injection attacks.
+This assessment verifies that TradeBoard is protected against SQL injection attacks.
 
 **Risk Level**: Low
 **Status**: Protected
 
 ## Summary
 
-**No SQL injection vulnerabilities found.** Tradeboard uses SQLAlchemy ORM consistently, which automatically parameterizes all queries.
+**No SQL injection vulnerabilities found.** TradeBoard uses SQLAlchemy ORM consistently, which automatically parameterizes all queries.
 
 ## Why This Matters (Even Single-User)
 
@@ -23,7 +23,7 @@ Even as the only user, protection matters if:
 - External services send crafted data
 - Debugging with test data
 
-## How Tradeboard Prevents SQL Injection
+## How TradeBoard Prevents SQL Injection
 
 ### SQLAlchemy ORM
 
@@ -37,7 +37,7 @@ orders = Order.query.filter(Order.symbol == symbol).all()
 
 **Never** constructs SQL strings with user input:
 ```python
-# This pattern is NOT used in Tradeboard
+# This pattern is NOT used in TradeBoard
 query = f"SELECT * FROM users WHERE username = '{username}'"  # DANGEROUS
 ```
 
@@ -127,12 +127,12 @@ SQLAlchemy enforces column types:
 If SQL injection existed (it doesn't), an attacker could:
 
 ```sql
--- Example malicious input (NOT possible in Tradeboard)
+-- Example malicious input (NOT possible in TradeBoard)
 username: ' OR '1'='1
 -- Would return all users if vulnerable
 ```
 
-**In Tradeboard**: This input is treated as a literal string, not SQL code.
+**In TradeBoard**: This input is treated as a literal string, not SQL code.
 
 ## Verification for Users
 
@@ -148,7 +148,7 @@ If you want to verify yourself:
 
 ## Conclusion
 
-Tradeboard is **not vulnerable** to SQL injection because:
+TradeBoard is **not vulnerable** to SQL injection because:
 
 1. Uses SQLAlchemy ORM exclusively
 2. Never constructs SQL strings with user input

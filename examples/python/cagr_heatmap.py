@@ -2,12 +2,12 @@
 # Python Code to Compute Rolling CAGR Heatmap for NIFTY 50
 # Recommended to use Daily Historical Data more than 5 Years
 # Minor variations in Rolling Returns might occur due to data source differences
-# Coded by Rajandran R - Creator of Tradeboard (https://wesoftcorp.com)
+# Coded by Rajandran R - Creator of TradeBoard (https://TradeBoard.in)
 # Author - www.marketcalls.in
 # ---------------------------------------------------
-# NOTE: This code requires Tradeboard to be running locally or on a server.
-# Get your API key from your self-hosted Tradeboard platform.
-# Tradeboard GitHub: https://github.com/wesoftcorp/tradeboard
+# NOTE: This code requires TradeBoard to be running locally or on a server.
+# Get your API key from your self-hosted TradeBoard platform.
+# TradeBoard GitHub: https://github.com/wesoftcorp/tradeboard
 # ---------------------------------------------------
 
 from datetime import datetime, timedelta
@@ -15,14 +15,14 @@ from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
 import plotly.express as px
-from tradeboard import api
+from TradeBoard import api
 
 # ---------------------------------------------------
-# Initialize Tradeboard Client
+# Initialize TradeBoard Client
 # ---------------------------------------------------
 client = api(api_key="your_api_key_here", host="http://127.0.0.1:5000")
 
-print("🔁 Tradeboard Python Bot is running.")
+print("🔁 TradeBoard Python Bot is running.")
 
 # ---------------------------------------------------
 # NIFTY 50 SYMBOLS
@@ -188,9 +188,11 @@ def create_heatmap(df, period, label):
 
     # Create display text: "SYMBOL\nValue%" or "SYMBOL\nN/A"
     df_period["display_text"] = df_period.apply(
-        lambda row: f"{row['Symbol']}<br>{row[period]:.2f}%"
-        if pd.notna(row[period])
-        else f"{row['Symbol']}<br>N/A",
+        lambda row: (
+            f"{row['Symbol']}<br>{row[period]:.2f}%"
+            if pd.notna(row[period])
+            else f"{row['Symbol']}<br>N/A"
+        ),
         axis=1,
     )
 

@@ -1,8 +1,8 @@
-# 38 - Python Strategies Hosting
+﻿# 38 - Python Strategies Hosting
 
 ## Overview
 
-Tradeboard provides a cross-platform Python strategy hosting system that allows users to upload, run, schedule, and manage trading strategies. Each strategy runs in a separate process for complete isolation with support for Windows, Linux, and macOS.
+TradeBoard provides a cross-platform Python strategy hosting system that allows users to upload, run, schedule, and manage trading strategies. Each strategy runs in a separate process for complete isolation with support for Windows, Linux, and macOS.
 
 ## Architecture Diagram
 
@@ -70,7 +70,7 @@ Tradeboard provides a cross-platform Python strategy hosting system that allows 
 ## Directory Structure
 
 ```
-tradeboard/
+TradeBoard/
 ├── strategies/
 │   ├── scripts/           # User uploaded strategy files
 │   │   ├── my_strategy.py
@@ -334,14 +334,14 @@ def save_configs():
 1. **Keep strategies stateless** - Don't rely on global state between runs
 2. **Use logging** - Write to stdout/stderr for log capture
 3. **Handle graceful shutdown** - Catch SIGTERM/SIGINT
-4. **Use Tradeboard API** - Don't bypass the API layer
+4. **Use TradeBoard API** - Don't bypass the API layer
 
 ### Example Strategy Template
 
 ```python
 #!/usr/bin/env python
 """
-Example Tradeboard Strategy
+Example TradeBoard Strategy
 """
 import requests
 import time

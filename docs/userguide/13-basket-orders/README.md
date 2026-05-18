@@ -1,4 +1,4 @@
-# 13 - Basket Orders
+﻿# 13 - Basket Orders
 
 ## Introduction
 
@@ -154,7 +154,7 @@ POST /api/v1/basketorder
 ## Python Example
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 
 client = api(api_key="your-key", host="http://127.0.0.1:5000")
 

@@ -1,8 +1,8 @@
-# 12 - Ubuntu Server Installation
+﻿# 12 - Ubuntu Server Installation
 
 ## Overview
 
-This guide covers deploying Tradeboard on an Ubuntu server (20.04/22.04 LTS) with Nginx reverse proxy, systemd services, and SSL configuration for production use.
+This guide covers deploying TradeBoard on an Ubuntu server (20.04/22.04 LTS) with Nginx reverse proxy, systemd services, and SSL configuration for production use.
 
 ## Architecture Diagram
 
@@ -28,19 +28,19 @@ This guide covers deploying Tradeboard on an Ubuntu server (20.04/22.04 LTS) wit
                     │                       │
                     ▼                       ▼
 ┌─────────────────────────────────────────────────────┐
-│           Tradeboard (Gunicorn + WebSocket)           │
+│           TradeBoard (Gunicorn + WebSocket)           │
 │                                                     │
 │  Flask App ─────────── localhost:5000               │
 │  WebSocket Thread ──── localhost:8765               │
 │                                                     │
-│  systemd: tradeboard                                  │
+│  systemd: TradeBoard                                  │
 └─────────────────────────────────────────────────────┘
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                          File System                                         │
 │                                                                              │
-│  /opt/tradeboard/                                                             │
+│  /opt/TradeBoard/                                                             │
 │  ├── .venv/              # Virtual environment                              │
 │  ├── db/                 # SQLite databases                                 │
 │  ├── log/                # Application logs                                 │
@@ -72,11 +72,11 @@ sudo apt install -y nodejs
 
 ```bash
 # Create application directory
-sudo mkdir -p /opt/tradeboard
-sudo chown $USER:$USER /opt/tradeboard
+sudo mkdir -p /opt/TradeBoard
+sudo chown $USER:$USER /opt/TradeBoard
 
 # Clone repository
-cd /opt/tradeboard
+cd /opt/TradeBoard
 git clone https://github.com/wesoftcorp/tradeboard.git .
 ```
 
@@ -123,21 +123,21 @@ cd ..
 **Note:** The WebSocket server runs as a thread inside the main app (port 8765), so only ONE systemd service is needed.
 
 ```bash
-sudo nano /etc/systemd/system/tradeboard.service
+sudo nano /etc/systemd/system/TradeBoard.service
 ```
 
 ```ini
 [Unit]
-Description=Tradeboard Trading Platform
+Description=TradeBoard Trading Platform
 After=network.target
 
 [Service]
 Type=simple
 User=www-data
 Group=www-data
-WorkingDirectory=/opt/tradeboard
-Environment="PATH=/opt/tradeboard/.venv/bin"
-ExecStart=/opt/tradeboard/.venv/bin/gunicorn \
+WorkingDirectory=/opt/TradeBoard
+Environment="PATH=/opt/TradeBoard/.venv/bin"
+ExecStart=/opt/TradeBoard/.venv/bin/gunicorn \
     --worker-class eventlet \
     -w 1 \
     --bind 127.0.0.1:5000 \
@@ -156,18 +156,18 @@ WantedBy=multi-user.target
 
 ```bash
 # Set ownership
-sudo chown -R www-data:www-data /opt/tradeboard
+sudo chown -R www-data:www-data /opt/TradeBoard
 
 # Set permissions
-sudo chmod -R 755 /opt/tradeboard
-sudo chmod 700 /opt/tradeboard/keys
-sudo chmod 600 /opt/tradeboard/.env
+sudo chmod -R 755 /opt/TradeBoard
+sudo chmod 700 /opt/TradeBoard/keys
+sudo chmod 600 /opt/TradeBoard/.env
 ```
 
 ### 7. Configure Nginx
 
 ```bash
-sudo nano /etc/nginx/sites-available/tradeboard
+sudo nano /etc/nginx/sites-available/TradeBoard
 ```
 
 ```nginx
@@ -219,7 +219,7 @@ server {
 
     # Static files
     location /static {
-        alias /opt/tradeboard/static;
+        alias /opt/TradeBoard/static;
         expires 30d;
         add_header Cache-Control "public, immutable";
     }
@@ -230,14 +230,14 @@ server {
 
 ```bash
 # Enable Nginx site
-sudo ln -s /etc/nginx/sites-available/tradeboard /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/TradeBoard /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 
-# Enable and start Tradeboard service
+# Enable and start TradeBoard service
 sudo systemctl daemon-reload
-sudo systemctl enable tradeboard
-sudo systemctl start tradeboard
+sudo systemctl enable TradeBoard
+sudo systemctl start TradeBoard
 ```
 
 ### 9. Setup SSL (Let's Encrypt)
@@ -250,16 +250,16 @@ sudo certbot --nginx -d your-domain.com
 
 ```bash
 # Check status
-sudo systemctl status tradeboard
+sudo systemctl status TradeBoard
 
 # View logs
-sudo journalctl -u tradeboard -f
+sudo journalctl -u TradeBoard -f
 
 # Restart service
-sudo systemctl restart tradeboard
+sudo systemctl restart TradeBoard
 
 # Stop service
-sudo systemctl stop tradeboard
+sudo systemctl stop TradeBoard
 ```
 
 ## Firewall Configuration
@@ -281,10 +281,10 @@ sudo ufw status
 
 ```bash
 # Stop service
-sudo systemctl stop tradeboard
+sudo systemctl stop TradeBoard
 
 # Pull updates
-cd /opt/tradeboard
+cd /opt/TradeBoard
 git pull origin main
 
 # Update dependencies
@@ -298,25 +298,25 @@ npm run build
 cd ..
 
 # Start service
-sudo systemctl start tradeboard
+sudo systemctl start TradeBoard
 ```
 
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| 502 Bad Gateway | Check if Tradeboard service is running: `systemctl status tradeboard` |
+| 502 Bad Gateway | Check if TradeBoard service is running: `systemctl status TradeBoard` |
 | WebSocket fails | Check Nginx /ws proxy config and service logs |
-| Permission denied | Verify www-data ownership: `chown -R www-data:www-data /opt/tradeboard` |
+| Permission denied | Verify www-data ownership: `chown -R www-data:www-data /opt/TradeBoard` |
 | SSL error | Renew certificates: `sudo certbot renew` |
 
 ## Key Files Reference
 
 | File | Purpose |
 |------|---------|
-| `/etc/systemd/system/tradeboard.service` | Main service (includes WebSocket) |
-| `/etc/nginx/sites-available/tradeboard` | Nginx config |
-| `/opt/tradeboard/.env` | Application config |
+| `/etc/systemd/system/TradeBoard.service` | Main service (includes WebSocket) |
+| `/etc/nginx/sites-available/TradeBoard` | Nginx config |
+| `/opt/TradeBoard/.env` | Application config |
 | `/var/log/nginx/` | Nginx logs |
 
-**Note:** There is no separate `tradeboard-ws.service`. The WebSocket server runs as a thread inside the main Flask application on port 8765.
+**Note:** There is no separate `TradeBoard-ws.service`. The WebSocket server runs as a thread inside the main Flask application on port 8765.

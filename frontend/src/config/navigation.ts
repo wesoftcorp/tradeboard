@@ -1,4 +1,4 @@
-import {
+﻿import {
   BarChart3,
   Bell,
   BookOpen,
@@ -14,6 +14,7 @@ import {
   Layers,
   LayoutDashboard,
   type LucideIcon,
+  MessageCircle,
   MessageSquare,
   Search,
   Settings,
@@ -63,6 +64,7 @@ export const profileMenuItems: NavItem[] = [
   { href: '/apikey', label: 'API Key', icon: Key },
   { href: '/master-contract', label: 'Master Contract', icon: FileStack },
   { href: '/telegram', label: 'Telegram Bot', icon: MessageSquare },
+  { href: '/whatsapp', label: 'WhatsApp Bot', icon: MessageCircle },
   { href: '/holdings', label: 'Holdings', icon: ClipboardList },
   { href: '/flow', label: 'Flow Editor', icon: Workflow },
   { href: '/python', label: 'Python Strategies', icon: Code2 },
@@ -76,7 +78,7 @@ export const profileMenuItems: NavItem[] = [
 
 // External links
 export const externalLinks = {
-  docs: { href: 'https://docs.wesoftcorp.com', label: 'Docs', icon: BookOpen },
+  docs: { href: 'https://docs.TradeBoard.in', label: 'Docs', icon: BookOpen },
 }
 
 // Shared utility to check if a route is active

@@ -38,7 +38,9 @@ def get_user_id_from_apikey(api_key: str) -> str | None:
 
 
 def sandbox_place_order(
-    order_data: dict[str, Any], api_key: str, original_data: dict[str, Any],
+    order_data: dict[str, Any],
+    api_key: str,
+    original_data: dict[str, Any],
     prefetched_quote: dict[str, Any] | None = None,
 ) -> tuple[bool, dict[str, Any], int]:
     """
@@ -49,7 +51,7 @@ def sandbox_place_order(
 
     Args:
         order_data: Validated order data
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
         original_data: Original request data for logging
         prefetched_quote: Pre-fetched quote from multiquotes batch call (optional).
             When provided, skips per-order REST API quote fetch.
@@ -671,7 +673,7 @@ def sandbox_get_pnl_symbols(
     Returns unrealized P&L, today's realized P&L, and total P&L for today per symbol.
 
     Args:
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
         original_data: Original request data
 
     Returns:

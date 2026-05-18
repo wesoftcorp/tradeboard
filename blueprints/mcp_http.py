@@ -156,9 +156,7 @@ def _apply_cors(response: Response, origin: str | None) -> Response:
         # Browser-side OAuth clients need to read the discovery hint
         # from the 401 response. Without this header the WWW-Authenticate
         # value is hidden by CORS and the client reports "no OAuth".
-        response.headers["Access-Control-Expose-Headers"] = (
-            "WWW-Authenticate, Link, Content-Type"
-        )
+        response.headers["Access-Control-Expose-Headers"] = "WWW-Authenticate, Link, Content-Type"
         response.headers["Access-Control-Max-Age"] = "600"
         response.headers["Vary"] = "Origin"
     return response
@@ -204,7 +202,7 @@ def init_http_transport() -> None:
     """Wire the SDK client used by the @mcp.tool() functions.
 
     Must be called from app.py while MCP_HTTP_ENABLED is True. Looks up
-    the admin's existing Tradeboard API key (stored in db/tradeboard.db)
+    the admin's existing TradeBoard API key (stored in db/TradeBoard.db)
     and points the SDK at the local loopback so tool calls go through
     the existing /api/v1/* surface — same code path as the SDK uses
     everywhere else.
@@ -215,7 +213,7 @@ def init_http_transport() -> None:
 
     # Make the legacy stdio module skip its argv check when the HTTP
     # transport boots it. MUST be set BEFORE loading mcp/mcpserver.py.
-    os.environ["TRADEBOARD_MCP_HTTP_BOOT"] = "1"
+    os.environ["TradeBoard_MCP_HTTP_BOOT"] = "1"
 
     # The local ``mcp/`` directory is not a Python package (no
     # ``__init__.py``) — adding one would shadow the pip-installed
@@ -237,7 +235,7 @@ def init_http_transport() -> None:
     from database.auth_db import get_first_available_api_key
 
     api_key = get_first_available_api_key()
-    # Loopback target the bundled tradeboard SDK uses to call back into
+    # Loopback target the bundled TradeBoard SDK uses to call back into
     # /api/v1/*. Resolution order:
     #   1. MCP_LOOPBACK_URL — explicit override for unusual topologies.
     #   2. HOST_SERVER — set by every official install script
@@ -256,7 +254,7 @@ def init_http_transport() -> None:
 
     if api_key is None:
         logger.warning(
-            "[MCP HTTP] No Tradeboard API key found in db/tradeboard.db. "
+            "[MCP HTTP] No TradeBoard API key found in db/TradeBoard.db. "
             "Tool calls will fail until the admin creates an API key. "
             "Visit /apikey to generate one."
         )
@@ -304,7 +302,7 @@ def _resource_metadata_url() -> str:
 
 def _unauthorized(error_code: str, description: str = "") -> Response:
     """RFC 6750 §3 — 401 with WWW-Authenticate Bearer challenge."""
-    challenge = f'Bearer realm="tradeboard-mcp", error="{error_code}"'
+    challenge = f'Bearer realm="TradeBoard-mcp", error="{error_code}"'
     if description:
         challenge += f', error_description="{description}"'
     challenge += f', resource_metadata="{_resource_metadata_url()}"'
@@ -445,7 +443,7 @@ def mcp_dispatch():
             rpc_id,
             {
                 "protocolVersion": "2025-06-18",
-                "serverInfo": {"name": "tradeboard", "version": _tradeboard_version()},
+                "serverInfo": {"name": "TradeBoard", "version": _TradeBoard_version()},
                 "capabilities": {"tools": {"listChanged": False}},
             },
         )
@@ -472,7 +470,7 @@ def mcp_dispatch():
     return _jsonrpc_error(rpc_id, -32601, f"Method not found: {method}")
 
 
-def _tradeboard_version() -> str:
+def _TradeBoard_version() -> str:
     try:
         from utils.version import get_version
 
@@ -577,9 +575,7 @@ def _dispatch_tool_call(
         # Don't leak the required scope value back to the client beyond
         # the WWW-Authenticate challenge — fold it into the JSON-RPC
         # error data block for clients that look there.
-        return _jsonrpc_error(
-            rpc_id, -32000, "insufficient_scope", data={"required_scope": needed}
-        )
+        return _jsonrpc_error(rpc_id, -32000, "insufficient_scope", data={"required_scope": needed})
 
     fn = get_tool_callable(tool_name)
     if fn is None:
@@ -655,7 +651,7 @@ def _dispatch_tool_call(
         }.get(outcome, "Tool execution failed.")
         return _jsonrpc_error(rpc_id, -32603, "tool_error", data={"reason": client_message})
 
-    # MCP content blocks per spec — tools return a string per Tradeboard
+    # MCP content blocks per spec — tools return a string per TradeBoard
     # convention (_to_json wraps SDK responses).
     return _jsonrpc_result(
         rpc_id,
@@ -690,7 +686,7 @@ def mcp_sse():
 
     def gen():
         # Initial comment so the client knows the stream is live.
-        yield ": tradeboard-mcp connected\n\n"
+        yield ": TradeBoard-mcp connected\n\n"
         last_keepalive = time.time()
         # Loop until the client disconnects. eventlet's cooperative
         # scheduler handles many of these without blocking other
@@ -717,7 +713,7 @@ def mcp_sse():
 @mcp_http_bp.route("/healthz", methods=["GET"])
 def healthz():
     """Liveness probe for nginx / monitors. No auth; returns minimal info."""
-    return jsonify({"status": "ok", "service": "tradeboard-mcp"}), 200
+    return jsonify({"status": "ok", "service": "TradeBoard-mcp"}), 200
 
 
 @mcp_http_bp.route("/.well-known/oauth-protected-resource", methods=["GET"])

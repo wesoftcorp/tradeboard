@@ -1,4 +1,4 @@
-"""Event types for the Tradeboard event bus."""
+"""Event types for the TradeBoard event bus."""
 
 from events.analyzer_events import AnalyzerErrorEvent
 from events.base import OrderEvent

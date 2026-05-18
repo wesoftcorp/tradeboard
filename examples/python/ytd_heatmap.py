@@ -2,12 +2,12 @@
 # NIFTY 50 YTD 2026 Heatmap
 # Baseline: close on 2025-12-31 (last trading day of 2025)
 # Sorted: top gainers top-left → top losers bottom-right
-# Data source: Tradeboard Historify local DuckDB (source='db')
+# Data source: TradeBoard Historify local DuckDB (source='db')
 # ---------------------------------------------------
 
 import pandas as pd
 import plotly.express as px
-from tradeboard import api
+from TradeBoard import api
 
 client = api(
     api_key="afd010bd748c9129d71901c53c1efb327c822fa5264e31959506d7aede79a336",
@@ -15,14 +15,56 @@ client = api(
 )
 
 SYMBOLS = [
-    "INDIGO", "TRENT", "HINDUNILVR", "HCLTECH", "WIPRO", "INFY", "TATACONSUM",
-    "TATASTEEL", "ITC", "ASIANPAINT", "SBILIFE", "LT", "SHRIRAMFIN", "BEL",
-    "SBIN", "COALINDIA", "KOTAKBANK", "TCS", "SUNPHARMA", "MAXHEALTH",
-    "NESTLEIND", "RELIANCE", "ETERNAL", "APOLLOHOSP", "ICICIBANK", "GRASIM",
-    "ULTRACEMCO", "ADANIENT", "AXISBANK", "DRREDDY", "TECHM", "TMPV", "JIOFIN",
-    "NTPC", "BAJFINANCE", "BHARTIARTL", "POWERGRID", "HINDALCO", "HDFCBANK",
-    "TITAN", "HDFCLIFE", "MARUTI", "BAJAJFINSV", "ADANIPORTS", "CIPLA",
-    "JSWSTEEL", "BAJAJ-AUTO", "ONGC", "EICHERMOT", "M&M",
+    "INDIGO",
+    "TRENT",
+    "HINDUNILVR",
+    "HCLTECH",
+    "WIPRO",
+    "INFY",
+    "TATACONSUM",
+    "TATASTEEL",
+    "ITC",
+    "ASIANPAINT",
+    "SBILIFE",
+    "LT",
+    "SHRIRAMFIN",
+    "BEL",
+    "SBIN",
+    "COALINDIA",
+    "KOTAKBANK",
+    "TCS",
+    "SUNPHARMA",
+    "MAXHEALTH",
+    "NESTLEIND",
+    "RELIANCE",
+    "ETERNAL",
+    "APOLLOHOSP",
+    "ICICIBANK",
+    "GRASIM",
+    "ULTRACEMCO",
+    "ADANIENT",
+    "AXISBANK",
+    "DRREDDY",
+    "TECHM",
+    "TMPV",
+    "JIOFIN",
+    "NTPC",
+    "BAJFINANCE",
+    "BHARTIARTL",
+    "POWERGRID",
+    "HINDALCO",
+    "HDFCBANK",
+    "TITAN",
+    "HDFCLIFE",
+    "MARUTI",
+    "BAJAJFINSV",
+    "ADANIPORTS",
+    "CIPLA",
+    "JSWSTEEL",
+    "BAJAJ-AUTO",
+    "ONGC",
+    "EICHERMOT",
+    "M&M",
 ]
 
 BASELINE_DATE = pd.Timestamp("2025-12-31").date()

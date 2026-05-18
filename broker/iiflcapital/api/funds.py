@@ -42,7 +42,8 @@ def _fetch_limits(client, endpoint, auth_token):
         return {}
 
     logger.info(f"IIFL Capital limits API response status [{endpoint}]: {response.status_code}")
-    logger.info(f"IIFL Capital limits API raw response [{endpoint}]: {response.text}")
+    # Raw body may carry account IDs / token echoes — debug only.
+    logger.debug(f"IIFL Capital limits API raw response [{endpoint}]: {response.text}")
 
     if response.status_code != 200:
         return {}
@@ -125,7 +126,7 @@ def _format_margin_data(limit_data):
 
 def get_margin_data(auth_token):
     """
-    Fetch margin/limits from IIFL Capital and normalize to Tradeboard fields.
+    Fetch margin/limits from IIFL Capital and normalize to TradeBoard fields.
 
     IIFL exposes pooled limits (`/limits`) and segment-wise limits
     (`/limits/equity`, `/limits/fno`). We prefer pooled values when they are

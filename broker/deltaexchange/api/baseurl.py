@@ -79,7 +79,7 @@ def get_auth_headers(
         "api-key": key,
         "timestamp": timestamp,
         "signature": signature,
-        "User-Agent": "tradeboard-python-client",
+        "User-Agent": "TradeBoard-python-client",
         "Content-Type": "application/json",
         "Accept": "application/json",
     }

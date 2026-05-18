@@ -1,8 +1,8 @@
-# 47 - SMTP Configuration
+﻿# 47 - SMTP Configuration
 
 ## Overview
 
-Tradeboard uses SMTP for sending email notifications, password reset links, and alerts. SMTP credentials are stored encrypted in the database for security.
+TradeBoard uses SMTP for sending email notifications, password reset links, and alerts. SMTP credentials are stored encrypted in the database for security.
 
 ## Architecture Diagram
 
@@ -250,7 +250,7 @@ Authorization: Bearer ADMIN_TOKEN
     "smtp_username": "user@gmail.com",
     "smtp_password": "app_password",
     "from_email": "noreply@example.com",
-    "from_name": "Tradeboard",
+    "from_name": "TradeBoard",
     "use_tls": true,
     "use_ssl": false
 }
@@ -348,12 +348,12 @@ def send_password_reset_email(user_email, reset_token):
     """Send password reset email"""
     reset_url = f"{get_base_url()}/reset-password?token={reset_token}"
 
-    subject = "Reset Your Tradeboard Password"
+    subject = "Reset Your TradeBoard Password"
 
     body = f"""
 Hello,
 
-You requested to reset your Tradeboard password.
+You requested to reset your TradeBoard password.
 
 Click the link below to reset your password:
 {reset_url}
@@ -363,14 +363,14 @@ This link expires in 1 hour.
 If you didn't request this, please ignore this email.
 
 Best regards,
-Tradeboard Team
+TradeBoard Team
 """
 
     html_body = f"""
 <html>
 <body>
     <h2>Reset Your Password</h2>
-    <p>You requested to reset your Tradeboard password.</p>
+    <p>You requested to reset your TradeBoard password.</p>
     <p><a href="{reset_url}" style="
         display: inline-block;
         padding: 12px 24px;

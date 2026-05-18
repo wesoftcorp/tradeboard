@@ -1,8 +1,8 @@
-# 07 - Sandbox Architecture (Analyzer Mode)
+﻿# 07 - Sandbox Architecture (Analyzer Mode)
 
 ## Overview
 
-Tradeboard's Sandbox/Analyzer mode provides a production-grade walkforward testing environment with ₹1 Crore sandbox capital, realistic margin calculations, leverage-based trading, auto square-off, and T+1 settlement simulation. It runs completely isolated from live trading with its own database (`db/sandbox.db`).
+TradeBoard's Sandbox/Analyzer mode provides a production-grade walkforward testing environment with ₹1 Crore sandbox capital, realistic margin calculations, leverage-based trading, auto square-off, and T+1 settlement simulation. It runs completely isolated from live trading with its own database (`db/sandbox.db`).
 
 ## Architecture Diagram
 

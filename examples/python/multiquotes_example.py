@@ -1,4 +1,4 @@
-from tradeboard import api
+from TradeBoard import api
 
 # Initialize client
 client = api(

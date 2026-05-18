@@ -1,4 +1,4 @@
-# Docker Installation Scripts - Updates Summary
+﻿# Docker Installation Scripts - Updates Summary
 
 ## Overview
 
@@ -24,11 +24,11 @@ All installation scripts have been updated to include numba/llvmlite/scipy suppo
 #### BEFORE:
 ```bash
 # Directory creation - missing keys and tmp
-if [ ! -d "$TRADEBOARD_DIR/strategies" ]; then
-    mkdir -p "$TRADEBOARD_DIR/strategies/scripts"
+if [ ! -d "$TradeBoard_DIR/strategies" ]; then
+    mkdir -p "$TradeBoard_DIR/strategies/scripts"
 fi
-if [ ! -d "$TRADEBOARD_DIR/log" ]; then
-    mkdir -p "$TRADEBOARD_DIR/log/strategies"
+if [ ! -d "$TradeBoard_DIR/log" ]; then
+    mkdir -p "$TradeBoard_DIR/log/strategies"
 fi
 
 # Docker run - missing shm-size, keys, tmp volumes
@@ -36,10 +36,10 @@ docker run -d \
     --name "$CONTAINER" \
     -p 5000:5000 \
     -p 8765:8765 \
-    -v "$TRADEBOARD_DIR/db:/app/db" \
-    -v "$TRADEBOARD_DIR/strategies:/app/strategies" \
-    -v "$TRADEBOARD_DIR/log:/app/log" \
-    -v "$TRADEBOARD_DIR/.env:/app/.env:ro" \
+    -v "$TradeBoard_DIR/db:/app/db" \
+    -v "$TradeBoard_DIR/strategies:/app/strategies" \
+    -v "$TradeBoard_DIR/log:/app/log" \
+    -v "$TradeBoard_DIR/.env:/app/.env:ro" \
     --restart unless-stopped \
     "$IMAGE"
 ```
@@ -47,17 +47,17 @@ docker run -d \
 #### AFTER:
 ```bash
 # Directory creation - includes keys and tmp
-if [ ! -d "$TRADEBOARD_DIR/strategies" ]; then
-    mkdir -p "$TRADEBOARD_DIR/strategies/scripts"
+if [ ! -d "$TradeBoard_DIR/strategies" ]; then
+    mkdir -p "$TradeBoard_DIR/strategies/scripts"
 fi
-if [ ! -d "$TRADEBOARD_DIR/log" ]; then
-    mkdir -p "$TRADEBOARD_DIR/log/strategies"
+if [ ! -d "$TradeBoard_DIR/log" ]; then
+    mkdir -p "$TradeBoard_DIR/log/strategies"
 fi
-if [ ! -d "$TRADEBOARD_DIR/keys" ]; then
-    mkdir -p "$TRADEBOARD_DIR/keys"
+if [ ! -d "$TradeBoard_DIR/keys" ]; then
+    mkdir -p "$TradeBoard_DIR/keys"
 fi
-if [ ! -d "$TRADEBOARD_DIR/tmp" ]; then
-    mkdir -p "$TRADEBOARD_DIR/tmp"
+if [ ! -d "$TradeBoard_DIR/tmp" ]; then
+    mkdir -p "$TradeBoard_DIR/tmp"
 fi
 
 # Docker run - includes shm-size, keys, tmp volumes
@@ -66,12 +66,12 @@ docker run -d \
     --shm-size=2g \                                    # ← NEW
     -p 5000:5000 \
     -p 8765:8765 \
-    -v "$TRADEBOARD_DIR/db:/app/db" \
-    -v "$TRADEBOARD_DIR/strategies:/app/strategies" \
-    -v "$TRADEBOARD_DIR/log:/app/log" \
-    -v "$TRADEBOARD_DIR/keys:/app/keys" \                # ← NEW
-    -v "$TRADEBOARD_DIR/tmp:/app/tmp" \                  # ← NEW
-    -v "$TRADEBOARD_DIR/.env:/app/.env:ro" \
+    -v "$TradeBoard_DIR/db:/app/db" \
+    -v "$TradeBoard_DIR/strategies:/app/strategies" \
+    -v "$TradeBoard_DIR/log:/app/log" \
+    -v "$TradeBoard_DIR/keys:/app/keys" \                # ← NEW
+    -v "$TradeBoard_DIR/tmp:/app/tmp" \                  # ← NEW
+    -v "$TradeBoard_DIR/.env:/app/.env:ro" \
     --restart unless-stopped \
     "$IMAGE"
 ```
@@ -83,8 +83,8 @@ docker run -d \
 #### BEFORE:
 ```batch
 REM Missing keys and tmp directories
-if not exist "%TRADEBOARD_DIR%\log\" (
-    md "%TRADEBOARD_DIR%\log" 2>nul
+if not exist "%TradeBoard_DIR%\log\" (
+    md "%TradeBoard_DIR%\log" 2>nul
 )
 
 REM Missing shm-size, keys, tmp volumes
@@ -92,10 +92,10 @@ docker run -d ^
     --name %CONTAINER% ^
     -p 5000:5000 ^
     -p 8765:8765 ^
-    -v "%TRADEBOARD_DIR%\db:/app/db" ^
-    -v "%TRADEBOARD_DIR%\strategies:/app/strategies" ^
-    -v "%TRADEBOARD_DIR%\log:/app/log" ^
-    -v "%TRADEBOARD_DIR%\.env:/app/.env:ro" ^
+    -v "%TradeBoard_DIR%\db:/app/db" ^
+    -v "%TradeBoard_DIR%\strategies:/app/strategies" ^
+    -v "%TradeBoard_DIR%\log:/app/log" ^
+    -v "%TradeBoard_DIR%\.env:/app/.env:ro" ^
     --restart unless-stopped ^
     %IMAGE%
 ```
@@ -103,14 +103,14 @@ docker run -d ^
 #### AFTER:
 ```batch
 REM Includes keys and tmp directories
-if not exist "%TRADEBOARD_DIR%\log\" (
-    md "%TRADEBOARD_DIR%\log" 2>nul
+if not exist "%TradeBoard_DIR%\log\" (
+    md "%TradeBoard_DIR%\log" 2>nul
 )
-if not exist "%TRADEBOARD_DIR%\keys\" (
-    md "%TRADEBOARD_DIR%\keys" 2>nul
+if not exist "%TradeBoard_DIR%\keys\" (
+    md "%TradeBoard_DIR%\keys" 2>nul
 )
-if not exist "%TRADEBOARD_DIR%\tmp\" (
-    md "%TRADEBOARD_DIR%\tmp" 2>nul
+if not exist "%TradeBoard_DIR%\tmp\" (
+    md "%TradeBoard_DIR%\tmp" 2>nul
 )
 
 REM Includes shm-size, keys, tmp volumes
@@ -119,12 +119,12 @@ docker run -d ^
     --shm-size=2g ^                                         # ← NEW
     -p 5000:5000 ^
     -p 8765:8765 ^
-    -v "%TRADEBOARD_DIR%\db:/app/db" ^
-    -v "%TRADEBOARD_DIR%\strategies:/app/strategies" ^
-    -v "%TRADEBOARD_DIR%\log:/app/log" ^
-    -v "%TRADEBOARD_DIR%\keys:/app/keys" ^                    # ← NEW
-    -v "%TRADEBOARD_DIR%\tmp:/app/tmp" ^                      # ← NEW
-    -v "%TRADEBOARD_DIR%\.env:/app/.env:ro" ^
+    -v "%TradeBoard_DIR%\db:/app/db" ^
+    -v "%TradeBoard_DIR%\strategies:/app/strategies" ^
+    -v "%TradeBoard_DIR%\log:/app/log" ^
+    -v "%TradeBoard_DIR%\keys:/app/keys" ^                    # ← NEW
+    -v "%TradeBoard_DIR%\tmp:/app/tmp" ^                      # ← NEW
+    -v "%TradeBoard_DIR%\.env:/app/.env:ro" ^
     --restart unless-stopped ^
     %IMAGE%
 ```
@@ -136,18 +136,18 @@ docker run -d ^
 #### BEFORE:
 ```yaml
 services:
-  tradeboard:
-    container_name: tradeboard-web
+  TradeBoard:
+    container_name: TradeBoard-web
     ports:
       - "127.0.0.1:5000:5000"
       - "127.0.0.1:8765:8765"
 
     volumes:
-      - tradeboard_db:/app/db
-      - tradeboard_logs:/app/logs          # ← EXTRA, UNUSED
-      - tradeboard_log:/app/log
-      - tradeboard_strategies:/app/strategies
-      - tradeboard_keys:/app/keys
+      - TradeBoard_db:/app/db
+      - TradeBoard_logs:/app/logs          # ← EXTRA, UNUSED
+      - TradeBoard_log:/app/log
+      - TradeBoard_strategies:/app/strategies
+      - TradeBoard_keys:/app/keys
       - ./.env:/app/.env:ro
 
     environment:
@@ -162,29 +162,29 @@ services:
     restart: unless-stopped
 
 volumes:
-  tradeboard_db:
-  tradeboard_logs:                         # ← EXTRA, UNUSED
-  tradeboard_log:
-  tradeboard_strategies:
-  tradeboard_keys:
-  # MISSING: tradeboard_tmp
+  TradeBoard_db:
+  TradeBoard_logs:                         # ← EXTRA, UNUSED
+  TradeBoard_log:
+  TradeBoard_strategies:
+  TradeBoard_keys:
+  # MISSING: TradeBoard_tmp
 ```
 
 #### AFTER:
 ```yaml
 services:
-  tradeboard:
-    container_name: tradeboard-web
+  TradeBoard:
+    container_name: TradeBoard-web
     ports:
       - "127.0.0.1:5000:5000"
       - "127.0.0.1:8765:8765"
 
     volumes:
-      - tradeboard_db:/app/db
-      - tradeboard_log:/app/log
-      - tradeboard_strategies:/app/strategies
-      - tradeboard_keys:/app/keys
-      - tradeboard_tmp:/app/tmp              # ← NEW
+      - TradeBoard_db:/app/db
+      - TradeBoard_log:/app/log
+      - TradeBoard_strategies:/app/strategies
+      - TradeBoard_keys:/app/keys
+      - TradeBoard_tmp:/app/tmp              # ← NEW
       - ./.env:/app/.env:ro
 
     environment:
@@ -200,11 +200,11 @@ services:
     restart: unless-stopped
 
 volumes:
-  tradeboard_db:
-  tradeboard_log:
-  tradeboard_strategies:
-  tradeboard_keys:
-  tradeboard_tmp:                            # ← NEW
+  TradeBoard_db:
+  TradeBoard_log:
+  TradeBoard_strategies:
+  TradeBoard_keys:
+  TradeBoard_tmp:                            # ← NEW
 ```
 
 ---
@@ -286,8 +286,8 @@ All changes are **100% backward compatible**:
 - [ ] Test docker-run.bat on Windows 10/11
 - [ ] Test install-docker.sh on clean Ubuntu 22.04
 - [ ] Test install-docker.sh on clean Debian 12
-- [ ] Verify numba import works: `docker exec tradeboard python -c "import numba; print('OK')"`
-- [ ] Verify shared memory: `docker inspect tradeboard --format='{{.HostConfig.ShmSize}}'` should show `2147483648`
+- [ ] Verify numba import works: `docker exec TradeBoard python -c "import numba; print('OK')"`
+- [ ] Verify shared memory: `docker inspect TradeBoard --format='{{.HostConfig.ShmSize}}'` should show `2147483648`
 - [ ] Run trading strategy with indicators
 - [ ] Check master contract download works
 
@@ -329,7 +329,7 @@ docker-run.bat start
 
 **Update Docker Compose Config:**
 ```bash
-cd /opt/tradeboard
+cd /opt/TradeBoard
 sudo docker compose down
 # Update docker-compose.yaml manually or re-run installer
 sudo docker compose up -d
@@ -344,7 +344,7 @@ sudo docker compose up -d
 **Solution:**
 ```bash
 # macOS/Linux
-chmod 755 /path/to/tradeboard
+chmod 755 /path/to/TradeBoard
 
 # Or run with sudo if necessary
 sudo ./docker-run.sh start
@@ -354,13 +354,13 @@ sudo ./docker-run.sh start
 
 **Verify shared memory:**
 ```bash
-docker inspect tradeboard --format='{{.HostConfig.ShmSize}}'
+docker inspect TradeBoard --format='{{.HostConfig.ShmSize}}'
 # Should show: 2147483648 (2GB in bytes)
 ```
 
 **Verify volumes:**
 ```bash
-docker inspect tradeboard --format='{{range .Mounts}}{{.Destination}} {{end}}'
+docker inspect TradeBoard --format='{{range .Mounts}}{{.Destination}} {{end}}'
 # Should include: /app/tmp
 ```
 

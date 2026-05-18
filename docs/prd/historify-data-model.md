@@ -1,4 +1,4 @@
-# Historify Data Model
+﻿# Historify Data Model
 
 Complete documentation for DuckDB schema and data model used in Historify.
 
@@ -19,7 +19,7 @@ Historify uses DuckDB for efficient columnar storage of historical OHLCV data wi
 ## Database Location
 
 ```
-tradeboard/
+TradeBoard/
 └── db/
     └── historify.duckdb    # Historical data storage
 ```

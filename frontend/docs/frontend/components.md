@@ -1,6 +1,6 @@
-# Component Documentation
+﻿# Component Documentation
 
-This document covers the UI components used in the Tradeboard frontend.
+This document covers the UI components used in the TradeBoard frontend.
 
 ## Component Architecture
 

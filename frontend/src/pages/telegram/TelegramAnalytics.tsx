@@ -1,4 +1,4 @@
-import { ArrowLeft, BarChart3, Bell, MessageSquare, TrendingUp, Users } from 'lucide-react'
+﻿import { ArrowLeft, BarChart3, Bell, MessageSquare, TrendingUp, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { showToast } from '@/utils/toast'
@@ -248,7 +248,7 @@ export default function TelegramAnalytics() {
               <TableHeader>
                 <TableRow>
                   <TableHead>User</TableHead>
-                  <TableHead>Tradeboard Account</TableHead>
+                  <TableHead>TradeBoard Account</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Joined</TableHead>
                   <TableHead>Last Active</TableHead>
@@ -274,8 +274,8 @@ export default function TelegramAnalytics() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {user.tradeboard_username ? (
-                          <Badge variant="outline">{user.tradeboard_username}</Badge>
+                        {user.TradeBoard_username ? (
+                          <Badge variant="outline">{user.TradeBoard_username}</Badge>
                         ) : (
                           <span className="text-muted-foreground">-</span>
                         )}

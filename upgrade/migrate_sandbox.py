@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Sandbox Complete Setup Migration Script for Tradeboard
+Sandbox Complete Setup Migration Script for TradeBoard
 
 This migration ensures the complete sandbox/analyzer mode setup:
 - Creates all sandbox tables if they don't exist

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Samco 2FA Auth Migration Script for Tradeboard
+Samco 2FA Auth Migration Script for TradeBoard
 
 This migration adds auxiliary columns (aux_param1-4) to the existing auth table.
 These columns are used by Samco for 2FA data (secret key, IP registration)
@@ -39,7 +39,7 @@ load_dotenv(os.path.join(parent_dir, ".env"))
 
 def get_engine():
     """Get main database engine"""
-    database_url = os.getenv("DATABASE_URL", "sqlite:///db/tradeboard.db")
+    database_url = os.getenv("DATABASE_URL", "sqlite:///db/TradeBoard.db")
 
     if database_url.startswith("sqlite:///"):
         db_path = database_url.replace("sqlite:///", "")
@@ -78,9 +78,7 @@ def upgrade():
             added = 0
             for col_name, col_type in AUX_COLUMNS:
                 if col_name not in existing_columns:
-                    conn.execute(
-                        text(f"ALTER TABLE auth ADD COLUMN {col_name} {col_type}")
-                    )
+                    conn.execute(text(f"ALTER TABLE auth ADD COLUMN {col_name} {col_type}"))
                     logger.info(f"Added column: {col_name}")
                     added += 1
                 else:

@@ -1,4 +1,4 @@
-# Depth
+﻿# Depth
 
 Get market depth (Level 2 data) for a symbol showing top 5 bid and ask prices with quantities.
 
@@ -70,7 +70,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/depth \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | symbol | Trading symbol | Mandatory | - |
 | exchange | Exchange code: NSE, BSE, NFO, BFO, CDS, BCD, MCX | Mandatory | - |
 

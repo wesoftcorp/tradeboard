@@ -1,4 +1,4 @@
-import { Github, Monitor } from 'lucide-react'
+﻿import { Github, Monitor } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -84,7 +84,7 @@ export function Footer({ className }: FooterProps) {
             title="Join our Discord community"
           >
             <a
-              href="https://wesoftcorp.com/discord"
+              href="https://TradeBoard.in/discord"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Discord"
@@ -96,7 +96,7 @@ export function Footer({ className }: FooterProps) {
           </Button>
           <Button variant="ghost" size="icon" asChild className="h-8 w-8" title="Follow us on X">
             <a
-              href="https://x.com/tradeboardHQ"
+              href="https://x.com/TradeBoardHQ"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="X (Twitter)"
@@ -114,7 +114,7 @@ export function Footer({ className }: FooterProps) {
             title="Subscribe to our YouTube channel"
           >
             <a
-              href="https://www.youtube.com/@tradeboard"
+              href="https://www.youtube.com/@TradeBoard"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="YouTube"

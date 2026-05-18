@@ -1,4 +1,4 @@
-# CheckHoliday
+﻿# CheckHoliday
 
 Check if a specific date is a market holiday for an exchange.
 
@@ -83,7 +83,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/checkholiday \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | date | Date in YYYY-MM-DD format | Mandatory | - |
 | exchange | Exchange code to check | Optional | All exchanges |
 

@@ -1,4 +1,4 @@
-# Depth (WebSocket)
+﻿# Depth (WebSocket)
 
 Subscribe to real-time market depth (Level 2) updates via WebSocket.
 
@@ -75,7 +75,7 @@ Custom Host  :  ws://<your-host>:8765
 ## Python SDK Example
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 import time
 
 # Initialize client with WebSocket

@@ -1,4 +1,4 @@
-import { ArrowLeft, Bell, BellOff, Search, Send, Trash2, Users } from 'lucide-react'
+﻿import { ArrowLeft, Bell, BellOff, Search, Send, Trash2, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { showToast } from '@/utils/toast'
@@ -63,7 +63,7 @@ export default function TelegramUsers() {
       const filtered = users.filter(
         (user) =>
           user.telegram_username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.tradeboard_username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.TradeBoard_username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.first_name?.toLowerCase().includes(searchQuery.toLowerCase())
       )
       setFilteredUsers(filtered)
@@ -192,7 +192,7 @@ export default function TelegramUsers() {
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-2xl font-bold">{users.filter((u) => u.tradeboard_username).length}</p>
+            <p className="text-2xl font-bold">{users.filter((u) => u.TradeBoard_username).length}</p>
             <p className="text-sm text-muted-foreground">Linked Accounts</p>
           </CardContent>
         </Card>
@@ -230,7 +230,7 @@ export default function TelegramUsers() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Telegram User</TableHead>
-                  <TableHead>Tradeboard Account</TableHead>
+                  <TableHead>TradeBoard Account</TableHead>
                   <TableHead>Notifications</TableHead>
                   <TableHead>Joined</TableHead>
                   <TableHead>Last Active</TableHead>
@@ -258,8 +258,8 @@ export default function TelegramUsers() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {user.tradeboard_username ? (
-                          <Badge variant="outline">{user.tradeboard_username}</Badge>
+                        {user.TradeBoard_username ? (
+                          <Badge variant="outline">{user.TradeBoard_username}</Badge>
                         ) : (
                           <span className="text-muted-foreground">Not linked</span>
                         )}

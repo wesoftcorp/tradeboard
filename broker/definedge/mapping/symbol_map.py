@@ -4,7 +4,7 @@ logger = get_logger(__name__)
 
 
 def get_br_symbol(symbol, exchange):
-    """Convert Tradeboard symbol to DefinedGe Securities symbol format"""
+    """Convert TradeBoard symbol to DefinedGe Securities symbol format"""
     try:
         # DefinedGe uses similar symbol format to NSE/BSE
         # For equity symbols, remove -EQ suffix if present
@@ -20,7 +20,7 @@ def get_br_symbol(symbol, exchange):
 
 
 def get_oa_symbol(symbol, exchange):
-    """Convert DefinedGe Securities symbol to Tradeboard symbol format"""
+    """Convert DefinedGe Securities symbol to TradeBoard symbol format"""
     try:
         # For equity symbols on NSE, add -EQ suffix
         if exchange == "NSE" and not any(x in symbol for x in ["FUT", "CE", "PE"]):

@@ -1,4 +1,4 @@
-# Docker Installation Scripts - Compatibility Analysis
+﻿# Docker Installation Scripts - Compatibility Analysis
 
 ## Summary
 
@@ -22,10 +22,10 @@ docker run -d \
     --name "$CONTAINER" \
     -p 5000:5000 \
     -p 8765:8765 \
-    -v "$TRADEBOARD_DIR/db:/app/db" \
-    -v "$TRADEBOARD_DIR/strategies:/app/strategies" \
-    -v "$TRADEBOARD_DIR/log:/app/log" \
-    -v "$TRADEBOARD_DIR/.env:/app/.env:ro" \
+    -v "$TradeBoard_DIR/db:/app/db" \
+    -v "$TradeBoard_DIR/strategies:/app/strategies" \
+    -v "$TradeBoard_DIR/log:/app/log" \
+    -v "$TradeBoard_DIR/.env:/app/.env:ro" \
     --restart unless-stopped \
     "$IMAGE"
 ```
@@ -42,20 +42,20 @@ docker run -d \
     --shm-size=2g \
     -p 5000:5000 \
     -p 8765:8765 \
-    -v "$TRADEBOARD_DIR/db:/app/db" \
-    -v "$TRADEBOARD_DIR/strategies:/app/strategies" \
-    -v "$TRADEBOARD_DIR/log:/app/log" \
-    -v "$TRADEBOARD_DIR/keys:/app/keys" \
-    -v "$TRADEBOARD_DIR/tmp:/app/tmp" \
-    -v "$TRADEBOARD_DIR/.env:/app/.env:ro" \
+    -v "$TradeBoard_DIR/db:/app/db" \
+    -v "$TradeBoard_DIR/strategies:/app/strategies" \
+    -v "$TradeBoard_DIR/log:/app/log" \
+    -v "$TradeBoard_DIR/keys:/app/keys" \
+    -v "$TradeBoard_DIR/tmp:/app/tmp" \
+    -v "$TradeBoard_DIR/.env:/app/.env:ro" \
     --restart unless-stopped \
     "$IMAGE"
 ```
 
 **Changes needed:**
 1. Add `--shm-size=2g` after `--name "$CONTAINER"`
-2. Add `-v "$TRADEBOARD_DIR/keys:/app/keys"` volume
-3. Add `-v "$TRADEBOARD_DIR/tmp:/app/tmp"` volume
+2. Add `-v "$TradeBoard_DIR/keys:/app/keys"` volume
+3. Add `-v "$TradeBoard_DIR/tmp:/app/tmp"` volume
 4. Update setup function to create `keys` and `tmp` directories
 
 ---
@@ -68,10 +68,10 @@ docker run -d ^
     --name %CONTAINER% ^
     -p 5000:5000 ^
     -p 8765:8765 ^
-    -v "%TRADEBOARD_DIR%\db:/app/db" ^
-    -v "%TRADEBOARD_DIR%\strategies:/app/strategies" ^
-    -v "%TRADEBOARD_DIR%\log:/app/log" ^
-    -v "%TRADEBOARD_DIR%\.env:/app/.env:ro" ^
+    -v "%TradeBoard_DIR%\db:/app/db" ^
+    -v "%TradeBoard_DIR%\strategies:/app/strategies" ^
+    -v "%TradeBoard_DIR%\log:/app/log" ^
+    -v "%TradeBoard_DIR%\.env:/app/.env:ro" ^
     --restart unless-stopped ^
     %IMAGE%
 ```
@@ -88,20 +88,20 @@ docker run -d ^
     --shm-size=2g ^
     -p 5000:5000 ^
     -p 8765:8765 ^
-    -v "%TRADEBOARD_DIR%\db:/app/db" ^
-    -v "%TRADEBOARD_DIR%\strategies:/app/strategies" ^
-    -v "%TRADEBOARD_DIR%\log:/app/log" ^
-    -v "%TRADEBOARD_DIR%\keys:/app/keys" ^
-    -v "%TRADEBOARD_DIR%\tmp:/app/tmp" ^
-    -v "%TRADEBOARD_DIR%\.env:/app/.env:ro" ^
+    -v "%TradeBoard_DIR%\db:/app/db" ^
+    -v "%TradeBoard_DIR%\strategies:/app/strategies" ^
+    -v "%TradeBoard_DIR%\log:/app/log" ^
+    -v "%TradeBoard_DIR%\keys:/app/keys" ^
+    -v "%TradeBoard_DIR%\tmp:/app/tmp" ^
+    -v "%TradeBoard_DIR%\.env:/app/.env:ro" ^
     --restart unless-stopped ^
     %IMAGE%
 ```
 
 **Changes needed:**
 1. Add `--shm-size=2g ^` after `--name %CONTAINER% ^`
-2. Add `-v "%TRADEBOARD_DIR%\keys:/app/keys" ^` volume
-3. Add `-v "%TRADEBOARD_DIR%\tmp:/app/tmp" ^` volume
+2. Add `-v "%TradeBoard_DIR%\keys:/app/keys" ^` volume
+3. Add `-v "%TradeBoard_DIR%\tmp:/app/tmp" ^` volume
 4. Update setup function to create `keys` and `tmp` directories
 
 ---
@@ -111,24 +111,24 @@ docker run -d ^
 **Current docker-compose.yaml generation (Lines 298-348):**
 ```yaml
 services:
-  tradeboard:
-    image: tradeboard:latest
+  TradeBoard:
+    image: TradeBoard:latest
     build:
       context: .
       dockerfile: Dockerfile
 
-    container_name: tradeboard-web
+    container_name: TradeBoard-web
 
     ports:
       - "127.0.0.1:5000:5000"
       - "127.0.0.1:8765:8765"
 
     volumes:
-      - tradeboard_db:/app/db
-      - tradeboard_logs:/app/logs
-      - tradeboard_log:/app/log
-      - tradeboard_strategies:/app/strategies
-      - tradeboard_keys:/app/keys
+      - TradeBoard_db:/app/db
+      - TradeBoard_logs:/app/logs
+      - TradeBoard_log:/app/log
+      - TradeBoard_strategies:/app/strategies
+      - TradeBoard_keys:/app/keys
       - ./.env:/app/.env:ro
 
     environment:
@@ -146,43 +146,43 @@ services:
     restart: unless-stopped
 
 volumes:
-  tradeboard_db:
+  TradeBoard_db:
     driver: local
-  tradeboard_logs:
+  TradeBoard_logs:
     driver: local
-  tradeboard_log:
+  TradeBoard_log:
     driver: local
-  tradeboard_strategies:
+  TradeBoard_strategies:
     driver: local
-  tradeboard_keys:
+  TradeBoard_keys:
     driver: local
 ```
 
 **Missing:**
 - ❌ `shm_size: '2gb'` - Required for scipy/numba memory operations
-- ❌ `tradeboard_tmp` volume and mount - Required for numba cache
+- ❌ `TradeBoard_tmp` volume and mount - Required for numba cache
 
 **Should be:**
 ```yaml
 services:
-  tradeboard:
-    image: tradeboard:latest
+  TradeBoard:
+    image: TradeBoard:latest
     build:
       context: .
       dockerfile: Dockerfile
 
-    container_name: tradeboard-web
+    container_name: TradeBoard-web
 
     ports:
       - "127.0.0.1:5000:5000"
       - "127.0.0.1:8765:8765"
 
     volumes:
-      - tradeboard_db:/app/db
-      - tradeboard_log:/app/log
-      - tradeboard_strategies:/app/strategies
-      - tradeboard_keys:/app/keys
-      - tradeboard_tmp:/app/tmp
+      - TradeBoard_db:/app/db
+      - TradeBoard_log:/app/log
+      - TradeBoard_strategies:/app/strategies
+      - TradeBoard_keys:/app/keys
+      - TradeBoard_tmp:/app/tmp
       - ./.env:/app/.env:ro
 
     environment:
@@ -203,23 +203,23 @@ services:
     restart: unless-stopped
 
 volumes:
-  tradeboard_db:
+  TradeBoard_db:
     driver: local
-  tradeboard_log:
+  TradeBoard_log:
     driver: local
-  tradeboard_strategies:
+  TradeBoard_strategies:
     driver: local
-  tradeboard_keys:
+  TradeBoard_keys:
     driver: local
-  tradeboard_tmp:
+  TradeBoard_tmp:
     driver: local
 ```
 
 **Changes needed:**
 1. Add `shm_size: '2gb'` after environment section
-2. Add `tradeboard_tmp:/app/tmp` volume mount
-3. Add `tradeboard_tmp:` volume definition
-4. Remove duplicate `tradeboard_logs` volume (unused)
+2. Add `TradeBoard_tmp:/app/tmp` volume mount
+3. Add `TradeBoard_tmp:` volume definition
+4. Remove duplicate `TradeBoard_logs` volume (unused)
 
 ---
 
@@ -258,14 +258,14 @@ After updating scripts:
 ### docker-run.sh
 - [ ] Create new installation: `./docker-run.sh start`
 - [ ] Verify directories created: `db/`, `strategies/`, `log/`, `keys/`, `tmp/`
-- [ ] Test numba: `docker exec tradeboard python -c "import numba; print('OK')"`
-- [ ] Check shared memory: `docker inspect tradeboard --format='{{.HostConfig.ShmSize}}'`
+- [ ] Test numba: `docker exec TradeBoard python -c "import numba; print('OK')"`
+- [ ] Check shared memory: `docker inspect TradeBoard --format='{{.HostConfig.ShmSize}}'`
 
 ### docker-run.bat
 - [ ] Create new installation: `docker-run.bat start`
 - [ ] Verify directories created: `db\`, `strategies\`, `log\`, `keys\`, `tmp\`
-- [ ] Test numba: `docker exec tradeboard python -c "import numba; print('OK')"`
-- [ ] Check shared memory: `docker inspect tradeboard --format='{{.HostConfig.ShmSize}}'`
+- [ ] Test numba: `docker exec TradeBoard python -c "import numba; print('OK')"`
+- [ ] Check shared memory: `docker inspect TradeBoard --format='{{.HostConfig.ShmSize}}'`
 
 ### install-docker.sh
 - [ ] Run full installation on clean Ubuntu/Debian server

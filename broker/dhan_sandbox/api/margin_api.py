@@ -20,7 +20,7 @@ def get_client_id(api_key=None):
     Get Dhan Sandbox client ID from BROKER_API_KEY or database.
 
     Args:
-        api_key: Tradeboard API key (optional)
+        api_key: TradeBoard API key (optional)
 
     Returns:
         Client ID string or None
@@ -103,7 +103,9 @@ def calculate_single_margin(position_data, auth, client_id):
         logger.debug(
             "Margin calculation response status=%s keys=%s",
             response.status_code,
-            list(response_data.keys()) if isinstance(response_data, dict) else type(response_data).__name__,
+            list(response_data.keys())
+            if isinstance(response_data, dict)
+            else type(response_data).__name__,
         )
 
         # Parse and standardize the response
@@ -147,11 +149,7 @@ def calculate_multi_margin(positions, auth, client_id):
         headers["client-id"] = client_id
 
     # Build multi-margin payload
-    payload = {
-        "includePosition": True,
-        "includeOrders": True,
-        "scripts": positions
-    }
+    payload = {"includePosition": True, "includeOrders": True, "scripts": positions}
 
     payload_json = json.dumps(payload)
     logger.info("Multi-margin request scripts_count=%s", len(positions))
@@ -173,7 +171,9 @@ def calculate_multi_margin(positions, auth, client_id):
         logger.debug(
             "Multi-margin response status=%s keys=%s",
             response.status_code,
-            list(response_data.keys()) if isinstance(response_data, dict) else type(response_data).__name__,
+            list(response_data.keys())
+            if isinstance(response_data, dict)
+            else type(response_data).__name__,
         )
 
         # Use multi-margin parser
@@ -201,9 +201,9 @@ def calculate_margin_api(positions, auth, api_key=None):
         2. Fall back to looping /v2/margincalculator for each position if multi fails
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
         auth: Authentication token for Dhan Sandbox
-        api_key: Tradeboard API key (optional, for client ID lookup)
+        api_key: TradeBoard API key (optional, for client ID lookup)
 
     Returns:
         Tuple of (response, response_data)

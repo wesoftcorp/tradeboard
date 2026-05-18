@@ -6,10 +6,10 @@ from marshmallow import ValidationError
 
 from database.settings_db import get_analyze_mode
 from events import OrderFailedEvent
-from utils.event_bus import bus
 from limiter import limiter
 from restx_api.schemas import ModifyOrderSchema
 from services.modify_order_service import emit_analyzer_error, modify_order
+from utils.event_bus import bus
 from utils.logging import get_logger
 
 ORDER_RATE_LIMIT = os.getenv("ORDER_RATE_LIMIT", "10 per second")
@@ -38,13 +38,15 @@ class ModifyOrder(Resource):
                 if get_analyze_mode():
                     return make_response(jsonify(emit_analyzer_error(data, error_message)), 400)
                 error_response = {"status": "error", "message": error_message}
-                bus.publish(OrderFailedEvent(
-                    mode="live",
-                    api_type="modifyorder",
-                    request_data=data,
-                    response_data=error_response,
-                    error_message=error_message,
-                ))
+                bus.publish(
+                    OrderFailedEvent(
+                        mode="live",
+                        api_type="modifyorder",
+                        request_data=data,
+                        response_data=error_response,
+                        error_message=error_message,
+                    )
+                )
                 return make_response(jsonify(error_response), 400)
 
             # Extract API key
@@ -64,13 +66,15 @@ class ModifyOrder(Resource):
             if get_analyze_mode():
                 return make_response(jsonify(emit_analyzer_error(data, error_message)), 400)
             error_response = {"status": "error", "message": error_message}
-            bus.publish(OrderFailedEvent(
-                mode="live",
-                api_type="modifyorder",
-                request_data=data,
-                response_data=error_response,
-                error_message=error_message,
-            ))
+            bus.publish(
+                OrderFailedEvent(
+                    mode="live",
+                    api_type="modifyorder",
+                    request_data=data,
+                    response_data=error_response,
+                    error_message=error_message,
+                )
+            )
             return make_response(jsonify(error_response), 400)
 
         except Exception:
@@ -79,11 +83,13 @@ class ModifyOrder(Resource):
             if get_analyze_mode():
                 return make_response(jsonify(emit_analyzer_error(data, error_message)), 500)
             error_response = {"status": "error", "message": error_message}
-            bus.publish(OrderFailedEvent(
-                mode="live",
-                api_type="modifyorder",
-                request_data=data,
-                response_data=error_response,
-                error_message=error_message,
-            ))
+            bus.publish(
+                OrderFailedEvent(
+                    mode="live",
+                    api_type="modifyorder",
+                    request_data=data,
+                    response_data=error_response,
+                    error_message=error_message,
+                )
+            )
             return make_response(jsonify(error_response), 500)

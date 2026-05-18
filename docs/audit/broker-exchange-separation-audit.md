@@ -1,4 +1,4 @@
-# Broker-Exchange Separation Audit
+﻿# Broker-Exchange Separation Audit
 
 **Date**: 2026-03-17
 **Status**: Audit Complete - Implementation Pending
@@ -8,7 +8,7 @@
 
 ## 1. Problem Statement
 
-Tradeboard supports 30+ Indian stock brokers and 1 crypto exchange (Delta Exchange), with more crypto exchanges planned. The current frontend treats all brokers uniformly, presenting a mixed UI where:
+TradeBoard supports 30+ Indian stock brokers and 1 crypto exchange (Delta Exchange), with more crypto exchanges planned. The current frontend treats all brokers uniformly, presenting a mixed UI where:
 
 - **Stock brokers** see crypto-related features (CRYPTO exchange in dropdowns, Leverage page)
 - **Crypto brokers** see stock-specific features (NSE/BSE/NFO/MCX/CDS exchanges, CNC product type, Indian index options)
@@ -35,7 +35,7 @@ Current `plugin.json` files contain only basic metadata:
 ```json
 {
     "Plugin Name": "zerodha",
-    "Description": "Zerodha Tradeboard Plugin",
+    "Description": "Zerodha TradeBoard Plugin",
     "Version": "1.0",
     "Author": "Rajandran R"
 }
@@ -108,7 +108,7 @@ The frontend gets `user.broker` (broker name string) from the auth store but has
 - **Current**: Single set of API examples (stock-oriented symbol formats)
 - **Problem**: Crypto users get stock examples (RELIANCE, NIFTY) that don't work
 - **Done**:
-  - Bruno collections split into `collections/tradeboard/IN_stock/` and `collections/tradeboard/crypto/`
+  - Bruno collections split into `collections/TradeBoard/IN_stock/` and `collections/TradeBoard/crypto/`
   - `playground.py` loads from broker-type-specific subfolder based on session broker's `broker_type` from plugin.json capabilities
   - Crypto collection: 48 files with BTCUSDFUT, CRYPTO exchange, NRML product (no holdings.bru, Chartink.bru, syntheticfuture.bru)
   - Stock collection: original 62 files unchanged
@@ -180,7 +180,7 @@ Each broker's `plugin.json` declares its supported exchanges, broker type, and l
 ```json
 {
     "Plugin Name": "zerodha",
-    "Description": "Zerodha Tradeboard Plugin",
+    "Description": "Zerodha TradeBoard Plugin",
     "Version": "1.0",
     "Author": "Rajandran R",
     "supported_exchanges": ["NSE", "BSE", "NFO", "BFO", "CDS", "MCX", "NSE_INDEX", "BSE_INDEX", "MCX_INDEX"],
@@ -192,7 +192,7 @@ Each broker's `plugin.json` declares its supported exchanges, broker type, and l
 ```json
 {
     "Plugin Name": "deltaexchange",
-    "Description": "Delta Exchange Tradeboard Plugin",
+    "Description": "Delta Exchange TradeBoard Plugin",
     "Version": "1.0",
     "Author": "Bashab Bhattacharjee",
     "supported_exchanges": ["CRYPTO"],
@@ -204,7 +204,7 @@ Each broker's `plugin.json` declares its supported exchanges, broker type, and l
 ```json
 {
     "Plugin Name": "Firstock",
-    "Description": "Firstock Tradeboard Plugin",
+    "Description": "Firstock TradeBoard Plugin",
     "Version": "1.0",
     "Author": "Rajandran R",
     "broker_type": "stock",
@@ -215,7 +215,7 @@ Each broker's `plugin.json` declares its supported exchanges, broker type, and l
 ```json
 {
     "Plugin Name": "groww",
-    "Description": "Groww Tradeboard Plugin",
+    "Description": "Groww TradeBoard Plugin",
     "Version": "1.0",
     "Author": "Rajandran R",
     "broker_type": "stock",

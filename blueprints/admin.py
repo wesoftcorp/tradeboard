@@ -384,7 +384,10 @@ def api_holiday_add():
         # Validate special session has open exchanges with timings
         if holiday_type == "SPECIAL_SESSION" and not open_exchanges:
             return jsonify(
-                {"status": "error", "message": "Special session requires at least one exchange with timings"}
+                {
+                    "status": "error",
+                    "message": "Special session requires at least one exchange with timings",
+                }
             ), 400
 
         holiday_date = datetime.strptime(date_str, "%Y-%m-%d").date()
@@ -612,7 +615,12 @@ _MAX_TAIL_BYTES = 10 * 1024 * 1024  # 10 MB cap on tail-read
 _REPORT_RATE = "10/minute"
 _DIAG_RATE = "10/minute"
 
-# Sensitive env var names — never emit values, only "set"/"not set"
+# Sensitive env var names — never emit values, only "set"/"not set".
+# These are the env vars actually consumed by the codebase. SMTP credentials,
+# Telegram bot tokens, and any future Google OAuth secrets are stored encrypted
+# in the database (see `_db_secrets_status` below) — not in env — so they
+# don't belong in this list. Reporting them here would always say "not set"
+# even when the feature is fully configured (issue #1388).
 _SECRET_ENV_KEYS = frozenset(
     {
         "APP_KEY",
@@ -622,11 +630,91 @@ _SECRET_ENV_KEYS = frozenset(
         "BROKER_API_KEY_MARKET",
         "BROKER_API_SECRET_MARKET",
         "REDIRECT_URL",
-        "SMTP_PASSWORD",
-        "TELEGRAM_BOT_TOKEN",
-        "GOOGLE_CLIENT_SECRET",
     }
 )
+
+
+def _db_secrets_status() -> dict:
+    """Presence-only status for secrets stored in the database (not env).
+
+    Returns a {label: bool} dict where the label is rendered as-is in the
+    diagnostics UI. Each lookup is wrapped in try/except so a transient DB
+    failure on one feature can't blank out the whole diagnostics page.
+    """
+    out: dict[str, bool] = {}
+
+    try:
+        from database.settings_db import get_smtp_settings
+
+        smtp = get_smtp_settings() or {}
+        out["SMTP password (DB)"] = bool(smtp.get("smtp_password"))
+    except Exception:
+        out["SMTP password (DB)"] = False
+
+    try:
+        from database.telegram_db import get_bot_config
+
+        bot = get_bot_config() or {}
+        out["Telegram bot token (DB)"] = bool(bot.get("bot_token") or bot.get("token"))
+    except Exception:
+        out["Telegram bot token (DB)"] = False
+
+    return out
+
+
+def _secret_strength_status() -> dict:
+    """Per-secret randomization status.
+
+    Reports True when a secret is plausibly install-specific (random hex of
+    sufficient length, not a known placeholder, not a leaked literal). False
+    means the secret is the publicly-known sample value, the placeholder
+    string from .sample.env, blank, or otherwise weak — i.e. functionally
+    no protection. This surfaces the kind of regression where an operator
+    skipped install.sh and just `cp .sample.env .env`.
+
+    Reading-side notes:
+        - We never include the actual values, only the boolean verdict.
+        - The set of "compromised" sentinels is imported from utils.env_check
+          so it stays in sync with the auto-rotation logic that runs on first
+          boot. Adding a new placeholder there auto-flows through to here.
+    """
+    try:
+        from utils.env_check import (
+            COMPROMISED_APP_KEYS,
+            COMPROMISED_PEPPERS,
+            PLACEHOLDER_FERNET_SALT,
+        )
+    except Exception:
+        # Module shape changed — skip the section rather than crash diagnostics.
+        return {}
+
+    import re as _re
+
+    def _is_random_hex(value: str, min_chars: int = 32) -> bool:
+        if not value:
+            return False
+        if len(value) < min_chars:
+            return False
+        return bool(_re.fullmatch(r"[0-9a-fA-F]+", value))
+
+    out: dict[str, bool] = {}
+
+    app_key = os.getenv("APP_KEY", "")
+    out["APP_KEY randomized"] = bool(
+        app_key and app_key not in COMPROMISED_APP_KEYS and len(app_key) >= 32
+    )
+
+    pepper = os.getenv("API_KEY_PEPPER", "")
+    out["API_KEY_PEPPER randomized"] = bool(
+        pepper and pepper not in COMPROMISED_PEPPERS and len(pepper) >= 32
+    )
+
+    salt = (os.getenv("FERNET_SALT") or "").strip()
+    out["FERNET_SALT per-install"] = bool(
+        salt and salt != PLACEHOLDER_FERNET_SALT and _is_random_hex(salt)
+    )
+
+    return out
 
 
 def _errors_file_path():
@@ -1150,8 +1238,8 @@ def _runtime_info():
 def _build_info():
     """Platform version, SDK version, git ref, frontend build mtime."""
     info = {
-        "tradeboard_version": None,
-        "tradeboard_sdk_version": None,
+        "TradeBoard_version": None,
+        "TradeBoard_sdk_version": None,
         "git_branch": None,
         "git_commit": None,
         "frontend_build_time": None,
@@ -1159,13 +1247,13 @@ def _build_info():
     try:
         from utils.version import get_version
 
-        info["tradeboard_version"] = get_version()
+        info["TradeBoard_version"] = get_version()
     except Exception:
         pass
     try:
         from importlib import metadata as _metadata
 
-        info["tradeboard_sdk_version"] = _metadata.version("tradeboard")
+        info["TradeBoard_sdk_version"] = _metadata.version("TradeBoard")
     except Exception:
         pass
 
@@ -1188,6 +1276,18 @@ def _build_info():
     except OSError:
         pass
 
+    # Docker images don't ship .git/ (it's in .dockerignore), so the .git/HEAD
+    # read above always misses inside containers (issue #1388). Fall back to
+    # build-time env vars that install scripts populate from `git rev-parse`.
+    if not info["git_branch"]:
+        env_branch = os.getenv("TradeBoard_GIT_BRANCH")
+        if env_branch:
+            info["git_branch"] = env_branch.strip()[:64]
+    if not info["git_commit"]:
+        env_commit = os.getenv("TradeBoard_GIT_COMMIT")
+        if env_commit:
+            info["git_commit"] = env_commit.strip()[:12]
+
     try:
         idx = Path("frontend/dist/index.html")
         if idx.exists():
@@ -1202,6 +1302,13 @@ def _build_info():
 def _safe_config_snapshot():
     """Public-safe view of config — secrets reduced to set/not-set booleans."""
     secret_status = {key: bool(os.getenv(key)) for key in _SECRET_ENV_KEYS}
+    # Augment with DB-stored secret presence (SMTP, Telegram). Without this,
+    # users with fully-configured features see "not set" because those creds
+    # never lived in env to begin with — see issue #1388.
+    secret_status.update(_db_secrets_status())
+    # Per-secret randomization status (APP_KEY / API_KEY_PEPPER / FERNET_SALT
+    # not the publicly-known sample placeholder values). Surfaces operators
+    # who skipped install.sh and copied .sample.env directly. See #1394.
     return {
         "valid_brokers": [
             b.strip() for b in (os.getenv("VALID_BROKERS") or "").split(",") if b.strip()
@@ -1216,6 +1323,7 @@ def _safe_config_snapshot():
         "api_rate_limit": os.getenv("API_RATE_LIMIT", "50 per second"),
         "flask_debug": (os.getenv("FLASK_DEBUG") or "False").lower() == "true",
         "secrets_present": secret_status,
+        "secret_strength": _secret_strength_status(),
     }
 
 
@@ -1244,7 +1352,7 @@ def _broker_snapshot():
 def _database_snapshot():
     """File presence/size/mtime for each known DB. No live queries."""
     db_files = [
-        ("tradeboard", "db/tradeboard.db"),
+        ("TradeBoard", "db/TradeBoard.db"),
         ("logs", "db/logs.db"),
         ("latency", "db/latency.db"),
         ("health", "db/health.db"),
@@ -1360,9 +1468,9 @@ def _check_db_read():
     import sqlite3
     import time
 
-    db_path = Path("db/tradeboard.db")
+    db_path = Path("db/TradeBoard.db")
     if not db_path.exists():
-        return {"name": "DB read (tradeboard.db)", "ok": False, "ms": None, "detail": "Not found"}
+        return {"name": "DB read (TradeBoard.db)", "ok": False, "ms": None, "detail": "Not found"}
     started = time.perf_counter()
     try:
         conn = sqlite3.connect(str(db_path), timeout=2.0)
@@ -1371,9 +1479,9 @@ def _check_db_read():
         finally:
             conn.close()
         elapsed = round((time.perf_counter() - started) * 1000, 1)
-        return {"name": "DB read (tradeboard.db)", "ok": True, "ms": elapsed, "detail": "OK"}
+        return {"name": "DB read (TradeBoard.db)", "ok": True, "ms": elapsed, "detail": "OK"}
     except Exception as e:
-        return {"name": "DB read (tradeboard.db)", "ok": False, "ms": None, "detail": str(e)[:200]}
+        return {"name": "DB read (TradeBoard.db)", "ok": False, "ms": None, "detail": str(e)[:200]}
 
 
 def _check_loopback_http():
@@ -1383,7 +1491,7 @@ def _check_loopback_http():
 
     started = time.perf_counter()
     try:
-        # FLASK_PORT is the canonical Tradeboard var; PORT is the Docker/Railway
+        # FLASK_PORT is the canonical TradeBoard var; PORT is the Docker/Railway
         # convention (gunicorn binds to ${PORT:-5000} in start.sh).
         port = os.getenv("FLASK_PORT") or os.getenv("PORT") or "5000"
         req = urllib.request.Request(f"http://127.0.0.1:{port}/", method="HEAD")
@@ -1545,9 +1653,13 @@ def _render_report(payload, errors_summary, errors_recent, fmt):
     code_close = "```\n" if is_md else ""
 
     lines = []
-    lines.append(f"{h1}Tradeboard System Report")
+    lines.append(f"{h1}TradeBoard System Report")
     lines.append("")
-    lines.append(_md_kv("Generated", datetime.now().strftime("%Y-%m-%d %H:%M:%S")) if is_md else f"Generated: {datetime.now()}")
+    lines.append(
+        _md_kv("Generated", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        if is_md
+        else f"Generated: {datetime.now()}"
+    )
     lines.append("")
 
     mode = payload.get("mode") or {}
@@ -1591,18 +1703,23 @@ def _render_report(payload, errors_summary, errors_recent, fmt):
     lines.append(_md_kv("Memory used (%)", hw.get("memory_percent")))
     if hw.get("disk_log"):
         lines.append(
-            _md_kv("Disk log", f"{hw['disk_log']['free_gb']} GB free of {hw['disk_log']['total_gb']} GB")
+            _md_kv(
+                "Disk log",
+                f"{hw['disk_log']['free_gb']} GB free of {hw['disk_log']['total_gb']} GB",
+            )
         )
     if hw.get("disk_db"):
         lines.append(
-            _md_kv("Disk db", f"{hw['disk_db']['free_gb']} GB free of {hw['disk_db']['total_gb']} GB")
+            _md_kv(
+                "Disk db", f"{hw['disk_db']['free_gb']} GB free of {hw['disk_db']['total_gb']} GB"
+            )
         )
     lines.append("")
 
     build = payload.get("build") or {}
     lines.append(f"{h2}Build")
-    lines.append(_md_kv("Tradeboard", build.get("tradeboard_version")))
-    lines.append(_md_kv("Tradeboard SDK", build.get("tradeboard_sdk_version")))
+    lines.append(_md_kv("TradeBoard", build.get("TradeBoard_version")))
+    lines.append(_md_kv("TradeBoard SDK", build.get("TradeBoard_sdk_version")))
     lines.append(_md_kv("Git branch", build.get("git_branch")))
     lines.append(_md_kv("Git commit", build.get("git_commit")))
     lines.append(_md_kv("Frontend build", build.get("frontend_build_time")))
@@ -1622,13 +1739,21 @@ def _render_report(payload, errors_summary, errors_recent, fmt):
         lines.append(f"{h2}Secrets (presence only)")
         for k, v in sorted(secrets.items()):
             lines.append(f"{bullet}{k}: {'set' if v else 'not set'}")
+    strength = cfg.get("secret_strength") or {}
+    if strength:
+        lines.append("")
+        lines.append(f"{h2}Secret strength")
+        for k, v in sorted(strength.items()):
+            lines.append(f"{bullet}{k}: {'yes' if v else 'NO — using default/placeholder'}")
     lines.append("")
 
     brokers = payload.get("brokers") or {}
     lines.append(f"{h2}Brokers")
     lines.append(_md_kv("Active broker", brokers.get("active_broker")))
     lines.append(_md_kv("User logged in", brokers.get("user_logged_in")))
-    lines.append(_md_kv("Configured", ", ".join(brokers.get("configured_brokers") or []) or "_none_"))
+    lines.append(
+        _md_kv("Configured", ", ".join(brokers.get("configured_brokers") or []) or "_none_")
+    )
     lines.append("")
 
     dbs = payload.get("databases") or []
@@ -1665,7 +1790,11 @@ def _render_report(payload, errors_summary, errors_recent, fmt):
             lvl = entry.get("level", "?")
             mod = entry.get("module", "?")
             msg = _strip_ansi(entry.get("message", ""))[:500]
-            lines.append(f"{bullet}`{ts}` **{lvl}** in `{mod}`: {msg}" if is_md else f"  - [{ts}] {lvl} in {mod}: {msg}")
+            lines.append(
+                f"{bullet}`{ts}` **{lvl}** in `{mod}`: {msg}"
+                if is_md
+                else f"  - [{ts}] {lvl} in {mod}: {msg}"
+            )
         lines.append("")
 
     body = "\n".join(lines)
@@ -1724,7 +1853,7 @@ def api_system_report():
             recent = recent[-50:]
 
         body = _render_report(payload, errors_summary, recent, fmt)
-        filename = f"tradeboard-system-report-{datetime.now().strftime('%Y%m%d-%H%M%S')}.{fmt}"
+        filename = f"TradeBoard-system-report-{datetime.now().strftime('%Y%m%d-%H%M%S')}.{fmt}"
         mimetype = "text/markdown" if fmt == "md" else "text/plain"
 
         from flask import Response
@@ -1845,7 +1974,8 @@ def api_oauth_client_approve(client_id):
         return jsonify({"status": "error", "message": "Remote MCP is not enabled."}), 400
 
     try:
-        from database.oauth_db import OAuthClient, db_session as oauth_session
+        from database.oauth_db import OAuthClient
+        from database.oauth_db import db_session as oauth_session
 
         client = OAuthClient.query.filter_by(client_id=client_id).first()
         if client is None:
@@ -1867,9 +1997,7 @@ def api_oauth_client_approve(client_id):
             f"[OAuth admin] approved client_id={client_id} "
             f"by user={request.headers.get('X-Forwarded-User') or 'session'}"
         )
-        return jsonify(
-            {"status": "success", "client": _serialize_oauth_client(client)}
-        )
+        return jsonify({"status": "success", "client": _serialize_oauth_client(client)})
     except Exception as e:
         logger.exception(f"Error approving OAuth client: {e}")
         return jsonify({"status": "error", "message": "Failed to approve."}), 500
@@ -1907,8 +2035,7 @@ def api_oauth_client_revoke(client_id):
 
         revoked_count = revoke_client(client_id, "admin_revoke")
         logger.warning(
-            f"[OAuth admin] REVOKE client_id={client_id} "
-            f"({revoked_count} tokens) by session"
+            f"[OAuth admin] REVOKE client_id={client_id} ({revoked_count} tokens) by session"
         )
         return jsonify(
             {
@@ -1984,8 +2111,17 @@ def api_mcp_audit():
         # whitelist stops it from leaking through this endpoint
         # (security review finding M-3).
         _AUDIT_KEYS = frozenset(
-            {"ts", "jti", "client_id", "tool", "scope", "params_hash",
-             "duration_ms", "outcome", "request_ip"}
+            {
+                "ts",
+                "jti",
+                "client_id",
+                "tool",
+                "scope",
+                "params_hash",
+                "duration_ms",
+                "outcome",
+                "request_ip",
+            }
         )
 
         def _sanitize_audit(entry: dict) -> dict:
@@ -2049,7 +2185,7 @@ def api_mcp_kill_switch():
         return jsonify(
             {
                 "status": "error",
-                "message": "Kill switch requires confirm=\"REVOKE_ALL_MCP_TOKENS\".",
+                "message": 'Kill switch requires confirm="REVOKE_ALL_MCP_TOKENS".',
             }
         ), 400
 
@@ -2071,7 +2207,7 @@ def api_mcp_kill_switch():
 # posture from /admin/remote-mcp without SSH'ing into the server.
 #
 # IMPORTANT: changes are written to the .env file but require a service
-# restart (sudo systemctl restart tradeboard) before they take effect —
+# restart (sudo systemctl restart TradeBoard) before they take effect —
 # MCP_HTTP_ENABLED is checked at app boot to register Flask blueprints,
 # and the per-request flags are read via os.getenv() at module level.
 # The PUT endpoint surfaces this clearly via restart_required=true.
@@ -2079,14 +2215,13 @@ def api_mcp_kill_switch():
 import re
 import stat as _stat
 
-
 _ENV_KEY_PATTERN = re.compile(r"^([A-Z][A-Z0-9_]*)$")
 
 
 def _resolve_env_path() -> Path:
     """Return the absolute Path to .env in the running app's working dir.
 
-    systemd's WorkingDirectory points at TRADEBOARD_PATH for the production
+    systemd's WorkingDirectory points at TradeBoard_PATH for the production
     install, so cwd is the right anchor. Local dev runs uv from repo root,
     same answer. We resolve once and validate the file exists rather
     than trying multiple candidates — a missing .env is a deployment bug
@@ -2113,7 +2248,7 @@ def _set_env_value(env_path: Path, key: str, value: str) -> None:
     if not _ENV_KEY_PATTERN.match(key):
         raise ValueError(f"Refusing to write malformed env key: {key!r}")
     if "'" in value or "\\" in value or "\n" in value:
-        raise ValueError(f"Refusing to write env value containing quote/backslash/newline")
+        raise ValueError("Refusing to write env value containing quote/backslash/newline")
 
     new_line = f"{key} = '{value}'\n"
     if not env_path.exists():
@@ -2196,7 +2331,10 @@ def api_mcp_settings_put():
         public_url = public_url.strip().rstrip("/")
         if public_url and not re.match(r"^https://[A-Za-z0-9.\-]+(:\d+)?(/.*)?$", public_url):
             return jsonify(
-                {"status": "error", "message": "public_url must be HTTPS (e.g. https://yourdomain.com)."}
+                {
+                    "status": "error",
+                    "message": "public_url must be HTTPS (e.g. https://yourdomain.com).",
+                }
             ), 400
 
     # Pre-flight: enabling MCP must not produce a config that refuses to boot.
@@ -2212,7 +2350,9 @@ def api_mcp_settings_put():
                     ),
                 }
             ), 400
-        effective_url = public_url if public_url is not None else (os.getenv("MCP_PUBLIC_URL") or "").strip()
+        effective_url = (
+            public_url if public_url is not None else (os.getenv("MCP_PUBLIC_URL") or "").strip()
+        )
         if not effective_url:
             return jsonify(
                 {
@@ -2227,18 +2367,20 @@ def api_mcp_settings_put():
     env_path = _resolve_env_path()
     if not env_path.exists():
         logger.error(f"[MCP admin] .env not found at {env_path}")
-        return jsonify(
-            {"status": "error", "message": f".env not found at {env_path}"}
-        ), 500
+        return jsonify({"status": "error", "message": f".env not found at {env_path}"}), 500
 
     try:
         if "http_enabled" in data:
-            _set_env_value(env_path, "MCP_HTTP_ENABLED", "True" if data["http_enabled"] else "False")
+            _set_env_value(
+                env_path, "MCP_HTTP_ENABLED", "True" if data["http_enabled"] else "False"
+            )
         if public_url is not None:
             _set_env_value(env_path, "MCP_PUBLIC_URL", public_url)
         if "require_approval" in data:
             _set_env_value(
-                env_path, "MCP_OAUTH_REQUIRE_APPROVAL", "True" if data["require_approval"] else "False"
+                env_path,
+                "MCP_OAUTH_REQUIRE_APPROVAL",
+                "True" if data["require_approval"] else "False",
             )
         if "write_scope_enabled" in data:
             _set_env_value(
@@ -2260,7 +2402,7 @@ def api_mcp_settings_put():
         {
             "status": "success",
             "restart_required": True,
-            "restart_command": "sudo systemctl restart tradeboard",
+            "restart_command": "sudo systemctl restart TradeBoard",
             "settings_pending": _mcp_settings_payload(),  # what's in .env now
         }
     )

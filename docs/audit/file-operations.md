@@ -1,13 +1,13 @@
-# File Operations Assessment
+﻿# File Operations Assessment
 
 ## Overview
 
-This assessment reviews file handling in Tradeboard for security considerations.
+This assessment reviews file handling in TradeBoard for security considerations.
 
 **Risk Level**: Low
 **Status**: Acceptable
 
-## File Operations in Tradeboard
+## File Operations in TradeBoard
 
 ### User-Controlled File Operations
 
@@ -19,7 +19,7 @@ This assessment reviews file handling in Tradeboard for security considerations.
 
 ### Key Finding
 
-**Limited file operations**: Tradeboard has minimal file upload functionality, reducing attack surface.
+**Limited file operations**: TradeBoard has minimal file upload functionality, reducing attack surface.
 
 ## CSV Upload Analysis
 
@@ -77,7 +77,7 @@ finally:
 
 **Configuration** (`.env`):
 ```bash
-DATABASE_URL=sqlite:///db/tradeboard.db
+DATABASE_URL=sqlite:///db/TradeBoard.db
 ```
 
 **Protection**:
@@ -95,7 +95,7 @@ DATABASE_URL=sqlite:///db/tradeboard.db
 
 **Configuration**:
 ```python
-LOG_PATH = os.path.join(BASE_DIR, 'logs', 'tradeboard.log')
+LOG_PATH = os.path.join(BASE_DIR, 'logs', 'TradeBoard.log')
 ```
 
 **Protection**:
@@ -110,7 +110,7 @@ Located in `db/` directory:
 
 | File | Content | Sensitivity |
 |------|---------|-------------|
-| `tradeboard.db` | User data, orders | High |
+| `TradeBoard.db` | User data, orders | High |
 | `logs.db` | API logs | Medium |
 | `sandbox.db` | Sandbox trading | Low |
 | `latency.db` | Performance | Low |
@@ -143,10 +143,10 @@ This protects all files if device is lost/stolen.
 ### What to Back Up
 
 ```
-tradeboard/
+TradeBoard/
 ├── .env              # CRITICAL - encryption keys
 ├── db/               # Trading data
-│   ├── tradeboard.db
+│   ├── TradeBoard.db
 │   ├── logs.db
 │   └── ...
 └── logs/             # Optional - for troubleshooting
@@ -185,7 +185,7 @@ On shared systems, `/tmp` is world-readable. For single-user systems:
 
 ## What's Not a Concern
 
-For single-user Tradeboard:
+For single-user TradeBoard:
 
 | Issue | Why Not Applicable |
 |-------|-------------------|
@@ -219,7 +219,7 @@ For single-user Tradeboard:
 
 ## Summary
 
-File handling in Tradeboard is **secure for single-user deployment**:
+File handling in TradeBoard is **secure for single-user deployment**:
 
 - Minimal file operations
 - No user-controlled paths

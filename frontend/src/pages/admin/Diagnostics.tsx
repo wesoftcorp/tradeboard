@@ -1,4 +1,4 @@
-import {
+﻿import {
   AlertCircle,
   ArrowLeft,
   CheckCircle2,
@@ -234,7 +234,7 @@ export default function Diagnostics() {
       <p className="text-sm text-muted-foreground">
         Use this page to troubleshoot issues. Click{' '}
         <span className="font-semibold">Download .md</span> and attach it when asking for help on
-        the Tradeboard community — secrets and tokens are never included.
+        the TradeBoard community — secrets and tokens are never included.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -316,8 +316,8 @@ export default function Diagnostics() {
         {/* Build */}
         <Section icon={Settings} title="Build">
           <div>
-            <KV label="Tradeboard" value={info?.build.tradeboard_version} />
-            <KV label="Tradeboard SDK" value={info?.build.tradeboard_sdk_version} />
+            <KV label="TradeBoard" value={info?.build.TradeBoard_version} />
+            <KV label="TradeBoard SDK" value={info?.build.TradeBoard_sdk_version} />
             <KV label="Git branch" value={info?.build.git_branch} />
             <KV label="Git commit" value={info?.build.git_commit} />
             <KV label="Frontend build" value={info?.build.frontend_build_time} />
@@ -379,6 +379,23 @@ export default function Diagnostics() {
               {Object.entries(info.config.secrets_present).map(([key, present]) => (
                 <Badge key={key} variant={present ? 'default' : 'secondary'}>
                   {key}: {present ? 'set' : 'not set'}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        {info?.config.secret_strength && Object.keys(info.config.secret_strength).length > 0 ? (
+          <div className="mt-4">
+            <div className="text-sm font-semibold mb-2">
+              Secret strength{' '}
+              <span className="text-xs text-muted-foreground font-normal">
+                (random vs default placeholder)
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(info.config.secret_strength).map(([key, isRandom]) => (
+                <Badge key={key} variant={isRandom ? 'default' : 'destructive'}>
+                  {key}: {isRandom ? 'yes' : 'NO — using default'}
                 </Badge>
               ))}
             </div>

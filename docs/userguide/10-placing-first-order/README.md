@@ -1,13 +1,13 @@
-# 10 - Placing Your First Order
+﻿# 10 - Placing Your First Order
 
 ## Introduction
 
-This is the exciting part - placing your first order through Tradeboard! We'll start with the Analyzer (sandbox testing) mode to practice safely, then show you how to go live.
+This is the exciting part - placing your first order through TradeBoard! We'll start with the Analyzer (sandbox testing) mode to practice safely, then show you how to go live.
 
 ## Before You Begin
 
 Ensure you have:
-- [ ] Tradeboard running
+- [ ] TradeBoard running
 - [ ] Logged into your broker
 - [ ] API key generated
 - [ ] Understand order types (review [Module 02](../02-key-concepts/README.md) if needed)
@@ -110,9 +110,9 @@ curl -X POST http://127.0.0.1:5000/api/v1/placeorder \
 ### Using Python
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 
-# Connect to Tradeboard
+# Connect to TradeBoard
 client = api(
     api_key="YOUR_API_KEY",
     host="http://127.0.0.1:5000"
@@ -175,7 +175,7 @@ Common error messages:
 │  1. You submit order                                                        │
 │         │                                                                    │
 │         ▼                                                                    │
-│  2. Tradeboard validates                                                      │
+│  2. TradeBoard validates                                                      │
 │         │                                                                    │
 │         ├──→ Invalid? Return error                                          │
 │         │                                                                    │

@@ -1,8 +1,8 @@
-# 48 - Password Reset
+﻿# 48 - Password Reset
 
 ## Overview
 
-Tradeboard provides a secure multi-step password reset flow that supports both email-based reset tokens and TOTP verification for accounts with 2FA enabled.
+TradeBoard provides a secure multi-step password reset flow that supports both email-based reset tokens and TOTP verification for accounts with 2FA enabled.
 
 ## Architecture Diagram
 

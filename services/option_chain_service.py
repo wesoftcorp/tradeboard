@@ -227,7 +227,7 @@ def get_option_chain(
         exchange: Exchange (NSE_INDEX, NSE, NFO, BSE_INDEX, BSE, BFO, MCX, CDS)
         expiry_date: Expiry date in DDMMMYY format (e.g., 28NOV25)
         strike_count: Number of strikes above and below ATM
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
 
     Returns:
         Tuple of (success, response_data, status_code)
@@ -260,12 +260,18 @@ def get_option_chain(
             # CRYPTO: look up the canonical perpetual symbol from cache (e.g. BTC -> BTCUSDFUT)
             quote_exchange = exchange.upper()
             _perp = fno_search_symbols(
-                query=f"{base_symbol}USDFUT", exchange=exchange, instrumenttype=INSTRUMENT_PERPFUT, limit=1
+                query=f"{base_symbol}USDFUT",
+                exchange=exchange,
+                instrumenttype=INSTRUMENT_PERPFUT,
+                limit=1,
             )
             if not _perp:
                 return (
                     False,
-                    {"status": "error", "message": f"No perpetual futures found for {base_symbol} on {exchange}"},
+                    {
+                        "status": "error",
+                        "message": f"No perpetual futures found for {base_symbol} on {exchange}",
+                    },
                     404,
                 )
             quote_symbol = _perp[0]["symbol"]
@@ -282,7 +288,7 @@ def get_option_chain(
             # and module import inside the same request.
             _auth, _feed, _broker = get_auth_token_broker(api_key, include_feed_token=True)
             if _auth is None:
-                return False, {"status": "error", "message": "Invalid tradeboard apikey"}, 403
+                return False, {"status": "error", "message": "Invalid TradeBoard apikey"}, 403
             _bmod = import_broker_module(_broker)
             if _bmod is None:
                 return False, {"status": "error", "message": "Broker module not found"}, 404
@@ -394,7 +400,11 @@ def get_option_chain(
                     except Exception as _qe:
                         logger.warning(f"[CRYPTO] Quote error for {_item['symbol']}: {_qe}")
                         _results.append(
-                            {"symbol": _item["symbol"], "exchange": _item["exchange"], "error": str(_qe)}
+                            {
+                                "symbol": _item["symbol"],
+                                "exchange": _item["exchange"],
+                                "error": str(_qe),
+                            }
                         )
                 quotes_response = {"status": "success", "results": _results}
                 success = True
@@ -437,6 +447,8 @@ def get_option_chain(
                     "ltp": ce_quote.get("ltp", 0),
                     "bid": ce_quote.get("bid", 0),
                     "ask": ce_quote.get("ask", 0),
+                    "bid_qty": ce_quote.get("bid_qty", 0),
+                    "ask_qty": ce_quote.get("ask_qty", 0),
                     "open": ce_quote.get("open", 0),
                     "high": ce_quote.get("high", 0),
                     "low": ce_quote.get("low", 0),
@@ -459,6 +471,8 @@ def get_option_chain(
                     "ltp": pe_quote.get("ltp", 0),
                     "bid": pe_quote.get("bid", 0),
                     "ask": pe_quote.get("ask", 0),
+                    "bid_qty": pe_quote.get("bid_qty", 0),
+                    "ask_qty": pe_quote.get("ask_qty", 0),
                     "open": pe_quote.get("open", 0),
                     "high": pe_quote.get("high", 0),
                     "low": pe_quote.get("low", 0),

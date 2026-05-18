@@ -1,10 +1,10 @@
-# WebSocket Quote Feed - Integration Guide
+﻿# WebSocket Quote Feed - Integration Guide
 
-This guide demonstrates how to integrate with Tradeboard's WebSocket quote feed for real-time market data streaming.
+This guide demonstrates how to integrate with TradeBoard's WebSocket quote feed for real-time market data streaming.
 
 ## Overview
 
-Tradeboard provides a unified WebSocket server (port 8765) that streams market data from 29 brokers in a normalized format. Clients can subscribe to LTP, Quote, or Depth modes.
+TradeBoard provides a unified WebSocket server (port 8765) that streams market data from 29 brokers in a normalized format. Clients can subscribe to LTP, Quote, or Depth modes.
 
 ## Connection Details
 
@@ -29,7 +29,7 @@ Tradeboard provides a unified WebSocket server (port 8765) that streams market d
 // Response
 {
     "status": "authenticated",
-    "message": "Connected to Tradeboard WebSocket"
+    "message": "Connected to TradeBoard WebSocket"
 }
 ```
 

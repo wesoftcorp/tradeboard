@@ -1,12 +1,12 @@
-@echo off
+﻿@echo off
 REM ============================================================================
-REM Tradeboard Update Script for Windows
+REM TradeBoard Update Script for Windows
 REM ============================================================================
 REM
 REM Usage: update.bat
 REM
-REM This script updates Tradeboard to the latest version using the UV method.
-REM Run from the install\ directory or the tradeboard project root.
+REM This script updates TradeBoard to the latest version using the UV method.
+REM Run from the install\ directory or the TradeBoard project root.
 REM
 REM Prerequisites:
 REM   - Python 3.12+
@@ -21,45 +21,45 @@ setlocal enabledelayedexpansion
 REM Banner
 echo.
 echo   ========================================
-echo        Tradeboard Update Script
+echo        TradeBoard Update Script
 echo        Windows Edition
 echo   ========================================
 echo.
 
-REM Detect Tradeboard directory
+REM Detect TradeBoard directory
 set "SCRIPT_DIR=%~dp0"
 if "%SCRIPT_DIR:~-1%"=="\" set "SCRIPT_DIR=%SCRIPT_DIR:~0,-1%"
 
 REM Check if we're in the install\ directory or the project root
 if exist "%SCRIPT_DIR%\app.py" (
-    set "TRADEBOARD_DIR=%SCRIPT_DIR%"
+    set "TradeBoard_DIR=%SCRIPT_DIR%"
 ) else if exist "%SCRIPT_DIR%\..\app.py" (
     pushd "%SCRIPT_DIR%\.."
-    set "TRADEBOARD_DIR=!CD!"
+    set "TradeBoard_DIR=!CD!"
     popd
 ) else (
     REM Try current directory
     if exist "app.py" (
-        set "TRADEBOARD_DIR=%CD%"
+        set "TradeBoard_DIR=%CD%"
     ) else (
-        echo [ERROR] Could not find Tradeboard directory.
+        echo [ERROR] Could not find TradeBoard directory.
         echo.
         echo Please run this script from:
-        echo   - The tradeboard project root directory, OR
-        echo   - The install\ directory within tradeboard
+        echo   - The TradeBoard project root directory, OR
+        echo   - The install\ directory within TradeBoard
         echo.
         pause
         exit /b 1
     )
 )
 
-echo [INFO] Tradeboard directory: %TRADEBOARD_DIR%
+echo [INFO] TradeBoard directory: %TradeBoard_DIR%
 echo.
 
 REM Verify git repository
-if not exist "%TRADEBOARD_DIR%\.git" (
-    echo [ERROR] Not a git repository: %TRADEBOARD_DIR%
-    echo Please ensure Tradeboard was installed via git clone.
+if not exist "%TradeBoard_DIR%\.git" (
+    echo [ERROR] Not a git repository: %TradeBoard_DIR%
+    echo Please ensure TradeBoard was installed via git clone.
     echo.
     pause
     exit /b 1
@@ -108,7 +108,7 @@ if not errorlevel 1 (
 echo.
 
 REM Get current version
-pushd "%TRADEBOARD_DIR%"
+pushd "%TradeBoard_DIR%"
 
 for /f "tokens=*" %%i in ('git rev-parse --short HEAD 2^>nul') do set "CURRENT_COMMIT=%%i"
 for /f "tokens=*" %%i in ('git branch --show-current 2^>nul') do set "CURRENT_BRANCH=%%i"
@@ -126,22 +126,22 @@ REM Step 1: Backup databases
 REM ========================================
 echo [Step 1/5] Backing up databases...
 
-set "BACKUP_DIR=%TRADEBOARD_DIR%\db\backup_%TIMESTAMP%"
+set "BACKUP_DIR=%TradeBoard_DIR%\db\backup_%TIMESTAMP%"
 set "BACKUP_COUNT=0"
 
-if exist "%TRADEBOARD_DIR%\db\" (
+if exist "%TradeBoard_DIR%\db\" (
     md "%BACKUP_DIR%" 2>nul
 
-    for %%f in (tradeboard.db logs.db latency.db sandbox.db) do (
-        if exist "%TRADEBOARD_DIR%\db\%%f" (
-            copy /y "%TRADEBOARD_DIR%\db\%%f" "%BACKUP_DIR%\%%f" >nul 2>&1
+    for %%f in (TradeBoard.db logs.db latency.db sandbox.db) do (
+        if exist "%TradeBoard_DIR%\db\%%f" (
+            copy /y "%TradeBoard_DIR%\db\%%f" "%BACKUP_DIR%\%%f" >nul 2>&1
             echo   Backed up: %%f
             set /a BACKUP_COUNT+=1
         )
     )
 
-    if exist "%TRADEBOARD_DIR%\db\historify.duckdb" (
-        copy /y "%TRADEBOARD_DIR%\db\historify.duckdb" "%BACKUP_DIR%\historify.duckdb" >nul 2>&1
+    if exist "%TradeBoard_DIR%\db\historify.duckdb" (
+        copy /y "%TradeBoard_DIR%\db\historify.duckdb" "%BACKUP_DIR%\historify.duckdb" >nul 2>&1
         echo   Backed up: historify.duckdb
         set /a BACKUP_COUNT+=1
     )
@@ -206,10 +206,10 @@ REM Step 3: Check environment configuration
 REM ========================================
 echo [Step 3/5] Checking environment configuration...
 
-if not exist "%TRADEBOARD_DIR%\.env" (
+if not exist "%TradeBoard_DIR%\.env" (
     echo   [WARNING] No .env file found. Creating from .sample.env...
-    if exist "%TRADEBOARD_DIR%\.sample.env" (
-        copy /y "%TRADEBOARD_DIR%\.sample.env" "%TRADEBOARD_DIR%\.env" >nul
+    if exist "%TradeBoard_DIR%\.sample.env" (
+        copy /y "%TradeBoard_DIR%\.sample.env" "%TradeBoard_DIR%\.env" >nul
 
         REM Generate fresh APP_KEY and API_KEY_PEPPER. Without this, the new .env
         REM would carry the public sample placeholders — the app's startup check
@@ -217,8 +217,8 @@ if not exist "%TRADEBOARD_DIR%\.env" (
         REM symmetric with the other install scripts.
         for /f %%i in ('python -c "import secrets; print(secrets.token_hex(32))"') do set NEW_APP_KEY=%%i
         for /f %%i in ('python -c "import secrets; print(secrets.token_hex(32))"') do set NEW_PEPPER=%%i
-        powershell -Command "(Get-Content '%TRADEBOARD_DIR%\.env') -replace 'TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE', '!NEW_APP_KEY!' | Set-Content '%TRADEBOARD_DIR%\.env'"
-        powershell -Command "(Get-Content '%TRADEBOARD_DIR%\.env') -replace 'TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE', '!NEW_PEPPER!' | Set-Content '%TRADEBOARD_DIR%\.env'"
+        powershell -Command "(Get-Content '%TradeBoard_DIR%\.env') -replace 'TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE', '!NEW_APP_KEY!' | Set-Content '%TradeBoard_DIR%\.env'"
+        powershell -Command "(Get-Content '%TradeBoard_DIR%\.env') -replace 'TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE', '!NEW_PEPPER!' | Set-Content '%TradeBoard_DIR%\.env'"
         echo   [OK] Generated fresh APP_KEY and API_KEY_PEPPER in .env
 
         echo   [ACTION REQUIRED] Please edit .env with your broker credentials and settings.
@@ -254,7 +254,7 @@ REM Step 5: Run database migrations
 REM ========================================
 echo [Step 5/5] Running database migrations...
 
-if exist "%TRADEBOARD_DIR%\upgrade\migrate_all.py" (
+if exist "%TradeBoard_DIR%\upgrade\migrate_all.py" (
     %UV_CMD% run upgrade/migrate_all.py
     if errorlevel 1 (
         echo   [WARNING] Some migrations may have had issues. Check output above.
@@ -269,11 +269,11 @@ echo.
 REM ========================================
 REM Build frontend if needed
 REM ========================================
-if not exist "%TRADEBOARD_DIR%\frontend\dist\" (
+if not exist "%TradeBoard_DIR%\frontend\dist\" (
     where npm >nul 2>&1
     if not errorlevel 1 (
         echo [OPTIONAL] Building React frontend (dist\ not found)...
-        pushd "%TRADEBOARD_DIR%\frontend"
+        pushd "%TradeBoard_DIR%\frontend"
         call npm install
         call npm run build
         if errorlevel 1 (
@@ -295,12 +295,12 @@ REM Summary
 REM ========================================
 echo.
 echo   ========================================
-echo   Tradeboard Update Complete!
+echo   TradeBoard Update Complete!
 echo   ========================================
 echo.
 echo   Version:   %CURRENT_COMMIT% -^> %NEW_COMMIT%
 echo   Branch:    %CURRENT_BRANCH%
-echo   Directory: %TRADEBOARD_DIR%
+echo   Directory: %TradeBoard_DIR%
 if exist "%BACKUP_DIR%\" (
     echo   Backup:    %BACKUP_DIR%
 )

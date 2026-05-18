@@ -1,4 +1,4 @@
-# Quote (WebSocket)
+﻿# Quote (WebSocket)
 
 Subscribe to real-time quote updates via WebSocket including OHLC and volume data.
 
@@ -58,7 +58,7 @@ Custom Host  :  ws://<your-host>:8765
 ## Python SDK Example
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 import time
 
 # Initialize client with WebSocket

@@ -1,6 +1,6 @@
 """Persistent store for Strategy Builder portfolios.
 
-Single-user deployment, so no user_id column — one Tradeboard instance owns one
+Single-user deployment, so no user_id column — one TradeBoard instance owns one
 portfolio per fixed watchlist. Two watchlists are supported: `mytrades` (live
 or intended-live trades) and `simulation` (paper scenarios). The legs array is
 serialised as JSON; restoring is cheap and re-validation happens in the
@@ -52,9 +52,7 @@ class StrategyPortfolio(Base):
     legs_json = Column(Text, nullable=False, default="[]")
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
-    )
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
 
 def init_db():

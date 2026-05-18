@@ -19,7 +19,7 @@ import logging
 import os
 import threading
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 
 import psutil
 
@@ -42,13 +42,14 @@ HEALTH_RETENTION_DAYS = int(os.getenv("HEALTH_RETENTION_DAYS", "7"))
 # Windows handles are NOT Unix FDs — a normal Flask app uses 500-2000+ handles.
 # Use platform-appropriate defaults unless overridden via env.
 import platform as _platform
+
 _IS_WINDOWS = _platform.system() == "Windows"
-FD_WARNING_THRESHOLD = int(os.getenv(
-    "HEALTH_FD_WARNING_THRESHOLD", "5000" if _IS_WINDOWS else "700"
-))
-FD_CRITICAL_THRESHOLD = int(os.getenv(
-    "HEALTH_FD_CRITICAL_THRESHOLD", "10000" if _IS_WINDOWS else "900"
-))
+FD_WARNING_THRESHOLD = int(
+    os.getenv("HEALTH_FD_WARNING_THRESHOLD", "5000" if _IS_WINDOWS else "700")
+)
+FD_CRITICAL_THRESHOLD = int(
+    os.getenv("HEALTH_FD_CRITICAL_THRESHOLD", "10000" if _IS_WINDOWS else "900")
+)
 
 # Memory Thresholds (MB)
 MEMORY_WARNING_THRESHOLD = int(os.getenv("HEALTH_MEMORY_WARNING_THRESHOLD", "500"))
@@ -108,7 +109,7 @@ def check_db_connectivity():
         dict: {
             "status": "pass"|"fail",
             "databases": {
-                "tradeboard": "pass"|"fail",
+                "TradeBoard": "pass"|"fail",
                 "logs": "pass"|"fail",
                 ...
             }
@@ -118,7 +119,7 @@ def check_db_connectivity():
     overall_status = "pass"
 
     databases = {
-        "tradeboard": "database.auth_db",
+        "TradeBoard": "database.auth_db",
         "logs": "database.traffic_db",
         "latency": "database.latency_db",
     }
@@ -132,16 +133,16 @@ def check_db_connectivity():
 
                 # Try a simple query
                 if hasattr(module, "db_session"):
-                    session = getattr(module, "db_session")
+                    session = module.db_session
                     # Execute simple query to test connectivity
                     session.execute("SELECT 1").fetchone()
                     results[db_name] = "pass"
                 elif hasattr(module, "logs_session"):
-                    session = getattr(module, "logs_session")
+                    session = module.logs_session
                     session.execute("SELECT 1").fetchone()
                     results[db_name] = "pass"
                 elif hasattr(module, "latency_session"):
-                    session = getattr(module, "latency_session")
+                    session = module.latency_session
                     session.execute("SELECT 1").fetchone()
                     results[db_name] = "pass"
                 else:
@@ -218,7 +219,13 @@ def get_fd_metrics():
         }
     except Exception as e:
         logger.error(f"Error getting FD metrics: {e}")
-        return {"count": 0, "limit": None, "usage_percent": 0.0, "available": None, "status": "unknown"}
+        return {
+            "count": 0,
+            "limit": None,
+            "usage_percent": 0.0,
+            "available": None,
+            "status": "unknown",
+        }
 
 
 def get_memory_metrics():
@@ -294,7 +301,7 @@ def get_database_metrics():
 
         # Check each database (minimal overhead)
         databases = {
-            "tradeboard": "database.auth_db",
+            "TradeBoard": "database.auth_db",
             "logs": "database.traffic_db",
             "latency": "database.latency_db",
             "apilog": "database.apilog_db",
@@ -567,7 +574,7 @@ def collect_metrics():
             _cached_metrics.update(
                 {
                     "status": overall_status,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "timestamp": datetime.now(UTC).isoformat(),
                     "fd": fd_metrics,
                     "memory": memory_metrics,
                     "database": db_metrics,
@@ -628,7 +635,9 @@ def start_health_collector(interval=None):
 
         _collector_running = True
         _collector_thread = threading.Thread(
-            target=_collector_loop, name="HealthCollector", daemon=True  # Daemon = zero impact
+            target=_collector_loop,
+            name="HealthCollector",
+            daemon=True,  # Daemon = zero impact
         )
         _collector_thread.start()
         logger.debug("Started health monitoring collector (background daemon thread)")

@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, render_template_string, request
-from tradeboard import api
+from TradeBoard import api
 
 app = Flask(__name__)
 

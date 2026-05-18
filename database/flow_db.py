@@ -55,7 +55,7 @@ def generate_webhook_secret():
 
 
 def get_workflow_api_key(workflow):
-    """Decrypt and return a workflow's stored Tradeboard API key.
+    """Decrypt and return a workflow's stored TradeBoard API key.
 
     The api_key column transitioned from plaintext to Fernet-encrypted
     (auth_db Fernet, PBKDF2 over API_KEY_PEPPER). Pre-migration plaintext
@@ -64,6 +64,7 @@ def get_workflow_api_key(workflow):
     if not workflow or not workflow.api_key:
         return None
     from database.auth_db import safe_decrypt_token
+
     return safe_decrypt_token(workflow.api_key)
 
 
@@ -72,6 +73,7 @@ def _encrypt_api_key(api_key):
     if not api_key:
         return None
     from database.auth_db import encrypt_token
+
     return encrypt_token(api_key)
 
 

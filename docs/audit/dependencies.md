@@ -1,8 +1,8 @@
-# Dependency Security
+﻿# Dependency Security
 
 ## Overview
 
-This assessment reviews third-party packages used by Tradeboard for security considerations.
+This assessment reviews third-party packages used by TradeBoard for security considerations.
 
 **Risk Level**: Low
 **Status**: Monitor
@@ -146,7 +146,7 @@ Lockfiles ensure reproducible builds:
 
 ### Packages to Monitor
 
-These packages historically have more vulnerabilities (not specific to Tradeboard):
+These packages historically have more vulnerabilities (not specific to TradeBoard):
 
 | Package | Reason | Action |
 |---------|--------|--------|
@@ -154,7 +154,7 @@ These packages historically have more vulnerabilities (not specific to Tradeboar
 | cryptography | Crypto implementation | Keep updated |
 | Pillow | Image processing | N/A (not used) |
 
-### Tradeboard Specific
+### TradeBoard Specific
 
 No known vulnerabilities in current dependency set as of this audit.
 
@@ -215,7 +215,7 @@ For single-user deployment:
 ## Quick Audit Commands
 
 ```bash
-# Full audit (run from tradeboard directory)
+# Full audit (run from TradeBoard directory)
 
 # Python dependencies
 pip-audit 2>/dev/null || echo "Install with: pip install pip-audit"
@@ -226,7 +226,7 @@ cd frontend && npm audit 2>/dev/null || echo "Run: npm install first"
 
 ## Summary
 
-Tradeboard uses **well-maintained, trusted packages**:
+TradeBoard uses **well-maintained, trusted packages**:
 - No known vulnerabilities at time of audit
 - Standard security libraries (cryptography, argon2)
 - Active maintenance on all major dependencies

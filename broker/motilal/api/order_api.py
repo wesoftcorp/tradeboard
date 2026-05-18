@@ -1,9 +1,9 @@
 import json
 import os
-
-import httpx
 import threading
 import time
+
+import httpx
 
 from broker.motilal.mapping.transform_data import (
     map_exchange,
@@ -44,7 +44,7 @@ def get_api_response(endpoint, auth, method="GET", payload=""):
         "osversion": "10.0.19041",
         "devicemodel": "AHV",
         "manufacturer": "DELL",
-        "productname": "Tradeboard",
+        "productname": "TradeBoard",
         "productversion": "1.0.0",
         "browsername": "Chrome",
         "browserversion": "120.0",
@@ -123,14 +123,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -166,9 +166,9 @@ def _invalidate_position_cache(auth):
 
 
 def get_open_position(tradingsymbol, exchange, producttype, auth):
-    # Convert Trading Symbol from Tradeboard Format to Broker Format Before Search in OpenPosition
+    # Convert Trading Symbol from TradeBoard Format to Broker Format Before Search in OpenPosition
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
-    # Map exchange from Tradeboard format to Motilal format for comparison
+    # Map exchange from TradeBoard format to Motilal format for comparison
     motilal_exchange = map_exchange(exchange)
     positions_data = _get_cached_positions(auth)
 
@@ -246,7 +246,7 @@ def place_order_api(data, auth):
         "osversion": "10.0.19041",
         "devicemodel": "AHV",
         "manufacturer": "DELL",
-        "productname": "Tradeboard",
+        "productname": "TradeBoard",
         "productversion": "1.0.0",
         "browsername": "Chrome",
         "browserversion": "120.0",
@@ -458,17 +458,17 @@ def close_all_positions(current_api_key, auth):
             action = "SELL" if net_qty > 0 else "BUY"
             quantity = abs(net_qty)
 
-            # Convert Motilal exchange to Tradeboard exchange for symbol lookup
+            # Convert Motilal exchange to TradeBoard exchange for symbol lookup
             motilal_exchange = position["exchange"]
-            tradeboard_exchange = reverse_map_exchange(motilal_exchange)
+            TradeBoard_exchange = reverse_map_exchange(motilal_exchange)
 
-            # Get tradeboard symbol to send to placeorder function
-            symbol = get_symbol(position["symboltoken"], tradeboard_exchange)
+            # Get TradeBoard symbol to send to placeorder function
+            symbol = get_symbol(position["symboltoken"], TradeBoard_exchange)
             logger.info(f"The Symbol is {symbol}")
 
             if not symbol:
                 logger.error(
-                    f"Symbol not found for token {position['symboltoken']} and exchange {tradeboard_exchange}"
+                    f"Symbol not found for token {position['symboltoken']} and exchange {TradeBoard_exchange}"
                 )
                 continue
 
@@ -478,9 +478,9 @@ def close_all_positions(current_api_key, auth):
                 "strategy": "Squareoff",
                 "symbol": symbol,
                 "action": action,
-                "exchange": tradeboard_exchange,  # Use Tradeboard exchange format
+                "exchange": TradeBoard_exchange,  # Use TradeBoard exchange format
                 "pricetype": "MARKET",
-                "product": reverse_map_product_type(position["productname"], tradeboard_exchange),
+                "product": reverse_map_product_type(position["productname"], TradeBoard_exchange),
                 "quantity": str(quantity),
             }
 
@@ -522,7 +522,7 @@ def cancel_order(orderid, auth):
         "osversion": "10.0.19041",
         "devicemodel": "AHV",
         "manufacturer": "DELL",
-        "productname": "Tradeboard",
+        "productname": "TradeBoard",
         "productversion": "1.0.0",
         "browsername": "Chrome",
         "browserversion": "120.0",
@@ -656,7 +656,7 @@ def modify_order(data, auth):
         "osversion": "10.0.19041",
         "devicemodel": "AHV",
         "manufacturer": "DELL",
-        "productname": "Tradeboard",
+        "productname": "TradeBoard",
         "productversion": "1.0.0",
         "browsername": "Chrome",
         "browserversion": "120.0",

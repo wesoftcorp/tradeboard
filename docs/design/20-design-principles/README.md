@@ -1,14 +1,14 @@
-# 20 - Design Principles
+﻿# 20 - Design Principles
 
 ## Overview
 
-Tradeboard follows specific design patterns and architectural principles to maintain code quality, extensibility, and reliability across the trading platform.
+TradeBoard follows specific design patterns and architectural principles to maintain code quality, extensibility, and reliability across the trading platform.
 
 ## Core Design Principles
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                          Tradeboard Design Principles                          │
+│                          TradeBoard Design Principles                          │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -293,7 +293,7 @@ class MarketDataService:
 ### Broker Mapping Pattern
 
 ```python
-# Tradeboard → Broker format
+# TradeBoard → Broker format
 def transform_data(data):
     return {
         "tradingsymbol": get_broker_symbol(data['symbol']),
@@ -302,7 +302,7 @@ def transform_data(data):
         # ... more mappings
     }
 
-# Broker → Tradeboard format
+# Broker → TradeBoard format
 def transform_response(response):
     return {
         "orderid": response['data']['order_id'],

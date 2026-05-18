@@ -1,5 +1,5 @@
-#!/bin/bash
-echo "[Tradeboard] Starting up..."
+﻿#!/bin/bash
+echo "[TradeBoard] Starting up..."
 
 # ============================================
 # RAILWAY/CLOUD ENVIRONMENT DETECTION & .env GENERATION
@@ -10,13 +10,13 @@ ENV_FILE="/app/.env"
 
 # Check if .env exists, is readable, and has content (not empty)
 if [ -f "$ENV_FILE" ] && [ -r "$ENV_FILE" ] && [ -s "$ENV_FILE" ]; then
-    echo "[Tradeboard] Using existing .env file"
+    echo "[TradeBoard] Using existing .env file"
 else
-    echo "[Tradeboard] No .env file found or file is empty. Checking for environment variables..."
+    echo "[TradeBoard] No .env file found or file is empty. Checking for environment variables..."
     
     # Check if we're on Railway/Cloud (HOST_SERVER is the key indicator)
     if [ -n "$HOST_SERVER" ]; then
-        echo "[Tradeboard] Environment variables detected. Generating .env file..."
+        echo "[TradeBoard] Environment variables detected. Generating .env file..."
         
         # Extract domain without https:// for WebSocket URL
         HOST_DOMAIN="${HOST_SERVER#https://}"
@@ -24,7 +24,7 @@ else
         
         # Try to write to /app/.env, fallback to /tmp/.env if permission denied
         if ! touch "$ENV_FILE" 2>/dev/null; then
-            echo "[Tradeboard] Cannot write to /app/.env, using /tmp/.env"
+            echo "[TradeBoard] Cannot write to /app/.env, using /tmp/.env"
             ENV_FILE="/tmp/.env"
         fi
         
@@ -32,7 +32,7 @@ else
         APP_PORT="${PORT:-5000}"
         
         cat > "$ENV_FILE" << EOF
-# Tradeboard Environment Configuration File
+# TradeBoard Environment Configuration File
 # Auto-generated from environment variables
 ENV_CONFIG_VERSION = '${ENV_CONFIG_VERSION:-1.0.4}'
 
@@ -55,7 +55,7 @@ APP_KEY = '${APP_KEY}'
 API_KEY_PEPPER = '${API_KEY_PEPPER}'
 
 # Database Configuration
-DATABASE_URL = '${DATABASE_URL:-sqlite:///db/tradeboard.db}'
+DATABASE_URL = '${DATABASE_URL:-sqlite:///db/TradeBoard.db}'
 LATENCY_DATABASE_URL = '${LATENCY_DATABASE_URL:-sqlite:///db/latency.db}'
 LOGS_DATABASE_URL = '${LOGS_DATABASE_URL:-sqlite:///db/logs.db}'
 SANDBOX_DATABASE_URL = '${SANDBOX_DATABASE_URL:-sqlite:///db/sandbox.db}'
@@ -142,13 +142,13 @@ SESSION_COOKIE_NAME = '${SESSION_COOKIE_NAME:-session}'
 CSRF_COOKIE_NAME = '${CSRF_COOKIE_NAME:-csrf_token}'
 EOF
 
-        echo "[Tradeboard] .env file generated at $ENV_FILE"
-        echo "[Tradeboard] Configuration: HOST_SERVER=${HOST_SERVER}"
+        echo "[TradeBoard] .env file generated at $ENV_FILE"
+        echo "[TradeBoard] Configuration: HOST_SERVER=${HOST_SERVER}"
         
         # If we wrote to /tmp, create symlink to /app/.env (or copy if symlink fails)
         if [ "$ENV_FILE" = "/tmp/.env" ]; then
             ln -sf /tmp/.env /app/.env 2>/dev/null || cp /tmp/.env /app/.env 2>/dev/null || true
-            echo "[Tradeboard] Linked .env to /app/.env"
+            echo "[TradeBoard] Linked .env to /app/.env"
         fi
     else
         echo "============================================"
@@ -203,8 +203,8 @@ cd /app
 # rotation crashes the worker with `Permission denied: .env.tmp` and gunicorn
 # enters a restart loop. Catch that here, before gunicorn starts, with an
 # unmissable message instead of a buried 12-line stack trace.
-PLACEHOLDER_APP_KEY="TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE"
-PLACEHOLDER_PEPPER="TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE"
+PLACEHOLDER_APP_KEY="TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE"
+PLACEHOLDER_PEPPER="TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE"
 LEAKED_APP_KEY="3daa0403ce2501ee7432b75bf100048e3cf510d63d2754f952729a991d8e2417"
 LEAKED_PEPPER="a25d94718479b170c16278e321ea6c989358bf499a658fd20c90033cef8ce772"
 
@@ -225,11 +225,11 @@ if [ -f "/app/.env" ]; then
             cat <<'PREFLIGHT_ERR' >&2
 
 ============================================================
-[Tradeboard] STARTUP BLOCKED — compromised APP_KEY detected
+[TradeBoard] STARTUP BLOCKED — compromised APP_KEY detected
 ============================================================
 
 Your .env contains the publicly-known sample APP_KEY (and
-possibly API_KEY_PEPPER). Tradeboard v2.0.0.6+ tries to
+possibly API_KEY_PEPPER). TradeBoard v2.0.0.6+ tries to
 auto-rotate these on first run, but the .env file is not
 writable from inside the container, so the rotation cannot
 run.
@@ -239,7 +239,7 @@ v2.0.0.5 or earlier.
 
 Fix on the HOST machine (not inside the container):
 
-  cd /path/to/tradeboard
+  cd /path/to/TradeBoard
   docker compose down
 
   # 1. Generate a fresh APP_KEY only
@@ -252,12 +252,12 @@ Fix on the HOST machine (not inside the container):
 
   docker compose up -d
 
-After this, Tradeboard will start cleanly. Existing browser
+After this, TradeBoard will start cleanly. Existing browser
 sessions will need to log in again — APP_KEY rotation
 invalidates session cookies, by design.
 
 ============================================================
-[Tradeboard] DO NOT regenerate API_KEY_PEPPER
+[TradeBoard] DO NOT regenerate API_KEY_PEPPER
 ============================================================
 
 If you have ANY existing data (users, broker logins,
@@ -290,25 +290,25 @@ fi
 # ============================================
 # Run migrations automatically on startup (idempotent - safe to run multiple times)
 if [ -f "/app/upgrade/migrate_all.py" ]; then
-    echo "[Tradeboard] Running database migrations..."
-    /app/.venv/bin/python /app/upgrade/migrate_all.py || echo "[Tradeboard] Migration completed (some may have been skipped)"
+    echo "[TradeBoard] Running database migrations..."
+    /app/.venv/bin/python /app/upgrade/migrate_all.py || echo "[TradeBoard] Migration completed (some may have been skipped)"
 else
-    echo "[Tradeboard] No migrations found, skipping..."
+    echo "[TradeBoard] No migrations found, skipping..."
 fi
 
 # ============================================
 # WEBSOCKET PROXY SERVER
 # ============================================
-echo "[Tradeboard] Starting WebSocket proxy server on port 8765..."
+echo "[TradeBoard] Starting WebSocket proxy server on port 8765..."
 /app/.venv/bin/python -m websocket_proxy.server &
 WEBSOCKET_PID=$!
-echo "[Tradeboard] WebSocket proxy server started with PID $WEBSOCKET_PID"
+echo "[TradeBoard] WebSocket proxy server started with PID $WEBSOCKET_PID"
 
 # ============================================
 # CLEANUP HANDLER
 # ============================================
 cleanup() {
-    echo "[Tradeboard] Shutting down..."
+    echo "[TradeBoard] Shutting down..."
     if [ ! -z "$WEBSOCKET_PID" ]; then
         kill $WEBSOCKET_PID 2>/dev/null
     fi
@@ -324,7 +324,7 @@ trap cleanup SIGTERM SIGINT
 # Use PORT env var if set (Railway/cloud), otherwise default to 5000
 APP_PORT="${PORT:-5000}"
 
-echo "[Tradeboard] Starting application on port ${APP_PORT} with eventlet..."
+echo "[TradeBoard] Starting application on port ${APP_PORT} with eventlet..."
 
 # Create gunicorn worker temp directory (must be inside container, not mounted volume)
 mkdir -p /tmp/gunicorn_workers

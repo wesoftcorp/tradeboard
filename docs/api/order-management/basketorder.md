@@ -1,4 +1,4 @@
-# BasketOrder
+﻿# BasketOrder
 
 Place multiple orders simultaneously in a single API call. Ideal for portfolio rebalancing, multi-stock strategies, or executing correlated trades.
 
@@ -113,7 +113,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/basketorder \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | strategy | Strategy identifier | Optional | - |
 | orders | Array of order objects | Mandatory | - |
 

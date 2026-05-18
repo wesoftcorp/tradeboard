@@ -34,7 +34,7 @@ def _get_nearest_futures_price(
         underlying: Base symbol (e.g., NIFTY, BANKNIFTY)
         exchange: Options exchange (NFO, BFO, etc.)
         expiry_date: Expiry in DDMMMYY format (e.g., 30JAN26)
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
 
     Returns:
         Futures LTP or None if not found
@@ -43,10 +43,15 @@ def _get_nearest_futures_price(
         if exchange.upper() in CRYPTO_EXCHANGES:
             # CRYPTO perpetuals are stored as PERPFUT — no expiry filter
             _perp = fno_search_symbols(
-                query=f"{underlying}USDFUT", exchange=exchange, instrumenttype=INSTRUMENT_PERPFUT, limit=1
+                query=f"{underlying}USDFUT",
+                exchange=exchange,
+                instrumenttype=INSTRUMENT_PERPFUT,
+                limit=1,
             )
             if not _perp:
-                logger.warning(f"No perpetual futures contracts found for {underlying} on {exchange}")
+                logger.warning(
+                    f"No perpetual futures contracts found for {underlying} on {exchange}"
+                )
                 return None
 
             fut_symbol = _perp[0]["symbol"]
@@ -55,9 +60,11 @@ def _get_nearest_futures_price(
             # CRYPTO: bypass validate_symbol_exchange (in-memory cache miss → 400)
             auth_token, broker = get_auth_token_broker(api_key)
             if auth_token is None:
-                logger.warning(f"Could not retrieve auth token for CRYPTO futures quote")
+                logger.warning("Could not retrieve auth token for CRYPTO futures quote")
                 return None
-            logger.info(f"Fetching perpetual futures price for {fut_symbol} on {fut_exchange} via broker={broker}")
+            logger.info(
+                f"Fetching perpetual futures price for {fut_symbol} on {fut_exchange} via broker={broker}"
+            )
             broker_module = import_broker_module(broker)
             BrokerData = broker_module.BrokerData
             quote_response = BrokerData(auth_token).get_quotes(fut_symbol, fut_exchange)
@@ -132,7 +139,7 @@ def get_oi_data(
         underlying: Underlying symbol (e.g., NIFTY, BANKNIFTY)
         exchange: Exchange (NSE_INDEX, BSE_INDEX, NFO, BFO)
         expiry_date: Expiry in DDMMMYY format
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
 
     Returns:
         Tuple of (success, response_data, status_code)
@@ -248,7 +255,7 @@ def calculate_max_pain(
         underlying: Underlying symbol
         exchange: Exchange
         expiry_date: Expiry in DDMMMYY format
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
 
     Returns:
         Tuple of (success, response_data, status_code)
@@ -272,7 +279,11 @@ def calculate_max_pain(
             return False, {"status": "error", "message": "No OI data available"}, 404
 
         # Filter out invalid entries
-        chain = [item for item in chain if isinstance(item.get("strike"), (int, float)) and item["strike"] > 0]
+        chain = [
+            item
+            for item in chain
+            if isinstance(item.get("strike"), (int, float)) and item["strike"] > 0
+        ]
         if not chain:
             return False, {"status": "error", "message": "No valid strike data available"}, 404
 

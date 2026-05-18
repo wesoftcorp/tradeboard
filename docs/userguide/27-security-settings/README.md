@@ -1,14 +1,14 @@
-# 27 - Security Settings
+﻿# 27 - Security Settings
 
 ## Introduction
 
-Security is critical when dealing with automated trading systems. Tradeboard provides multiple layers of security to protect your account, API keys, and trading activities.
+Security is critical when dealing with automated trading systems. TradeBoard provides multiple layers of security to protect your account, API keys, and trading activities.
 
 ## Security Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                        Tradeboard Security Layers                             │
+│                        TradeBoard Security Layers                             │
 │                                                                              │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │  Layer 1: Authentication                                             │   │
@@ -46,7 +46,7 @@ Security is critical when dealing with automated trading systems. Tradeboard pro
 
 ## Accessing Security Settings
 
-Navigate to **Settings** → **Security** in Tradeboard.
+Navigate to **Settings** → **Security** in TradeBoard.
 
 ## Password Security
 
@@ -265,7 +265,7 @@ Broker credentials are:
 
 ```
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Tradeboard  │────▶│   Broker    │────▶│  Exchange   │
+│   TradeBoard  │────▶│   Broker    │────▶│  Exchange   │
 │             │     │   OAuth     │     │             │
 └─────────────┘     └─────────────┘     └─────────────┘
        │                   │
@@ -385,7 +385,7 @@ If this wasn't you, please:
 
 ### 5. Keep Updated
 
-- Update Tradeboard regularly
+- Update TradeBoard regularly
 - Apply security patches
 - Follow security advisories
 

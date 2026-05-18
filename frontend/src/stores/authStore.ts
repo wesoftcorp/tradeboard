@@ -1,4 +1,4 @@
-import { create } from 'zustand'
+﻿import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { useBrokerStore } from './brokerStore'
 
@@ -87,7 +87,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'tradeboard-auth',
+      name: 'TradeBoard-auth',
     }
   )
 )

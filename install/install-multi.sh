@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 # Colors for output
 RED='\033[0;31m'
@@ -7,17 +7,15 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Tradeboard Installation Banner
+# TradeBoard Multi-Instance Installation Banner
 echo -e "${BLUE}"
-echo " ████████╗██████╗  █████╗ ██████╗ ███████╗██████╗  ██████╗  █████╗ ██████╗ ██████╗ "
-echo "    ██╔══╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔══██╗"
-echo "    ██║   ██████╔╝███████║██║  ██║█████╗  ██████╔╝██║   ██║███████║██████╔╝██║  ██║"
-echo "    ██║   ██╔══██╗██╔══██║██║  ██║██╔══╝  ██╔══██╗██║   ██║██╔══██║██╔══██╗██║  ██║"
-echo "    ██║   ██║  ██║██║  ██║██████╔╝███████╗██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝"
-echo "    ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ "
-echo "                                                                                      "
-echo "                  Tradeboard -- Installation & Configuration Script                  "
-echo "                       Repository: wesoftcorp/tradeboard                             "
+echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
+echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
+echo " ██║   ██║██████╔╝███████╗██╔██╗ ██║███████║██║     ██║  ███╗██║   ██║"
+echo " ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══██║██║     ██║   ██║██║   ██║"
+echo " ╚██████╔╝██╗     ███████╗██║ ╚████║██║  ██║███████╗╚██████╔╝╚██████╔╝"
+echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ "
+echo "                      MULTI-INSTANCE INSTALLER                          "
 echo -e "${NC}"
 
 # Create logs directory
@@ -95,7 +93,7 @@ check_timezone() {
 }
 
 # Start logging
-log_message "Starting Tradeboard Multi-Instance installation" "$BLUE"
+log_message "Starting TradeBoard Multi-Instance installation" "$BLUE"
 log_message "Log file: $LOG_FILE" "$BLUE"
 log_message "----------------------------------------" "$BLUE"
 
@@ -104,7 +102,7 @@ check_timezone
 
 # Ask number of instances
 while true; do
-    read -p "How many Tradeboard instances do you want to set up? " INSTANCES
+    read -p "How many TradeBoard instances do you want to set up? " INSTANCES
     if [[ "$INSTANCES" =~ ^[0-9]+$ ]] && [ "$INSTANCES" -gt 0 ]; then
         break
     else
@@ -112,10 +110,10 @@ while true; do
     fi
 done
 
-log_message "Setting up $INSTANCES Tradeboard instances" "$GREEN"
+log_message "Setting up $INSTANCES TradeBoard instances" "$GREEN"
 
 # Base configuration
-BASE_DIR="/var/python/tradeboard-flask"
+BASE_DIR="/var/python/TradeBoard-flask"
 REPO_URL="https://github.com/wesoftcorp/tradeboard.git"
 FLASK_PORT_BASE=5000
 WS_PORT_BASE=8765
@@ -205,7 +203,7 @@ for ((i=1; i<=INSTANCES; i++)); do
     # Same-domain mode — /mcp and /oauth/* are served from the same nginx
     # vhost as this instance's dashboard, so no extra config is required.
     # Local stdio MCP (Claude Desktop / Cursor / Windsurf) works regardless.
-    log_message "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to Tradeboard over HTTPS." "$BLUE"
+    log_message "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to TradeBoard over HTTPS." "$BLUE"
     log_message "Skip this if you only use the local MCP server with Claude Desktop / Cursor." "$YELLOW"
     read -p "Enable Remote MCP for instance $i? (y/N): " enable_mcp_input
     if [[ $enable_mcp_input =~ ^[Yy]$ ]]; then
@@ -230,7 +228,7 @@ check_status "Failed to install packages"
 # Install Chromium for Kaleido/Plotly static chart rendering (Telegram /chart command).
 # Kaleido 1.x ships no bundled browser; it drives a system Chromium via choreographer.
 # Debian has 'chromium' in main; Ubuntu 19.10+ renamed it to 'chromium-browser' (snap transitional).
-# Non-fatal — if nothing sticks we warn; the rest of tradeboard still installs fine.
+# Non-fatal — if nothing sticks we warn; the rest of TradeBoard still installs fine.
 log_message "\nInstalling Chromium for Telegram /chart rendering..." "$BLUE"
 if sudo apt-get install -y chromium fonts-liberation 2>/dev/null; then
     log_message "Installed chromium (Debian package)" "$GREEN"
@@ -276,10 +274,10 @@ for ((i=1; i<=INSTANCES; i++)); do
 
     # Paths
     DEPLOY_NAME="${DOMAIN/./-}-${BROKER}"
-    INSTANCE_DIR="$BASE_DIR/tradeboard$i"
+    INSTANCE_DIR="$BASE_DIR/TradeBoard$i"
     VENV_PATH="$INSTANCE_DIR/venv"
-    SOCKET_FILE="$INSTANCE_DIR/tradeboard.sock"
-    SERVICE_NAME="tradeboard$i"
+    SOCKET_FILE="$INSTANCE_DIR/TradeBoard.sock"
+    SERVICE_NAME="TradeBoard$i"
 
     # Ports
     FLASK_PORT=$((FLASK_PORT_BASE + i - 1))
@@ -327,7 +325,7 @@ for ((i=1; i<=INSTANCES; i++)); do
     API_KEY_PEPPER=$(generate_hex)
 
     # Database paths (unique per instance for complete isolation)
-    DB_PATH="sqlite:///db/tradeboard${i}.db"
+    DB_PATH="sqlite:///db/TradeBoard${i}.db"
     LATENCY_DB="sqlite:///db/latency${i}.db"
     LOGS_DB="sqlite:///db/logs${i}.db"
     HEALTH_DB="sqlite:///db/health${i}.db"
@@ -367,8 +365,8 @@ for ((i=1; i<=INSTANCES; i++)); do
     sudo sed -i "s|YOUR_BROKER_API_SECRET|$API_SECRET|g" "$ENV_FILE"
 
     # 7. Update security keys
-    sudo sed -i "s|TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$APP_KEY|g" "$ENV_FILE"
-    sudo sed -i "s|TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$API_KEY_PEPPER|g" "$ENV_FILE"
+    sudo sed -i "s|TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$APP_KEY|g" "$ENV_FILE"
+    sudo sed -i "s|TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$API_KEY_PEPPER|g" "$ENV_FILE"
 
     # Each instance runs gunicorn behind nginx (Unix socket bind). Trust the
     # proxy's X-Forwarded-For / X-Real-IP for IP-based features.
@@ -581,7 +579,7 @@ EOL
     log_message "Creating systemd service..." "$BLUE"
     sudo tee /etc/systemd/system/$SERVICE_NAME.service > /dev/null << EOL
 [Unit]
-Description=Tradeboard Instance $i ($DOMAIN - $BROKER)
+Description=TradeBoard Instance $i ($DOMAIN - $BROKER)
 After=network.target
 
 [Service]
@@ -652,8 +650,8 @@ for ((i=1; i<=INSTANCES; i++)); do
     log_message "\nInstance $i:" "$BLUE"
     log_message "  Domain: https://${DOMAINS[$idx]}" "$GREEN"
     log_message "  Broker: ${BROKERS[$idx]}" "$BLUE"
-    log_message "  Service: tradeboard$i" "$BLUE"
-    log_message "  Directory: $BASE_DIR/tradeboard$i" "$BLUE"
+    log_message "  Service: TradeBoard$i" "$BLUE"
+    log_message "  Directory: $BASE_DIR/TradeBoard$i" "$BLUE"
     if [ "${MCP_ENABLED_LIST[$idx]}" = "true" ]; then
         log_message "  Remote MCP: Enabled at https://${DOMAINS[$idx]}/mcp" "$BLUE"
     else
@@ -662,10 +660,10 @@ for ((i=1; i<=INSTANCES; i++)); do
 done
 
 log_message "\n📚 USEFUL COMMANDS:" "$YELLOW"
-log_message "View all services: systemctl list-units 'tradeboard*'" "$BLUE"
-log_message "Restart instance: sudo systemctl restart tradeboard<N>" "$BLUE"
-log_message "View logs: sudo journalctl -u tradeboard<N> -f" "$BLUE"
-log_message "Check status: sudo systemctl status tradeboard<N>" "$BLUE"
+log_message "View all services: systemctl list-units 'TradeBoard*'" "$BLUE"
+log_message "Restart instance: sudo systemctl restart TradeBoard<N>" "$BLUE"
+log_message "View logs: sudo journalctl -u TradeBoard<N> -f" "$BLUE"
+log_message "Check status: sudo systemctl status TradeBoard<N>" "$BLUE"
 
 log_message "\n📝 Installation log saved to: $LOG_FILE" "$BLUE"
 log_message "\n🎉 All instances are ready to use!" "$GREEN"

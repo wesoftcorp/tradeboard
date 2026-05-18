@@ -79,9 +79,7 @@ class AliceBlueWebSocket:
             payload = {"source": "API", "userId": self.user_id}
 
             client = get_httpx_client()
-            response = client.post(
-                url, json=payload, headers=self._get_auth_header(), timeout=10
-            )
+            response = client.post(url, json=payload, headers=self._get_auth_header(), timeout=10)
 
             if response.status_code == 200:
                 data = response.json()
@@ -109,9 +107,7 @@ class AliceBlueWebSocket:
             payload = {"source": "API", "userId": self.user_id}
 
             client = get_httpx_client()
-            response = client.post(
-                url, json=payload, headers=self._get_auth_header(), timeout=10
-            )
+            response = client.post(url, json=payload, headers=self._get_auth_header(), timeout=10)
 
             if response.status_code == 200:
                 data = response.json()
@@ -420,7 +416,7 @@ class AliceBlueWebSocket:
                     "ask": float(data.get("sp1", 0)),
                     "bid_qty": int(data.get("bq1", 0)),
                     "ask_qty": int(data.get("sq1", 0)),
-                    "symbol": symbol,  # Use Tradeboard symbol from subscription
+                    "symbol": symbol,  # Use TradeBoard symbol from subscription
                     "broker_symbol": data.get("ts", ""),  # Keep broker symbol for reference
                     "timestamp": datetime.now().isoformat(),
                 }
@@ -578,7 +574,7 @@ class AliceBlueWebSocket:
                     "ltp": float(data.get("lp", 0)),
                     "open_interest": int(float(data.get("oi", 0))) if data.get("oi") else 0,
                     "prev_open_interest": int(float(data.get("poi", 0))) if data.get("poi") else 0,
-                    "symbol": symbol,  # Use Tradeboard symbol from subscription
+                    "symbol": symbol,  # Use TradeBoard symbol from subscription
                     "broker_symbol": data.get("ts", ""),  # Keep broker symbol for reference
                     "timestamp": datetime.now().isoformat(),
                 }

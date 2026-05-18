@@ -1,4 +1,4 @@
-# PlaceSmartOrder
+﻿# PlaceSmartOrder
 
 Place Order Smartly by analyzing the current open position. It matches the Position Size with the given position book. Buy/Sell Signal Orders will be traded accordingly to the Position Size.
 
@@ -82,7 +82,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/placesmartorder \
 
 PlaceSmartOrder API function allows traders to build intelligent trading systems that can automatically place orders based on existing trade positions in the position book.
 
-| Action | Qty (API) | Pos Size (API) | Current Open Pos | Action by Tradeboard |
+| Action | Qty (API) | Pos Size (API) | Current Open Pos | Action by TradeBoard |
 |--------|-----------|----------------|------------------|-------------------|
 | BUY | 100 | 0 | 0 | No Open Pos Found. Buy +100 qty |
 | BUY | 100 | 100 | -100 | BUY 200 to match Open Pos in API Param |

@@ -1,4 +1,4 @@
-# AnalyzerToggle
+﻿# AnalyzerToggle
 
 Toggle the analyzer (sandbox) mode on or off.
 
@@ -71,7 +71,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/analyzertoggle \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | mode | true to enable analyzer, false to disable | Mandatory | - |
 
 ## Response Fields

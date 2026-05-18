@@ -1,8 +1,8 @@
-# 16 - Centralized Logging
+﻿# 16 - Centralized Logging
 
 ## Overview
 
-Tradeboard implements centralized logging with configurable levels, file rotation, and structured output. All application logs are routed through a unified logging system stored in `logs.db` and optional file logs.
+TradeBoard implements centralized logging with configurable levels, file rotation, and structured output. All application logs are routed through a unified logging system stored in `logs.db` and optional file logs.
 
 ## Architecture Diagram
 
@@ -43,9 +43,9 @@ Tradeboard implements centralized logging with configurable levels, file rotatio
                                   ┌────────────────────────────┐
                                   │       log/ directory       │
                                   │                            │
-                                  │  - tradeboard.log            │
-                                  │  - tradeboard.log.1          │
-                                  │  - tradeboard.log.2          │
+                                  │  - TradeBoard.log            │
+                                  │  - TradeBoard.log.1          │
+                                  │  - TradeBoard.log.2          │
                                   └────────────────────────────┘
 ```
 
@@ -119,7 +119,7 @@ def get_logger(name):
         # File handler (if enabled)
         if os.getenv('LOG_TO_FILE', 'False').lower() == 'true':
             file_handler = RotatingFileHandler(
-                filename=os.path.join(os.getenv('LOG_DIR', 'log'), 'tradeboard.log'),
+                filename=os.path.join(os.getenv('LOG_DIR', 'log'), 'TradeBoard.log'),
                 maxBytes=10*1024*1024,  # 10MB
                 backupCount=int(os.getenv('LOG_RETENTION', '14'))
             )
@@ -164,14 +164,14 @@ log_startup_banner(version, web_url, ws_url, ngrok_url)
 Output:
 
 ```
-╭─── Tradeboard v1.3.0 ──────────────────────────────────────────╮
+╭─── TradeBoard v1.3.0 ──────────────────────────────────────────╮
 │                                                              │
 │             Your Personal Algo Trading Platform              │
 │                                                              │
 │ Endpoints                                                    │
 │ Web App    http://127.0.0.1:5000                            │
 │ WebSocket  ws://127.0.0.1:8765                              │
-│ Docs       https://docs.wesoftcorp.com                         │
+│ Docs       https://docs.TradeBoard.in                         │
 │                                                              │
 │ Status     Ready                                             │
 │                                                              │
@@ -182,11 +182,11 @@ Output:
 
 ```
 log/
-├── tradeboard.log        # Current log file
-├── tradeboard.log.1      # Previous rotation
-├── tradeboard.log.2      # Older rotation
+├── TradeBoard.log        # Current log file
+├── TradeBoard.log.1      # Previous rotation
+├── TradeBoard.log.2      # Older rotation
 ├── ...
-└── tradeboard.log.14     # Oldest (based on LOG_RETENTION)
+└── TradeBoard.log.14     # Oldest (based on LOG_RETENTION)
 ```
 
 ### Rotation Settings
@@ -203,16 +203,16 @@ log/
 
 ```bash
 # View current log
-cat log/tradeboard.log
+cat log/TradeBoard.log
 
 # Follow log in real-time
-tail -f log/tradeboard.log
+tail -f log/TradeBoard.log
 
 # View last 100 lines
-tail -100 log/tradeboard.log
+tail -100 log/TradeBoard.log
 
 # Search for errors
-grep ERROR log/tradeboard.log
+grep ERROR log/TradeBoard.log
 ```
 
 ### UI Log Viewer

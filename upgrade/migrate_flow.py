@@ -25,7 +25,7 @@ def get_database_url():
     from dotenv import load_dotenv
 
     load_dotenv()
-    return os.getenv("DATABASE_URL", "sqlite:///db/tradeboard.db")
+    return os.getenv("DATABASE_URL", "sqlite:///db/TradeBoard.db")
 
 
 def table_exists(engine, table_name):

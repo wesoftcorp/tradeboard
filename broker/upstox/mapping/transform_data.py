@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Upstox Broking Parameters https://upstox.com/developer/api-documentation/orders
 
 from utils.logging import get_logger
@@ -72,9 +72,9 @@ def map_product_type(product):
 
 def reverse_map_product_type(exchange, product):
     """
-    Reverse maps the broker product type to the Tradeboard product type, considering the exchange.
+    Reverse maps the broker product type to the TradeBoard product type, considering the exchange.
     """
-    # Exchange to Tradeboard product type mapping for 'D'
+    # Exchange to TradeBoard product type mapping for 'D'
     exchange_mapping_for_d = {
         "NSE": "CNC",
         "BSE": "CNC",
@@ -86,12 +86,12 @@ def reverse_map_product_type(exchange, product):
 
     # Reverse mapping based on product type and exchange
     if product == "D":
-        tradeboard_product = exchange_mapping_for_d.get(exchange)
-        if not tradeboard_product:
+        TradeBoard_product = exchange_mapping_for_d.get(exchange)
+        if not TradeBoard_product:
             logger.warning(
                 f"Could not reverse map product type 'D' for unknown exchange '{exchange}'."
             )
-        return tradeboard_product
+        return TradeBoard_product
     elif product == "I":
         return "MIS"
     else:

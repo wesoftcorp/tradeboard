@@ -5,6 +5,7 @@ Synchronous Upstox V3 WebSocket client using websocket-client library.
 Uses the same sync pattern as Angel/Dhan adapters to avoid asyncio event loop
 conflicts with eventlet in gunicorn deployments.
 """
+
 import json
 import logging
 import ssl
@@ -50,6 +51,11 @@ class UpstoxWebSocketClient:
         self._health_check_thread: threading.Thread | None = None
         self._last_message_time: float | None = None
         self._connected = False
+
+        # Set by _force_reconnect() so _run_websocket can log the next
+        # reconnect attempt as STALL-TRIGGERED instead of looking identical
+        # to a network-induced reconnect (issue #1357).
+        self._stall_triggered_reconnect = False
         self.callbacks: dict[str, Callable | None] = {
             "on_connect": None,
             "on_message": None,
@@ -134,7 +140,20 @@ class UpstoxWebSocketClient:
                 break
 
             delay = self._calculate_backoff_delay(self._reconnect_attempts)
-            self.logger.info(f"Reconnecting in {delay}s (attempt {self._reconnect_attempts})...")
+            # Distinguish stall-triggered from network-triggered reconnects
+            # in the logs so operators can diagnose root cause from a single
+            # log line rather than chasing across multiple files (issue #1357).
+            if self._stall_triggered_reconnect:
+                self.logger.warning(
+                    f"Reconnecting due to DATA STALL "
+                    f"(no ticks for >{self.DATA_TIMEOUT}s) — "
+                    f"in {delay}s (attempt {self._reconnect_attempts})..."
+                )
+                self._stall_triggered_reconnect = False  # reset for next cycle
+            else:
+                self.logger.info(
+                    f"Reconnecting in {delay}s (attempt {self._reconnect_attempts})..."
+                )
             time.sleep(delay)
 
             # Re-fetch WebSocket URL for reconnection
@@ -226,7 +245,9 @@ class UpstoxWebSocketClient:
     def _on_ws_message(self, ws, message):
         """Called for both binary (protobuf) and text (JSON) messages"""
         self._last_message_time = time.time()
-        self.logger.debug(f"Received message: type={type(message).__name__}, size={len(message) if message else 0}")
+        self.logger.debug(
+            f"Received message: type={type(message).__name__}, size={len(message) if message else 0}"
+        )
         if isinstance(message, bytes):
             self._process_binary_message(message)
         else:
@@ -251,9 +272,7 @@ class UpstoxWebSocketClient:
         if self._health_check_thread and self._health_check_thread.is_alive():
             return
 
-        self._health_check_thread = threading.Thread(
-            target=self._health_check_loop, daemon=True
-        )
+        self._health_check_thread = threading.Thread(target=self._health_check_loop, daemon=True)
         self._health_check_thread.start()
 
     def _health_check_loop(self):
@@ -269,7 +288,8 @@ class UpstoxWebSocketClient:
                 elapsed = time.time() - self._last_message_time
                 if elapsed > self.DATA_TIMEOUT:
                     self.logger.error(
-                        f"Data stall detected - no data for {elapsed:.1f}s. Forcing reconnect..."
+                        f"Data stall detected - no data for {elapsed:.1f}s "
+                        f"(threshold {self.DATA_TIMEOUT}s). Forcing reconnect..."
                     )
                     self._force_reconnect()
                     break
@@ -279,8 +299,14 @@ class UpstoxWebSocketClient:
         self.logger.debug("Health check loop exited")
 
     def _force_reconnect(self):
-        """Force reconnection by closing the current WebSocket"""
-        self.logger.info("Forcing WebSocket reconnection...")
+        """Force reconnection by closing the current WebSocket.
+
+        Sets _stall_triggered_reconnect so _run_websocket can log the
+        next reconnect attempt distinguishably from a network-induced one
+        (issue #1357).
+        """
+        self.logger.info("Forcing WebSocket reconnection (stall-triggered)...")
+        self._stall_triggered_reconnect = True
         if self.ws:
             try:
                 self.ws.close()
@@ -292,7 +318,7 @@ class UpstoxWebSocketClient:
         """Process binary (protobuf) message"""
         try:
             data = self._decode_protobuf_to_dict(message)
-            self.logger.debug(f"Decoded protobuf message")
+            self.logger.debug("Decoded protobuf message")
             if self.callbacks.get("on_message"):
                 self.callbacks["on_message"](data)
         except Exception as e:
@@ -304,7 +330,7 @@ class UpstoxWebSocketClient:
             if isinstance(message, bytes):
                 message = message.decode("utf-8")
             data = json.loads(message)
-            self.logger.debug(f"Received JSON message")
+            self.logger.debug("Received JSON message")
 
             if data.get("status") == "failed" and data.get("error"):
                 method = data.get("method", "unknown")
@@ -328,9 +354,7 @@ class UpstoxWebSocketClient:
         """Get WebSocket URL from Upstox authorization endpoint"""
         try:
             headers = {"Accept": "application/json", "Authorization": f"Bearer {self.auth_token}"}
-            response = requests.get(
-                self.AUTH_ENDPOINT, headers=headers, timeout=self.HTTP_TIMEOUT
-            )
+            response = requests.get(self.AUTH_ENDPOINT, headers=headers, timeout=self.HTTP_TIMEOUT)
             response.raise_for_status()
             auth_data = response.json()
             ws_url = auth_data.get("data", {}).get("authorized_redirect_uri")
@@ -341,7 +365,7 @@ class UpstoxWebSocketClient:
                 self.logger.error("No WebSocket URL in auth response")
                 return None
         except requests.Timeout:
-            self.logger.error(f"Timeout getting WebSocket authorization")
+            self.logger.error("Timeout getting WebSocket authorization")
             return None
         except Exception as e:
             self.logger.error(f"Failed to get WebSocket authorization: {e}")

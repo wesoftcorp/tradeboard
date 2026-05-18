@@ -1,8 +1,8 @@
-# 32 - Master Contract Download
+﻿# 32 - Master Contract Download
 
 ## Overview
 
-Master contracts contain symbol mappings between Tradeboard's standardized format and broker-specific formats. They are downloaded daily and cached for fast symbol resolution.
+Master contracts contain symbol mappings between TradeBoard's standardized format and broker-specific formats. They are downloaded daily and cached for fast symbol resolution.
 
 ## Architecture Diagram
 
@@ -37,7 +37,7 @@ Master contracts contain symbol mappings between Tradeboard's standardized forma
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │  1. Fetch from broker API or static URL                              │   │
 │  │  2. Parse CSV/JSON format                                            │   │
-│  │  3. Transform to Tradeboard format                                     │   │
+│  │  3. Transform to TradeBoard format                                     │   │
 │  │  4. Store in symtoken table                                          │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -115,7 +115,7 @@ def download_master_contract():
 │ Column       │ Type         │ Description                      │
 ├──────────────┼──────────────┼──────────────────────────────────┤
 │ id           │ INTEGER PK   │ Auto-increment                   │
-│ symbol       │ VARCHAR      │ Tradeboard symbol format           │
+│ symbol       │ VARCHAR      │ TradeBoard symbol format           │
 │ brsymbol     │ VARCHAR      │ Broker-specific symbol           │
 │ exchange     │ VARCHAR      │ Exchange code                    │
 │ token        │ VARCHAR      │ Broker instrument token          │
@@ -130,7 +130,7 @@ def download_master_contract():
 
 ## Symbol Mapping
 
-### Tradeboard to Broker
+### TradeBoard to Broker
 
 ```python
 from database.token_db import get_br_symbol

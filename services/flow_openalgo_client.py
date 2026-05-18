@@ -1,7 +1,7 @@
-# services/flow_tradeboard_client.py
+# services/flow_TradeBoard_client.py
 """
-Tradeboard Client Wrapper for Flow
-Provides SDK-like interface using internal Tradeboard services
+TradeBoard Client Wrapper for Flow
+Provides SDK-like interface using internal TradeBoard services
 """
 
 import logging
@@ -10,9 +10,9 @@ from typing import Any, Dict, List, Optional, Tuple
 logger = logging.getLogger(__name__)
 
 
-class FlowTradeboardClient:
+class FlowTradeBoardClient:
     """
-    Client wrapper that provides SDK-like interface to Tradeboard services.
+    Client wrapper that provides SDK-like interface to TradeBoard services.
     Used by Flow workflow executor to interact with trading functionality.
     """
 
@@ -21,7 +21,7 @@ class FlowTradeboardClient:
         Initialize the client with an API key.
 
         Args:
-            api_key: The Tradeboard API key for authentication
+            api_key: The TradeBoard API key for authentication
         """
         self.api_key = api_key
 
@@ -655,14 +655,14 @@ class FlowTradeboardClient:
         return self._handle_response(success, response, status_code)
 
 
-def get_flow_client(api_key: str) -> FlowTradeboardClient:
+def get_flow_client(api_key: str) -> FlowTradeBoardClient:
     """
-    Factory function to create a Flow Tradeboard client.
+    Factory function to create a Flow TradeBoard client.
 
     Args:
-        api_key: The Tradeboard API key
+        api_key: The TradeBoard API key
 
     Returns:
-        FlowTradeboardClient instance
+        FlowTradeBoardClient instance
     """
-    return FlowTradeboardClient(api_key)
+    return FlowTradeBoardClient(api_key)

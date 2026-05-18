@@ -1,20 +1,29 @@
-# CLAUDE.md
+﻿# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Overview
 
-Tradeboard is a production-ready algorithmic trading platform built with Flask (backend) and React 19 (frontend). It provides a unified API layer across 30+ Indian brokers, enabling seamless integration with TradingView, Amibroker, Excel, Python, and AI agents.
+TradeBoard is a production-ready algorithmic trading platform built with Flask (backend) and React 19 (frontend). It is **four products in one self-hosted instance**, all sharing a single broker session and WebSocket feed:
+
+| Surface | Route | Purpose |
+| --- | --- | --- |
+| **Unified Broker API** | `/api/v1/` | External platforms (TradingView, Amibroker, ChartInk, Excel, Python, MCP) |
+| **Python Strategy Host** | `/python` | In-browser CodeMirror editor — paste scripts, schedule on IST times, run parallel strategies with process isolation and live logs |
+| **Flow (No-Code Builder)** | `/flow` | Drag-and-drop nodes: market data → indicators → conditions → order execution; JSON import/export |
+| **Options Trading Suite** | `/tools` | 12 analytical tools: Strategy Builder, Option Chain, IV Smile, Max Pain, Vol Surface, GEX, OI Tracker, Straddle Chart, etc. |
+
+All surfaces share the Sandbox engine (₹1 Crore sandbox capital, exchange-aligned auto square-off) and support Telegram alerts.
 
 **Repository**: https://github.com/wesoftcorp/tradeboard
-**Documentation**: https://docs.wesoftcorp.com
+**Documentation**: https://docs.TradeBoard.in
 
 ## Security and Deployment Model
 
 - **Single user per deployment** — no multi-user, no privilege escalation. One user, one broker session per instance.
 - **Self-hosted on user's own server** — server access = full control. No SaaS component.
 - All official install scripts (`install.sh`, `install-docker.sh`, `install-multi.sh`, `docker-run.sh`, `docker-run.bat`, `start.sh`) auto-generate unique `APP_KEY` and `API_KEY_PEPPER` via `secrets.token_hex(32)`.
-- **SEBI static IP mandate** (effective April 1, 2026): All transactional API orders require broker-side static IP whitelisting. Delta Exchange (crypto) also enforces this. Stolen broker credentials CANNOT be used from an attacker's machine — the broker rejects requests from non-registered IPs. However, attacks routed THROUGH the Tradeboard server (which has the registered IP) are still viable.
+- **SEBI static IP mandate** (effective April 1, 2026): All transactional API orders require broker-side static IP whitelisting. Delta Exchange (crypto) also enforces this. Stolen broker credentials CANNOT be used from an attacker's machine — the broker rejects requests from non-registered IPs. However, attacks routed THROUGH the TradeBoard server (which has the registered IP) are still viable.
 - External platforms (TradingView, GoCharting, Chartink) send API keys in JSON body or URL query params — they cannot set custom HTTP headers. This is an accepted architectural trade-off.
 - The MCP server (`mcp/mcpserver.py`) is local-only, communicates via stdio with Claude Desktop/Cursor/Windsurf. It is NOT remotely exposed.
 - Indian broker tokens expire daily at ~3:00 AM IST. Session management is aligned to this schedule.
@@ -38,10 +47,10 @@ cp .sample.env .env
 # Generate new APP_KEY and API_KEY_PEPPER:
 uv run python -c "import secrets; print(secrets.token_hex(32))"
 
-# Build React frontend (required - not tracked in git)
-cd frontend && npm install && npm run build && cd ..
-
-# Run application (uv automatically handles virtual env and dependencies)
+# Run application (uv automatically handles virtual env and dependencies).
+# The React frontend dist is force-committed to `main` by CI, so a fresh
+# clone of main already has frontend/dist/ ready to serve. You only need
+# to install Node and build locally if you are actively editing React code.
 uv run app.py
 ```
 
@@ -107,13 +116,13 @@ npm run format
 
 ### Database Architecture
 
-Tradeboard uses **6 separate databases** for isolation:
+TradeBoard uses **6 separate databases** for isolation:
 
-- `db/tradeboard.db` - Main database (users, orders, positions, settings)
+- `db/TradeBoard.db` - Main database (users, orders, positions, settings)
 - `db/logs.db` - Traffic and API logs
 - `db/latency.db` - Latency monitoring data
 - `db/health.db` - Health monitoring data
-- `db/sandbox.db` - Analyzer/sandbox mode (isolated sandbox trading)
+- `db/sandbox.db` - Sandbox trading mode (isolated from live trading)
 - `db/historify.duckdb` - Historical market data (DuckDB)
 
 Each database has its own initialization function in `/database/`.
@@ -140,7 +149,7 @@ All 30+ brokers follow a standardized structure in `broker/{broker_name}/`:
 2. `api/order_api.py` - Place, modify, cancel orders
 3. `api/data.py` - Quotes, depth, historical data
 4. `api/funds.py` - Account balance and margins
-5. `mapping/` - Transform Tradeboard format ↔ broker format
+5. `mapping/` - Transform TradeBoard format ↔ broker format
 6. `streaming/` - WebSocket adapter for real-time data
 7. `database/master_contract_db.py` - Symbol mapping
 8. `plugin.json` - Broker metadata
@@ -151,7 +160,7 @@ Reference implementations: `/broker/zerodha/`, `/broker/dhan/`, `/broker/angel/`
 
 Real-time market data flows through a three-layer pipeline:
 
-1. **Broker WebSocket Adapters** (`broker/*/streaming/`): Each broker has a WebSocket adapter that connects to the broker's proprietary feed and normalizes data into Tradeboard's internal format. Connection pooling is per-broker: `MAX_SYMBOLS_PER_WEBSOCKET` (default: 1000) x `MAX_WEBSOCKET_CONNECTIONS` (default: 3) = 3000 symbols max.
+1. **Broker WebSocket Adapters** (`broker/*/streaming/`): Each broker has a WebSocket adapter that connects to the broker's proprietary feed and normalizes data into TradeBoard's internal format. Connection pooling is per-broker: `MAX_SYMBOLS_PER_WEBSOCKET` (default: 1000) x `MAX_WEBSOCKET_CONNECTIONS` (default: 3) = 3000 symbols max.
 
 2. **ZeroMQ Message Bus** (port 5555): Broker adapters publish normalized tick data to a ZeroMQ PUB socket. This decouples the broker feed from client delivery — the broker adapter runs independently and never blocks on slow clients.
 
@@ -238,8 +247,10 @@ Most testing is currently manual via:
 
 ### Building for Production
 
+You typically do **not** need to build the frontend yourself for production deploys — see the CI/CD section below. Build only when actively editing React code:
+
 ```bash
-# Build React frontend
+# Build React frontend (only needed if editing React code)
 cd frontend
 npm run build
 
@@ -249,19 +260,28 @@ npm run build
 
 ### Important: Frontend Build (CI/CD)
 
-**`frontend/dist/` is NOT tracked in git.** The CI/CD pipeline builds it automatically on each push.
+`frontend/dist/` is in `.gitignore` so local devs cannot accidentally commit half-built artifacts — but on `main` the directory **is tracked**. The CI workflow (`.github/workflows/ci.yml`, job `commit-dist`) runs after every successful push to `main` and force-commits the freshly-built dist back to the branch:
 
-For local development after cloning:
-```bash
-cd frontend
-npm install
-npm run build
+```yaml
+# Excerpt from .github/workflows/ci.yml
+- name: Commit and push dist
+  run: |
+    git add -f frontend/dist/
+    git diff --staged --quiet || git commit -m "chore: auto-build frontend dist [skip ci]"
+    git push
 ```
 
-This is required before running the application locally. The build artifacts are gitignored to:
-- Prevent merge conflicts on hash-named files
-- Keep the repository size smaller
-- Ensure fresh builds via CI/CD
+Practical implications:
+
+- **Production servers** (clients running TradeBoard on Ubuntu/Docker/EC2) **do not need Node.js or npm.** A plain `git pull` from `main` already brings the latest UI artifacts. This is the canonical upgrade path documented at https://docs.TradeBoard.in/installation-guidelines/getting-started/upgrade.
+- **Backend-only local devs** (editing Python only, not React) also typically don't need to build — whatever CI committed last serves the UI fine.
+- **React developers** still need `cd frontend && npm install && npm run build` (or `npm run dev` for hot reload) to test their own changes locally, since the local `.gitignore` won't track their build output.
+- **Feature branches** that the CI hasn't built yet may have stale or missing `frontend/dist/`. Either build locally or rebase onto a recent `main`.
+
+Why gitignore + force-add rather than just tracking the dist normally:
+- Prevents merge conflicts on hash-named chunk files between contributors
+- Keeps PR diffs small and reviewable
+- Single canonical build per merged PR (CI's), no drift from contributor-local Node versions
 
 ## Key Architectural Concepts
 
@@ -290,17 +310,29 @@ Orders can flow through two modes:
 
 Approval workflow in `database/action_center_db.py` and `services/action_center_service.py`
 
-### Analyzer Mode (Sandbox Trading)
+### Sandbox Trading Mode
 
 Separate database (`sandbox.db`) with ₹1 Crore sandbox capital:
 - Realistic margin system with leverage
 - Auto square-off at exchange timings
 - Complete isolation from live trading
-- Toggle via `/analyzer` blueprint
+- Sandbox controls (capital, leverage, reset schedule) live at `/sandbox` (`blueprints/sandbox.py`); request/response inspection is at `/analyzer` (`blueprints/analyzer.py`)
+
+### Python Strategy Host
+
+In-browser Python editor (`blueprints/python_strategy.py`) powered by **APScheduler** (`services/historify_scheduler_service.py` and `services/flow_scheduler_service.py` share the same scheduler instance). Each strategy runs in a subprocess for process isolation. Logs stream to the UI via SocketIO. Strategy metadata is persisted in `TradeBoard.db` via `database/strategy_db.py`.
+
+### Flow (No-Code Builder)
+
+Node-based visual strategy builder (`blueprints/flow.py`). Flow definitions are stored as JSON in `database/flow_db.py`. At runtime, `services/flow_executor_service.py` interprets the node graph, `services/flow_price_monitor_service.py` watches live prices, and `services/flow_scheduler_service.py` manages scheduled triggers via APScheduler.
+
+### MCP Integration
+
+Two MCP endpoints exist: `blueprints/mcp_http.py` (streamable HTTP transport for MCP) and `blueprints/mcp_oauth.py` (OAuth2 authorization for remote MCP clients). OAuth state is stored in `database/oauth_db.py`. The stdio MCP server (`mcp/mcpserver.py`) remains local-only.
 
 ### Real-Time Communication (Event-Driven Architecture)
 
-Tradeboard uses an event-driven architecture where state changes are broadcast to the UI in real-time:
+TradeBoard uses an event-driven architecture where state changes are broadcast to the UI in real-time:
 
 1. **Flask-SocketIO events**: Order placement, modification, cancellation, position updates, and analyzer results all emit SocketIO events (e.g., `order_update`, `analyzer_update`, `cache_loaded`). The React frontend subscribes to these events for live dashboard updates without polling.
 
@@ -332,24 +364,24 @@ Critical variables to configure:
 
 There are **two independent versions** in this repo. Do not confuse them.
 
-### 1. Platform version (e.g. `2.0.0.6`)
+### 1. Platform version (e.g. `2.0.1.0`)
 
-This is the Tradeboard platform itself. Source of truth: `utils/version.py`. Bumping touches **two files** and regenerates the lockfile — **never** the requirements files.
+This is the TradeBoard platform itself. Source of truth: `utils/version.py`. Bumping touches **two files** and regenerates the lockfile — **never** the requirements files.
 
 1. `utils/version.py` — `VERSION = "x.y.z.w"` (runtime source of truth, read by `get_version()`)
 2. `pyproject.toml` — `version = "x.y.z.w"` (line 4, package metadata)
 3. Run `uv sync` to regenerate `uv.lock` with the new version
 
 ```bash
-# Example: bumping platform 2.0.0.6 → 2.0.0.7
-# 1. Edit utils/version.py     → VERSION = "2.0.0.7"
-# 2. Edit pyproject.toml line 4 → version = "2.0.0.7"
+# Example: bumping platform 2.0.1.0 → 2.0.1.1
+# 1. Edit utils/version.py     → VERSION = "2.0.1.1"
+# 2. Edit pyproject.toml line 4 → version = "2.0.1.1"
 # 3. Sync the lockfile
 uv sync
 
 # 4. Verify
 uv run python -c "from utils.version import get_version; print(get_version())"
-# → 2.0.0.7
+# → 2.0.1.1
 ```
 
 The platform version surfaces in:
@@ -357,13 +389,13 @@ The platform version surfaces in:
 - API responses that include version metadata
 - Docker image tags built by CI
 
-### 2. Tradeboard Python SDK pin (e.g. `openalgo==1.0.49`)
+### 2. TradeBoard Python SDK pin (e.g. `TradeBoard==1.0.49`)
 
-This is a **separate** client library published on PyPI ([`tradeboard`](https://pypi.org/project/tradeboard/)) that the platform uses internally. It has its own release cycle. Bumping the SDK pin touches the dependency lists, **not** `utils/version.py`:
+This is a **separate** client library published on PyPI ([`TradeBoard`](https://pypi.org/project/TradeBoard/)) that the platform uses internally. It has its own release cycle. Bumping the SDK pin touches the dependency lists, **not** `utils/version.py`:
 
-1. `pyproject.toml` — update `openalgo==X.Y.Z` in the `dependencies` list
-2. `requirements.txt` — update the `openalgo==X.Y.Z` line
-3. `requirements-nginx.txt` — update the `openalgo==X.Y.Z` line
+1. `pyproject.toml` — update `TradeBoard==X.Y.Z` in the `dependencies` list
+2. `requirements.txt` — update the `TradeBoard==X.Y.Z` line
+3. `requirements-nginx.txt` — update the `TradeBoard==X.Y.Z` line
 4. Run `uv sync` to regenerate `uv.lock`
 
 ```bash
@@ -372,15 +404,33 @@ This is a **separate** client library published on PyPI ([`tradeboard`](https://
 uv sync
 ```
 
-**Rule of thumb:** if you are releasing Tradeboard, bump #1. If a new SDK is on PyPI with a fix you need, bump #2. They are unrelated.
+**Rule of thumb:** if you are releasing TradeBoard, bump #1. If a new SDK is on PyPI with a fix you need, bump #2. They are unrelated.
 
 ## Code Style and Conventions
 
 ### Python
-- Follow PEP 8 style guide
+
+The project uses **Ruff** for linting and formatting (configured in `pyproject.toml`):
+
+```bash
+uv run ruff check .          # lint (errors + warnings)
+uv run ruff check . --fix    # auto-fix safe issues
+uv run ruff format .         # format (replaces Black)
+```
+
+Ruff rules enabled: `E`, `F`, `W` (pycodestyle/pyflakes), `I` (isort), `B` (bugbear), `C4` (comprehensions), `UP` (pyupgrade). Line-length 100, target Python 3.12. Directories excluded: `.venv`, `frontend`, `db`, `log`, `strategies`.
+
 - Use 4 spaces for indentation
 - Use Google-style docstrings
 - Imports: Standard library → Third-party → Local
+
+Dev security tooling (in `dev` dependency group):
+
+```bash
+uv run --group dev bandit -r . -x .venv,frontend   # security scan
+uv run --group dev pip-audit                        # CVE check on deps
+uv run --group dev detect-secrets scan              # secret leak scan
+```
 
 ### React/TypeScript
 - Follow Biome.js linting rules (`frontend/biome.json`)
@@ -410,7 +460,7 @@ API keys are generated at `/apikey` and hashed with pepper before storage.
 
 ### Symbol Format
 
-Tradeboard uses a standardized symbol format across all 30+ brokers. Broker-specific symbols are mapped via `broker/*/mapping/` modules and stored in the `SymToken` table.
+TradeBoard uses a standardized symbol format across all 30+ brokers. Broker-specific symbols are mapped via `broker/*/mapping/` modules and stored in the `SymToken` table.
 
 **Equity:** Just the base symbol — `INFY`, `SBIN`, `TATAMOTORS`
 
@@ -425,7 +475,7 @@ Tradeboard uses a standardized symbol format across all 30+ brokers. Broker-spec
 - **Price type:** `MARKET`, `LIMIT`, `SL` (stop-loss limit), `SL-M` (stop-loss market)
 - **Action:** `BUY`, `SELL`
 
-**Database schema (`SymToken`):** `symbol` (Tradeboard format), `brsymbol` (broker format), `exchange`, `brexchange`, `token` (broker instrument token), `expiry`, `strike`, `lotsize`, `instrumenttype`, `tick_size`
+**Database schema (`SymToken`):** `symbol` (TradeBoard format), `brsymbol` (broker format), `exchange`, `brexchange`, `token` (broker instrument token), `expiry`, `strike`, `lotsize`, `instrumenttype`, `tick_size`
 
 ### Database Queries
 
@@ -473,7 +523,7 @@ All logging flows through Python's standard `logging` module, configured in `set
 **Three output handlers (all share the same `SensitiveDataFilter` to redact API keys/tokens):**
 
 1. **Console** (always active): Colored output via `ColoredFormatter`, level controlled by `LOG_LEVEL` env var.
-2. **File** (if `LOG_TO_FILE=True`): Daily-rotated text logs in `log/tradeboard_YYYY-MM-DD.log`, retained for `LOG_RETENTION` days.
+2. **File** (if `LOG_TO_FILE=True`): Daily-rotated text logs in `log/TradeBoard_YYYY-MM-DD.log`, retained for `LOG_RETENTION` days.
 3. **JSON error log** (always active): `log/errors.jsonl` — structured JSON Lines, ERROR+ only.
 
 ### Error Log for Debugging
@@ -511,7 +561,7 @@ All error logging uses `logger.exception()` (not `logger.error()` + manual trace
 ## Claude Code Instructions
 
 ### Frontend Build Process
-When building the React frontend locally:
-- Run `cd frontend && npm run build` (build only, no tests)
-- Tests are handled by CI/CD pipeline, not required for local builds
-- The `frontend/dist/` directory is gitignored and built by GitHub Actions
+- The React frontend dist is force-committed to `main` by CI (`commit-dist` job in `.github/workflows/ci.yml`). Production servers and backend-only contributors do NOT need Node.js or npm — a plain `git pull` from `main` already brings the latest UI.
+- When actively editing React code, run `cd frontend && npm install && npm run build` (build only, no tests). Tests run in CI; not required for local iteration.
+- The local `.gitignore` excludes `frontend/dist/` so contributors cannot accidentally commit their own build output — but CI uses `git add -f` to override the ignore on `main` only.
+- See the "Important: Frontend Build (CI/CD)" section above for the full picture.

@@ -1,4 +1,4 @@
-# Expiry
+﻿# Expiry
 
 Get available expiry dates for a futures or options symbol.
 
@@ -78,7 +78,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/expiry \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | symbol | Underlying symbol (e.g., NIFTY, BANKNIFTY) | Mandatory | - |
 | exchange | Exchange code: NFO, BFO, CDS, BCD, MCX | Mandatory | - |
 | instrumenttype | Instrument type: "options" or "futures" | Mandatory | - |

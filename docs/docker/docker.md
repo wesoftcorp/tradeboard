@@ -1,5 +1,5 @@
-# Docker Development Setup for Tradeboard Flask
-This guide focuses on setting up a development environment for Tradeboard Flask using Docker.
+﻿# Docker Development Setup for TradeBoard Flask
+This guide focuses on setting up a development environment for TradeBoard Flask using Docker.
 
 ## Prerequisites
 * Docker Engine 
@@ -64,7 +64,7 @@ services:
     environment:
       - FLASK_DEBUG=True
       - FLASK_ENV=development
-      - DATABASE_URL=sqlite:///db/tradeboard.db
+      - DATABASE_URL=sqlite:///db/TradeBoard.db
     restart: unless-stopped
 ```
 
@@ -139,7 +139,7 @@ docker-compose ps
 
 ## Directory Structure
 ```
-tradeboard/
+TradeBoard/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .dockerignore
@@ -147,7 +147,7 @@ tradeboard/
 ├── app.py
 ├── requirements-nginx.txt
 └── db/
-    └── tradeboard.db
+    └── TradeBoard.db
 ```
 
 ## Development Tips

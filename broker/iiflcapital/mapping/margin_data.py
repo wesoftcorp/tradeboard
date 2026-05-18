@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping IIFL Capital SPAN and Exposure Margin API
 
 from broker.iiflcapital.mapping.transform_data import map_exchange
@@ -10,10 +10,10 @@ logger = get_logger(__name__)
 
 def transform_margin_positions(positions):
     """
-    Transform Tradeboard margin positions to IIFL Capital span/exposure format.
+    Transform TradeBoard margin positions to IIFL Capital span/exposure format.
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
 
     Returns:
         List of positions in IIFL Capital format
@@ -35,12 +35,16 @@ def transform_margin_positions(positions):
                 continue
 
             if action not in {"BUY", "SELL"}:
-                logger.warning(f"Invalid action for margin position {symbol} ({exchange}): {action}")
+                logger.warning(
+                    f"Invalid action for margin position {symbol} ({exchange}): {action}"
+                )
                 skipped_positions.append(f"{symbol} ({exchange}) - invalid action: {action}")
                 continue
 
             if quantity <= 0:
-                logger.warning(f"Invalid quantity for margin position {symbol} ({exchange}): {quantity}")
+                logger.warning(
+                    f"Invalid quantity for margin position {symbol} ({exchange}): {quantity}"
+                )
                 skipped_positions.append(f"{symbol} ({exchange}) - invalid quantity: {quantity}")
                 continue
 
@@ -77,13 +81,13 @@ def transform_margin_positions(positions):
 
 def parse_margin_response(response_data):
     """
-    Parse IIFL Capital span/exposure response to Tradeboard standard format.
+    Parse IIFL Capital span/exposure response to TradeBoard standard format.
 
     Args:
         response_data: Raw response from IIFL Capital margin API
 
     Returns:
-        Standardized margin response matching Tradeboard format
+        Standardized margin response matching TradeBoard format
     """
     try:
         if not response_data or not isinstance(response_data, dict):

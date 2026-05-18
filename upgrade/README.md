@@ -1,4 +1,4 @@
-# Tradeboard Upgrade Guide
+﻿# TradeBoard Upgrade Guide
 
 ## Quick Start (Recommended)
 
@@ -33,8 +33,8 @@ python upgrade/<migration_script>.py
 
 #### How to Apply
 ```bash
-# Navigate to tradeboard directory
-cd tradeboard
+# Navigate to TradeBoard directory
+cd TradeBoard
 
 # Apply sandbox migration
 uv run upgrade/migrate_sandbox.py
@@ -68,8 +68,8 @@ The `migrate_sandbox.py` script performs a comprehensive migration:
 
 #### How to Apply
 ```bash
-# Navigate to tradeboard directory
-cd tradeboard
+# Navigate to TradeBoard directory
+cd TradeBoard
 
 # Apply the migration (creates tables)
 uv run upgrade/migrate_telegram_bot.py
@@ -83,7 +83,7 @@ uv run upgrade/migrate_telegram_bot.py --downgrade
 
 #### What It Does
 - Creates 5 new tables for Telegram functionality
-- Adds user linking between Telegram and Tradeboard
+- Adds user linking between Telegram and TradeBoard
 - Enables read-only access to trading data via Telegram
 - Provides analytics and command tracking
 
@@ -165,8 +165,8 @@ When you first use the feature, these will be created automatically:
 
 #### How to Apply
 ```bash
-# Navigate to tradeboard directory
-cd tradeboard
+# Navigate to TradeBoard directory
+cd TradeBoard
 
 # Apply indexes migration
 uv run upgrade/migrate_indexes.py
@@ -248,9 +248,9 @@ python your_migration.py status
 
 ### Common Issues
 
-1. **Module not found errors**: Ensure you're running from the Tradeboard directory with virtual environment:
+1. **Module not found errors**: Ensure you're running from the TradeBoard directory with virtual environment:
    ```bash
-   cd /path/to/tradeboard
+   cd /path/to/TradeBoard
    source .venv/bin/activate  # or use uv run
    python upgrade/migration_name.py
    ```
@@ -263,4 +263,4 @@ python your_migration.py status
 
 ---
 
-*For full documentation, see [Tradeboard Documentation](../docs/)*
+*For full documentation, see [TradeBoard Documentation](../docs/)*

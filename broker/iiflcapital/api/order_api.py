@@ -1,3 +1,4 @@
+import re
 from types import SimpleNamespace
 from typing import Any
 
@@ -16,6 +17,20 @@ logger = get_logger(__name__)
 
 _DIRECT_ORDER_KEYS = {"instrumentId", "exchange", "transactionType", "quantity"}
 _SUCCESS_STATUSES = {"success", "ok"}
+_ORDER_ID_PATTERN = re.compile(r"^[A-Za-z0-9_-]+$")
+
+
+def _safe_order_id(orderid: Any) -> str:
+    """Validate orderid for inclusion in a URL path.
+
+    Rejects values containing '/', '?', '..', whitespace, etc. that could
+    pivot the request to a different endpoint.
+    """
+    candidate = str(orderid or "").strip()
+    if not candidate or not _ORDER_ID_PATTERN.match(candidate):
+        raise ValueError(f"Invalid orderid: {candidate!r}")
+    return candidate
+
 
 _OPEN_STATUSES = {
     "OPEN",
@@ -132,7 +147,9 @@ def _first_result(payload: Any) -> dict:
 
 def _is_direct_order_payload(data: Any) -> bool:
     if isinstance(data, list):
-        return bool(data) and all(isinstance(item, dict) and _DIRECT_ORDER_KEYS.issubset(item) for item in data)
+        return bool(data) and all(
+            isinstance(item, dict) and _DIRECT_ORDER_KEYS.issubset(item) for item in data
+        )
     return isinstance(data, dict) and _DIRECT_ORDER_KEYS.issubset(data)
 
 
@@ -251,7 +268,8 @@ def place_order_api(data, auth):
     logger.debug(f"IIFL Capital place order payload: {payload}")
     response, response_data = _request("/orders", auth, method="POST", payload=payload)
     logger.info(f"IIFL Capital place order response status: {response.status_code}")
-    logger.info(f"IIFL Capital place order raw response: {response_data}")
+    # Raw body may include broker order IDs / account context — debug only.
+    logger.debug(f"IIFL Capital place order raw response: {response_data}")
 
     result = _first_result(response_data)
     order_id = result.get("brokerOrderId")
@@ -304,7 +322,11 @@ def place_smartorder_api(data, auth):
         quantity = current_position - position_size
 
     if not action or quantity <= 0:
-        return None, {"status": "success", "message": "No action needed. Position already aligned"}, None
+        return (
+            None,
+            {"status": "success", "message": "No action needed. Position already aligned"},
+            None,
+        )
 
     order_data = data.copy()
     order_data["action"] = action
@@ -339,7 +361,7 @@ def close_all_positions(current_api_key, auth):
             "product": row.get("product", "NORMAL"),
             "orderType": "MARKET",
             "validity": "DAY",
-            "apiOrderSource": "tradeboard",
+            "apiOrderSource": "TradeBoard",
             "orderTag": "close_all_positions",
         }
 
@@ -360,12 +382,17 @@ def close_all_positions(current_api_key, auth):
 
 
 def cancel_order(orderid, auth):
-    logger.debug(f"IIFL Capital cancel order request for {orderid}")
-    response, response_data = _request(f"/orders/{orderid}", auth, method="DELETE")
-    logger.debug(f"IIFL Capital cancel order response for {orderid}: {response_data}")
+    try:
+        safe_id = _safe_order_id(orderid)
+    except ValueError as exc:
+        return {"status": "error", "message": str(exc)}, 400
+
+    logger.debug(f"IIFL Capital cancel order request for {safe_id}")
+    response, response_data = _request(f"/orders/{safe_id}", auth, method="DELETE")
+    logger.debug(f"IIFL Capital cancel order response for {safe_id}: {response_data}")
 
     if response.status_code == 200 and _ok(response_data):
-        return {"status": "success", "orderid": str(orderid)}, 200
+        return {"status": "success", "orderid": safe_id}, 200
 
     return {
         "status": "error",
@@ -374,15 +401,19 @@ def cancel_order(orderid, auth):
 
 
 def modify_order(data, auth):
-    order_id = data.get("orderid")
+    try:
+        safe_id = _safe_order_id(data.get("orderid"))
+    except ValueError as exc:
+        return {"status": "error", "message": str(exc)}, 400
+
     payload = transform_modify_order_data(data)
 
-    logger.debug(f"IIFL Capital modify order payload for {order_id}: {payload}")
-    response, response_data = _request(f"/orders/{order_id}", auth, method="PUT", payload=payload)
-    logger.debug(f"IIFL Capital modify order response for {order_id}: {response_data}")
+    logger.debug(f"IIFL Capital modify order payload for {safe_id}: {payload}")
+    response, response_data = _request(f"/orders/{safe_id}", auth, method="PUT", payload=payload)
+    logger.debug(f"IIFL Capital modify order response for {safe_id}: {response_data}")
 
     if response.status_code == 200 and _ok(response_data):
-        return {"status": "success", "orderid": str(order_id)}, 200
+        return {"status": "success", "orderid": safe_id}, 200
 
     return {
         "status": "error",

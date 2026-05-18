@@ -17,7 +17,7 @@ from utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-# Regex pattern to extract underlying from Tradeboard symbol format
+# Regex pattern to extract underlying from TradeBoard symbol format
 # Format: [BaseSymbol][DDMMMYY][StrikePrice][CE/PE] or [BaseSymbol][DDMMMYY]FUT
 # Examples: NIFTY28MAR2420800CE, BANKNIFTY24APR24FUT, CRUDEOIL17APR246750CE
 _UNDERLYING_PATTERN = re.compile(
@@ -41,9 +41,9 @@ _CRYPTO_UNDERLYING_PATTERN = re.compile(
 
 def extract_underlying_from_symbol(symbol: str, exchange: str) -> str | None:
     """
-    Extract underlying name from Tradeboard symbol format.
+    Extract underlying name from TradeBoard symbol format.
 
-    Tradeboard symbol formats:
+    TradeBoard symbol formats:
     - Indian FNO / CRYPTO options+futures:
         [BaseSymbol][DDMMMYY][Strike][CE/PE]  e.g. NIFTY28MAR2420800CE  → NIFTY
         [BaseSymbol][DDMMMYY]FUT              e.g. BTC28FEB25FUT         → BTC
@@ -52,7 +52,7 @@ def extract_underlying_from_symbol(symbol: str, exchange: str) -> str | None:
       Underlying = strip trailing USDT or USD quote-currency suffix.
 
     Args:
-        symbol: Tradeboard formatted symbol
+        symbol: TradeBoard formatted symbol
         exchange: Exchange code (NFO, BFO, MCX, CDS, CRYPTO, etc.)
 
     Returns:
@@ -131,7 +131,7 @@ class SymbolData:
     lotsize: int | None = None
     instrumenttype: str | None = None
     tick_size: float | None = None
-    underlying: str | None = None  # Extracted from Tradeboard symbol format for F&O
+    underlying: str | None = None  # Extracted from TradeBoard symbol format for F&O
     contract_value: float | None = None  # Contract multiplier (e.g. 0.001 for BTCUSD.P)
 
 
@@ -158,7 +158,15 @@ class BrokerSymbolCache:
         # Pre-computed indexes for FNO filter performance (O(1) lookups)
         self.by_exchange: dict[str, list[SymbolData]] = defaultdict(list)
         self.expiries_by_exchange: dict[str, set[str]] = defaultdict(set)
+        # Options-only: underlyings that have at least one CE/PE row. Used by
+        # option-chain / IV-chart / GEX dropdowns where futures-only commodities
+        # would be dead-ends.
         self.underlyings_by_exchange: dict[str, set[str]] = defaultdict(set)
+        # Tradable: union of options-bearing underlyings AND underlyings with at
+        # least one non-expired FUT row. Used by the generic /search/token UI
+        # where MCX commodities like NATURALGASMINI / LEADMINI / COPPER (FUT-only)
+        # are legitimate trade-able instruments.
+        self.tradable_underlyings_by_exchange: dict[str, set[str]] = defaultdict(set)
         self.expiries_by_exchange_underlying: dict[tuple[str, str], set[str]] = defaultdict(set)
 
         # Cache statistics
@@ -191,9 +199,33 @@ class BrokerSymbolCache:
                 logger.warning(f"No symbols found in database for broker: {broker}")
                 return False
 
+            # Today (IST) for the live-future check on the tradable underlyings index.
+            # Computed once per cache load — cache invalidates at the daily session
+            # reset (3 AM IST default), so a fresh `today` is picked up each day.
+            ist_today = datetime.now(pytz.timezone("Asia/Kolkata")).date()
+            # Tiny memo for repeated expiry strings (~thousands of FUT rows share
+            # a few dozen distinct dates); strptime is cheap but not free.
+            _expiry_date_cache: dict[str, datetime.date | None] = {}
+
+            def _exp_to_date(exp_str):
+                if not exp_str:
+                    return None
+                cached = _expiry_date_cache.get(exp_str)
+                if cached is not None or exp_str in _expiry_date_cache:
+                    return cached
+                parsed = None
+                for fmt in ("%d-%b-%y", "%d-%b-%Y"):
+                    try:
+                        parsed = datetime.strptime(exp_str, fmt).date()
+                        break
+                    except ValueError:
+                        continue
+                _expiry_date_cache[exp_str] = parsed
+                return parsed
+
             # Build in-memory structures
             for sym in symbols:
-                # Extract underlying from Tradeboard symbol format for FNO exchanges
+                # Extract underlying from TradeBoard symbol format for FNO exchanges
                 underlying = None
                 if sym.exchange in FNO_EXCHANGES:
                     underlying = extract_underlying_from_symbol(sym.symbol, sym.exchange)
@@ -212,7 +244,7 @@ class BrokerSymbolCache:
                     instrumenttype=sym.instrumenttype,
                     tick_size=sym.tick_size,
                     underlying=underlying,
-                    contract_value=getattr(sym, 'contract_value', None),
+                    contract_value=getattr(sym, "contract_value", None),
                 )
 
                 # Store in primary dict
@@ -230,13 +262,24 @@ class BrokerSymbolCache:
                     self.expiries_by_exchange[sym.exchange].add(sym.expiry)
                     # Use extracted underlying for index (more reliable than broker's name field)
                     if underlying:
-                        self.expiries_by_exchange_underlying[(sym.exchange, underlying)].add(sym.expiry)
+                        self.expiries_by_exchange_underlying[(sym.exchange, underlying)].add(
+                            sym.expiry
+                        )
                 # Use extracted underlying for underlyings index.
-                # Only track underlyings that have options (CE/PE) — perpetuals, futures,
-                # spreads, etc. should not appear in the option-chain/IV-chart dropdown.
+                # `underlyings_by_exchange` is options-only — option-chain/IV-chart
+                # dropdowns must not show futures-only commodities (dead-ends).
+                # `tradable_underlyings_by_exchange` is the union (options OR live
+                # futures) — used by the generic search/token UI where every
+                # tradable contract should be discoverable.
                 sym_upper = sym.symbol.upper()
-                if underlying and (sym_upper.endswith("CE") or sym_upper.endswith("PE")):
-                    self.underlyings_by_exchange[sym.exchange].add(underlying)
+                if underlying:
+                    if sym_upper.endswith("CE") or sym_upper.endswith("PE"):
+                        self.underlyings_by_exchange[sym.exchange].add(underlying)
+                        self.tradable_underlyings_by_exchange[sym.exchange].add(underlying)
+                    elif sym_upper.endswith("FUT"):
+                        exp_date = _exp_to_date(sym.expiry)
+                        if exp_date and exp_date >= ist_today:
+                            self.tradable_underlyings_by_exchange[sym.exchange].add(underlying)
 
             # Update cache metadata
             self.active_broker = broker
@@ -333,7 +376,7 @@ class BrokerSymbolCache:
         return None
 
     def get_oa_symbol(self, brsymbol: str, exchange: str) -> str | None:
-        """Get Tradeboard symbol for broker symbol and exchange - O(1) lookup"""
+        """Get TradeBoard symbol for broker symbol and exchange - O(1) lookup"""
         self.stats.hits += 1
         key = (brsymbol, exchange)
         if key in self.by_brsymbol_exchange:
@@ -527,7 +570,7 @@ class BrokerSymbolCache:
             symbols_to_search = self.symbols.values()
 
         for symbol_data in symbols_to_search:
-            # Underlying filter (use extracted underlying from Tradeboard symbol format)
+            # Underlying filter (use extracted underlying from TradeBoard symbol format)
             if underlying_upper and (
                 not symbol_data.underlying or symbol_data.underlying != underlying_upper
             ):
@@ -607,7 +650,9 @@ class BrokerSymbolCache:
 
             # Priority 2: Underlying starts with search term (e.g., "NIFTY" before "BANKNIFTY")
             underlying_starts = (
-                0 if (primary_term and s.underlying and s.underlying.startswith(primary_term)) else 1
+                0
+                if (primary_term and s.underlying and s.underlying.startswith(primary_term))
+                else 1
             )
 
             # Priority 3: Symbol starts with search term
@@ -630,6 +675,7 @@ class BrokerSymbolCache:
         self.by_exchange.clear()
         self.expiries_by_exchange.clear()
         self.underlyings_by_exchange.clear()
+        self.tradable_underlyings_by_exchange.clear()
         self.expiries_by_exchange_underlying.clear()
         self.cache_loaded = False
         self.active_broker = None
@@ -711,7 +757,7 @@ def get_br_symbol(symbol: str, exchange: str) -> str | None:
 
 def get_oa_symbol(brsymbol: str, exchange: str) -> str | None:
     """
-    Get Tradeboard symbol for a given broker symbol and exchange
+    Get TradeBoard symbol for a given broker symbol and exchange
     """
     cache = get_cache()
 
@@ -803,7 +849,7 @@ def get_br_symbol_dbquery(symbol: str, exchange: str) -> str | None:
 
 
 def get_oa_symbol_dbquery(brsymbol: str, exchange: str) -> str | None:
-    """Query database for Tradeboard symbol"""
+    """Query database for TradeBoard symbol"""
     try:
         from database.symbol import SymToken
 
@@ -1074,7 +1120,9 @@ def get_distinct_expiries_cached(
 
         if exchange and underlying_upper:
             # Use the combined index for exchange + underlying
-            expiries = cache.expiries_by_exchange_underlying.get((exchange, underlying_upper), set())
+            expiries = cache.expiries_by_exchange_underlying.get(
+                (exchange, underlying_upper), set()
+            )
         elif exchange:
             # Use the exchange-only index
             expiries = cache.expiries_by_exchange.get(exchange, set())
@@ -1084,7 +1132,11 @@ def get_distinct_expiries_cached(
             for exp_set in cache.expiries_by_exchange.values():
                 expiries.update(exp_set)
 
-        # Sort expiries chronologically
+        # Sort expiries chronologically and drop already-expired dates so
+        # dropdowns only surface live expiries. Master-contract caches can
+        # carry recently expired rows for several days; without this filter
+        # the chain defaults to a dead expiry where brokers return empty
+        # depth / volume = 0.
         def parse_expiry(exp_str):
             """Parse an expiry date string into a datetime for chronological sorting."""
             try:
@@ -1095,7 +1147,9 @@ def get_distinct_expiries_cached(
                 except ValueError:
                     return datetime.max
 
-        return sorted(list(expiries), key=parse_expiry)
+        today = datetime.now().date()
+        live_expiries = [e for e in expiries if parse_expiry(e).date() >= today]
+        return sorted(live_expiries, key=parse_expiry)
 
     # Fallback to database
     try:
@@ -1107,26 +1161,42 @@ def get_distinct_expiries_cached(
         return []
 
 
-def get_distinct_underlyings_cached(exchange: str | None = None) -> list[str]:
+def get_distinct_underlyings_cached(
+    exchange: str | None = None, include_futures: bool = False
+) -> list[str]:
     """
     Get distinct underlying names from cache - fast O(1) lookup using pre-computed indexes
-    Falls back to database if cache is not available
+    Falls back to database if cache is not available.
+
+    Args:
+        exchange: Exchange filter (NFO, BFO, MCX, ...).
+        include_futures: When True, return the tradable index (options ∪ live
+            futures). When False (default), return options-only — required for
+            option-chain / IV-chart dropdowns where futures-only underlyings
+            are dead ends.
     """
     cache = get_cache()
+    index = (
+        cache.tradable_underlyings_by_exchange if include_futures else cache.underlyings_by_exchange
+    )
 
     if cache.cache_loaded and cache.is_cache_valid():
         # Use pre-computed index for O(1) lookup instead of iterating all symbols
         if exchange:
-            underlyings = cache.underlyings_by_exchange.get(exchange, set())
+            underlyings = index.get(exchange, set())
         else:
             # No filter - combine all underlyings (rare case)
             underlyings = set()
-            for underlying_set in cache.underlyings_by_exchange.values():
+            for underlying_set in index.values():
                 underlyings.update(underlying_set)
 
         return sorted(list(underlyings))
 
-    # Fallback to database
+    # Fallback to database. The DB query returns all distinct names for the
+    # exchange — that already matches `include_futures=True` semantics. For
+    # `include_futures=False` it's slightly broader than ideal, but this path
+    # only fires while the cache is loading, so it's an acceptable degraded
+    # window (a few seconds at startup).
     try:
         from database.symbol import get_distinct_underlyings
 

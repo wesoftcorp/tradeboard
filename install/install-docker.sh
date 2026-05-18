@@ -1,6 +1,6 @@
-#!/bin/bash
+﻿#!/bin/bash
 
-# Tradeboard Docker Installation Script
+# TradeBoard Docker Installation Script
 # Simplified installation for Docker deployment with custom domain
 
 # Colors for output
@@ -10,17 +10,15 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Tradeboard Installation Banner
+# TradeBoard Banner
 echo -e "${BLUE}"
-echo " ████████╗██████╗  █████╗ ██████╗ ███████╗██████╗  ██████╗  █████╗ ██████╗ ██████╗ "
-echo "    ██╔══╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔══██╗"
-echo "    ██║   ██████╔╝███████║██║  ██║█████╗  ██████╔╝██║   ██║███████║██████╔╝██║  ██║"
-echo "    ██║   ██╔══██╗██╔══██║██║  ██║██╔══╝  ██╔══██╗██║   ██║██╔══██║██╔══██╗██║  ██║"
-echo "    ██║   ██║  ██║██║  ██║██████╔╝███████╗██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝"
-echo "    ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ "
-echo "                                                                                      "
-echo "                  Tradeboard -- Installation & Configuration Script                  "
-echo "                       Repository: wesoftcorp/tradeboard                             "
+echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
+echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
+echo " ██║   ██║██████╔╝███████╗██╔██╗ ██║███████║██║     ██║  ███╗██║   ██║"
+echo " ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══██║██║     ██║   ██║██║   ██║"
+echo " ╚██████╔╝██╗     ███████╗██║ ╚████║██║  ██║███████╗╚██████╔╝╚██████╔╝"
+echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ "      
+echo "                    DOCKER INSTALLATION                                 "
 echo -e "${NC}"
 
 # Function to log messages
@@ -56,7 +54,7 @@ is_xts_broker() {
 }
 
 # Start installation
-log "Starting Tradeboard Docker Installation..." "$GREEN"
+log "Starting TradeBoard Docker Installation..." "$GREEN"
 log "========================================" "$GREEN"
 
 # Check if running as root
@@ -100,7 +98,7 @@ log "\n=== Installation Configuration ===" "$BLUE"
 
 # Get domain name
 while true; do
-    read -p "Enter your domain name (e.g., demo.wesoftcorp.com): " DOMAIN
+    read -p "Enter your domain name (e.g., demo.TradeBoard.in): " DOMAIN
     if [ -z "$DOMAIN" ]; then
         log "Error: Domain name is required" "$RED"
         continue
@@ -168,7 +166,7 @@ fi
 # Same-domain mode — /mcp and /oauth/* are served from the same nginx
 # vhost as the dashboard, so the existing reverse-proxy config covers it.
 # Local stdio MCP (Claude Desktop / Cursor / Windsurf) works regardless.
-log "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to Tradeboard over HTTPS." "$BLUE"
+log "\nRemote MCP lets hosted AI clients (Claude.ai, ChatGPT) connect to TradeBoard over HTTPS." "$BLUE"
 log "Skip this if you only use the local MCP server with Claude Desktop / Cursor." "$YELLOW"
 read -p "Enable Remote MCP? (y/N): " enable_mcp_input
 ENABLE_REMOTE_MCP="false"
@@ -183,7 +181,7 @@ APP_KEY=$(generate_hex)
 API_KEY_PEPPER=$(generate_hex)
 
 # Set installation path
-INSTALL_PATH="/opt/tradeboard"
+INSTALL_PATH="/opt/TradeBoard"
 
 log "\n=== Installation Summary ===" "$YELLOW"
 log "Domain: $DOMAIN" "$BLUE"
@@ -238,8 +236,8 @@ if ! docker compose version &> /dev/null; then
 fi
 log "Docker Compose version: $(docker compose version --short)" "$GREEN"
 
-# Clone Tradeboard repository
-log "\n=== Cloning Tradeboard Repository ===" "$BLUE"
+# Clone TradeBoard repository
+log "\n=== Cloning TradeBoard Repository ===" "$BLUE"
 if [ -d "$INSTALL_PATH" ]; then
     log "Warning: $INSTALL_PATH already exists" "$YELLOW"
     read -p "Remove existing installation? (y/n): " remove_existing
@@ -273,8 +271,21 @@ $SUDO sed -i "s|YOUR_BROKER_API_KEY|$BROKER_API_KEY|g" .env
 $SUDO sed -i "s|YOUR_BROKER_API_SECRET|$BROKER_API_SECRET|g" .env
 $SUDO sed -i "s|http://127.0.0.1:5000|https://$DOMAIN|g" .env
 $SUDO sed -i "s|<broker>|$BROKER_NAME|g" .env
-$SUDO sed -i "s|TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$APP_KEY|g" .env
-$SUDO sed -i "s|TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$API_KEY_PEPPER|g" .env
+$SUDO sed -i "s|TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$APP_KEY|g" .env
+$SUDO sed -i "s|TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$API_KEY_PEPPER|g" .env
+
+# Capture build-time git info for the diagnostics page (issue #1388).
+# .git/ is dockerignored, so the running container has no .git/HEAD to read —
+# we surface the values via env instead. Both lines are appended only when not
+# already present so re-runs of this script don't accumulate duplicates.
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "")
+if ! grep -qE "^TradeBoard_GIT_BRANCH\s*=" .env 2>/dev/null; then
+    echo "TradeBoard_GIT_BRANCH = '${GIT_BRANCH}'" | $SUDO tee -a .env > /dev/null
+fi
+if ! grep -qE "^TradeBoard_GIT_COMMIT\s*=" .env 2>/dev/null; then
+    echo "TradeBoard_GIT_COMMIT = '${GIT_COMMIT}'" | $SUDO tee -a .env > /dev/null
+fi
 
 # Container is published only on 127.0.0.1:5000 with nginx in front; trust the
 # proxy's X-Forwarded-For / X-Real-IP so IP-based features see the real client.
@@ -375,13 +386,13 @@ log "Config: shm=${SHM_SIZE_MB}MB, threads=${THREAD_LIMIT}, strategy_mem=${STRAT
 log "\n=== Creating Docker Compose Configuration ===" "$BLUE"
 $SUDO tee docker-compose.yaml > /dev/null << EOF
 services:
-  tradeboard:
-    image: tradeboard:latest
+  TradeBoard:
+    image: TradeBoard:latest
     build:
       context: .
       dockerfile: Dockerfile
 
-    container_name: tradeboard-web
+    container_name: TradeBoard-web
 
     ports:
       - "127.0.0.1:5000:5000"
@@ -389,11 +400,11 @@ services:
 
     # Use named volumes to avoid permission issues with non-root container user
     volumes:
-      - tradeboard_db:/app/db
-      - tradeboard_log:/app/log
-      - tradeboard_strategies:/app/strategies
-      - tradeboard_keys:/app/keys
-      - tradeboard_tmp:/app/tmp
+      - TradeBoard_db:/app/db
+      - TradeBoard_log:/app/log
+      - TradeBoard_strategies:/app/strategies
+      - TradeBoard_keys:/app/keys
+      - TradeBoard_tmp:/app/tmp
       - ./.env:/app/.env
 
     environment:
@@ -424,15 +435,15 @@ services:
 
 # Named volumes for data persistence with proper permissions
 volumes:
-  tradeboard_db:
+  TradeBoard_db:
     driver: local
-  tradeboard_log:
+  TradeBoard_log:
     driver: local
-  tradeboard_strategies:
+  TradeBoard_strategies:
     driver: local
-  tradeboard_keys:
+  TradeBoard_keys:
     driver: local
-  tradeboard_tmp:
+  TradeBoard_tmp:
     driver: local
 EOF
 
@@ -489,12 +500,12 @@ limit_req_zone \$binary_remote_addr zone=api_limit:10m rate=50r/s;
 limit_req_zone \$binary_remote_addr zone=general_limit:10m rate=10r/s;
 
 # Upstream definitions
-upstream tradeboard_flask {
+upstream TradeBoard_flask {
     server 127.0.0.1:5000;
     keepalive 64;
 }
 
-upstream tradeboard_websocket {
+upstream TradeBoard_websocket {
     server 127.0.0.1:8765;
     keepalive 64;
 }
@@ -555,7 +566,7 @@ server {
 
     # WebSocket Proxy Server (Port 8765)
     location = /ws {
-        proxy_pass http://tradeboard_websocket;
+        proxy_pass http://TradeBoard_websocket;
         proxy_http_version 1.1;
         proxy_read_timeout 86400s;
         proxy_send_timeout 86400s;
@@ -574,7 +585,7 @@ server {
     }
 
     location /ws/ {
-        proxy_pass http://tradeboard_websocket/;
+        proxy_pass http://TradeBoard_websocket/;
         proxy_http_version 1.1;
         proxy_read_timeout 86400s;
         proxy_send_timeout 86400s;
@@ -594,7 +605,7 @@ server {
 
     # Socket.IO WebSocket
     location /socket.io/ {
-        proxy_pass http://tradeboard_flask/socket.io/;
+        proxy_pass http://TradeBoard_flask/socket.io/;
         proxy_http_version 1.1;
         proxy_read_timeout 86400s;
         proxy_send_timeout 86400s;
@@ -615,7 +626,7 @@ server {
     location /api/ {
         limit_req zone=api_limit burst=100 nodelay;
         limit_req_status 429;
-        proxy_pass http://tradeboard_flask;
+        proxy_pass http://TradeBoard_flask;
         proxy_http_version 1.1;
         proxy_read_timeout 300s;
         proxy_connect_timeout 300s;
@@ -632,7 +643,7 @@ server {
 
     # Static Files
     location /static/ {
-        proxy_pass http://tradeboard_flask;
+        proxy_pass http://TradeBoard_flask;
         proxy_http_version 1.1;
         proxy_cache_valid 200 1d;
         proxy_cache_bypass \$http_pragma \$http_authorization;
@@ -647,7 +658,7 @@ server {
     # Main Application
     location / {
         limit_req zone=general_limit burst=20 nodelay;
-        proxy_pass http://tradeboard_flask;
+        proxy_pass http://TradeBoard_flask;
         proxy_http_version 1.1;
         proxy_read_timeout 300s;
         proxy_connect_timeout 300s;
@@ -710,7 +721,7 @@ log "\nWaiting for container to be healthy..." "$YELLOW"
 sleep 10
 
 # Check container status
-CONTAINER_STATUS=$(sudo docker ps --filter "name=tradeboard-web" --format "{{.Status}}")
+CONTAINER_STATUS=$(sudo docker ps --filter "name=TradeBoard-web" --format "{{.Status}}")
 if [[ $CONTAINER_STATUS == *"Up"* ]]; then
     log "Container started successfully!" "$GREEN"
 else
@@ -722,55 +733,55 @@ fi
 log "\n=== Creating Management Scripts ===" "$BLUE"
 
 # Status script
-$SUDO tee /usr/local/bin/tradeboard-status > /dev/null << 'EOFSCRIPT'
+$SUDO tee /usr/local/bin/TradeBoard-status > /dev/null << 'EOFSCRIPT'
 #!/bin/bash
 echo "=========================================="
-echo "Tradeboard Status"
+echo "TradeBoard Status"
 echo "=========================================="
 echo ""
 echo "Container Status:"
-sudo docker ps --filter "name=tradeboard-web" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+sudo docker ps --filter "name=TradeBoard-web" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 echo ""
 echo "Container Health:"
-sudo docker inspect tradeboard-web --format='{{.State.Health.Status}}' 2>/dev/null || echo "Container not found"
+sudo docker inspect TradeBoard-web --format='{{.State.Health.Status}}' 2>/dev/null || echo "Container not found"
 echo ""
 echo "Recent Logs:"
-sudo docker compose -f /opt/tradeboard/docker-compose.yaml logs --tail=30
+sudo docker compose -f /opt/TradeBoard/docker-compose.yaml logs --tail=30
 EOFSCRIPT
 
-$SUDO chmod +x /usr/local/bin/tradeboard-status
+$SUDO chmod +x /usr/local/bin/TradeBoard-status
 
 # Restart script
-$SUDO tee /usr/local/bin/tradeboard-restart > /dev/null << 'EOFSCRIPT'
+$SUDO tee /usr/local/bin/TradeBoard-restart > /dev/null << 'EOFSCRIPT'
 #!/bin/bash
-echo "Restarting Tradeboard..."
-cd /opt/tradeboard
+echo "Restarting TradeBoard..."
+cd /opt/TradeBoard
 sudo docker compose restart
 sleep 10
 echo "Container Status:"
-sudo docker ps --filter "name=tradeboard-web"
+sudo docker ps --filter "name=TradeBoard-web"
 EOFSCRIPT
 
-$SUDO chmod +x /usr/local/bin/tradeboard-restart
+$SUDO chmod +x /usr/local/bin/TradeBoard-restart
 
 # Logs script
-$SUDO tee /usr/local/bin/tradeboard-logs > /dev/null << 'EOFSCRIPT'
+$SUDO tee /usr/local/bin/TradeBoard-logs > /dev/null << 'EOFSCRIPT'
 #!/bin/bash
-cd /opt/tradeboard
+cd /opt/TradeBoard
 sudo docker compose logs -f --tail=100
 EOFSCRIPT
 
-$SUDO chmod +x /usr/local/bin/tradeboard-logs
+$SUDO chmod +x /usr/local/bin/TradeBoard-logs
 
 # Backup script
-$SUDO tee /usr/local/bin/tradeboard-backup > /dev/null << 'EOFSCRIPT'
+$SUDO tee /usr/local/bin/TradeBoard-backup > /dev/null << 'EOFSCRIPT'
 #!/bin/bash
-BACKUP_DIR="/opt/tradeboard-backups"
+BACKUP_DIR="/opt/TradeBoard-backups"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="$BACKUP_DIR/tradeboard_backup_$TIMESTAMP.tar.gz"
+BACKUP_FILE="$BACKUP_DIR/TradeBoard_backup_$TIMESTAMP.tar.gz"
 mkdir -p $BACKUP_DIR
 echo "Creating backup..."
-cd /opt/tradeboard
+cd /opt/TradeBoard
 
 # Backup .env file and Docker volume data
 echo "Backing up configuration and volume data..."
@@ -780,8 +791,8 @@ sudo docker compose stop
 TEMP_DIR=$(mktemp -d)
 
 # Export data from Docker volumes
-sudo docker run --rm -v tradeboard_db:/data -v $TEMP_DIR:/backup alpine tar -czf /backup/db.tar.gz -C /data . 2>/dev/null
-sudo docker run --rm -v tradeboard_strategies:/data -v $TEMP_DIR:/backup alpine tar -czf /backup/strategies.tar.gz -C /data . 2>/dev/null
+sudo docker run --rm -v TradeBoard_db:/data -v $TEMP_DIR:/backup alpine tar -czf /backup/db.tar.gz -C /data . 2>/dev/null
+sudo docker run --rm -v TradeBoard_strategies:/data -v $TEMP_DIR:/backup alpine tar -czf /backup/strategies.tar.gz -C /data . 2>/dev/null
 
 # Create final backup
 sudo tar -czf $BACKUP_FILE .env -C $TEMP_DIR db.tar.gz strategies.tar.gz 2>/dev/null
@@ -794,11 +805,11 @@ echo "Backup created: $BACKUP_FILE"
 
 # Keep only last 7 backups
 cd $BACKUP_DIR
-ls -t tradeboard_backup_*.tar.gz 2>/dev/null | tail -n +8 | xargs -r rm
+ls -t TradeBoard_backup_*.tar.gz 2>/dev/null | tail -n +8 | xargs -r rm
 echo "Backup completed!"
 EOFSCRIPT
 
-$SUDO chmod +x /usr/local/bin/tradeboard-backup
+$SUDO chmod +x /usr/local/bin/TradeBoard-backup
 
 log "Management scripts created successfully!" "$GREEN"
 
@@ -813,14 +824,14 @@ $SUDO chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
 
 # Installation complete
 log "\n============================================" "$GREEN"
-log "Tradeboard Docker Installation Complete!" "$GREEN"
+log "TradeBoard Docker Installation Complete!" "$GREEN"
 log "============================================" "$GREEN"
 
 log "\nInstallation Summary:" "$YELLOW"
 log "Domain: https://$DOMAIN" "$BLUE"
 log "Broker: $BROKER_NAME" "$BLUE"
 log "Installation Path: $INSTALL_PATH" "$BLUE"
-log "Container: tradeboard-web" "$BLUE"
+log "Container: TradeBoard-web" "$BLUE"
 if [ "$ENABLE_REMOTE_MCP" = "true" ]; then
     log "Remote MCP: Enabled at https://$DOMAIN/mcp" "$BLUE"
 else
@@ -828,15 +839,15 @@ else
 fi
 
 log "\nNext Steps:" "$YELLOW"
-log "1. Visit https://$DOMAIN to access Tradeboard" "$GREEN"
+log "1. Visit https://$DOMAIN to access TradeBoard" "$GREEN"
 log "2. Create your admin account and login" "$GREEN"
 log "3. Configure your broker settings" "$GREEN"
 
 log "\nUseful Commands:" "$YELLOW"
-log "View status:  tradeboard-status" "$BLUE"
-log "View logs:    tradeboard-logs" "$BLUE"
-log "Restart:      tradeboard-restart" "$BLUE"
-log "Backup:       tradeboard-backup" "$BLUE"
+log "View status:  TradeBoard-status" "$BLUE"
+log "View logs:    TradeBoard-logs" "$BLUE"
+log "Restart:      TradeBoard-restart" "$BLUE"
+log "Backup:       TradeBoard-backup" "$BLUE"
 
 log "\nDocker Commands:" "$YELLOW"
 log "Restart:      cd $INSTALL_PATH && sudo docker compose restart" "$BLUE"

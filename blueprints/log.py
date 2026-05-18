@@ -3,7 +3,6 @@
 import csv
 import io
 import json
-
 from datetime import datetime
 
 import pytz
@@ -286,7 +285,7 @@ def export_logs():
 
         # Generate filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"tradeboard_logs_{timestamp}.csv"
+        filename = f"TradeBoard_logs_{timestamp}.csv"
 
         logger.info(f"Generated CSV file: {filename}")
 

@@ -1,8 +1,8 @@
-# 01 - Frontend Architecture
+﻿# 01 - Frontend Architecture
 
 ## Overview
 
-Tradeboard features a modern React 19 Single Page Application (SPA) built with TypeScript, Vite, and Tailwind CSS 4. The frontend provides a responsive trading interface with real-time market data, visual workflow automation, and comprehensive strategy management.
+TradeBoard features a modern React 19 Single Page Application (SPA) built with TypeScript, Vite, and Tailwind CSS 4. The frontend provides a responsive trading interface with real-time market data, visual workflow automation, and comprehensive strategy management.
 
 ## Technology Stack
 

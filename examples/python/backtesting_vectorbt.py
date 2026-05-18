@@ -1,11 +1,11 @@
 """
 RELIANCE 5-Minute EMA Crossover Backtest using VectorBT
-Author : Tradeboard GPT
+Author : TradeBoard GPT
 Description: Backtests 10/20 EMA crossover strategy on RELIANCE 5m data
-             Data fetched from Tradeboard API, backtested with VectorBT
+             Data fetched from TradeBoard API, backtested with VectorBT
 """
 
-print("🔁 Tradeboard Python Bot is running.")
+print("🔁 TradeBoard Python Bot is running.")
 
 from datetime import datetime
 
@@ -13,8 +13,8 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import vectorbt as vbt
-from tradeboard import api, ta
 from plotly.subplots import make_subplots
+from TradeBoard import api, ta
 
 # ───────────────────────── CONFIG ─────────────────────────
 API_KEY = "dfae8e3a1ce08f60754b0d3597553d7c14957542104b431e4b881c089864a35e"
@@ -53,13 +53,13 @@ def fetch_historical_data():
         interval=INTERVAL,
         start_date=START_DATE,
         end_date=END_DATE,
-        source = "db"
+        source="db",
     )
 
     # Print the raw response info
     print(f"History Response received: {type(response)}")
 
-    # Tradeboard history() returns DataFrame directly
+    # TradeBoard history() returns DataFrame directly
     if isinstance(response, pd.DataFrame):
         df = response.copy()
     else:
@@ -364,7 +364,7 @@ def plot_results(df, portfolio, fast_ema, slow_ema, entries, exits):
 # ───────────────────── MAIN EXECUTION ─────────────────────
 if __name__ == "__main__":
     try:
-        # Step 1: Fetch data from Tradeboard
+        # Step 1: Fetch data from TradeBoard
         df = fetch_historical_data()
 
         # Step 2: Run VectorBT backtest

@@ -280,7 +280,7 @@ def process_angel_json(path):
 
     # Common Index Symbol Formats
     # For NSE_INDEX, derive symbol from 'name' column
-    # and normalize to Tradeboard common format (uppercase, no spaces/hyphens)
+    # and normalize to TradeBoard common format (uppercase, no spaces/hyphens)
     idx_mask = df["exchange"] == "NSE_INDEX"
     df.loc[idx_mask, "symbol"] = (
         df.loc[idx_mask, "name"]
@@ -290,7 +290,7 @@ def process_angel_json(path):
     )
 
     # For BSE_INDEX, derive symbol from 'name' column
-    # and normalize to Tradeboard common format (uppercase, no spaces/hyphens, remove S&P prefix)
+    # and normalize to TradeBoard common format (uppercase, no spaces/hyphens, remove S&P prefix)
     bse_idx_mask = df["exchange"] == "BSE_INDEX"
     df.loc[bse_idx_mask, "symbol"] = (
         df.loc[bse_idx_mask, "name"]
@@ -300,7 +300,7 @@ def process_angel_json(path):
         .str.replace("-", "", regex=False)
     )
 
-    # Override for major indices where normalized name differs from Tradeboard standard
+    # Override for major indices where normalized name differs from TradeBoard standard
     df["symbol"] = df["symbol"].replace(
         {
             "NIFTY50": "NIFTY",

@@ -6,11 +6,11 @@ to calculate option Greeks for multiple symbols in a single request.
 
 Prerequisites:
 1. Install py_vollib library: pip install py_vollib
-2. Tradeboard must be running
+2. TradeBoard must be running
 3. Markets should be open for live prices
 
 Usage:
-    cd c:\\Users\\Karthik\\Downloads\\tradeboard-chart\\tradeboard\\test
+    cd c:\\Users\\Karthik\\Downloads\\TradeBoard-chart\\TradeBoard\\test
     python test_multi_option_greeks_api.py
 """
 
@@ -212,13 +212,13 @@ def test_empty_symbols():
 
 if __name__ == "__main__":
     print("\n" + "=" * 60)
-    print("Tradeboard Multi Option Greeks API Test Suite")
+    print("TradeBoard Multi Option Greeks API Test Suite")
     print("=" * 60)
     print(f"\nBase URL: {BASE_URL}")
     print(f"API Key: {API_KEY[:10]}..." if len(API_KEY) > 10 else f"API Key: {API_KEY}")
     print("\n⚠️  Prerequisites:")
     print("  1. Install py_vollib: pip install py_vollib")
-    print("  2. Tradeboard must be running")
+    print("  2. TradeBoard must be running")
     print("  3. Markets should be open for live prices")
     print("  4. Update symbols to current/future expiry dates")
     print("=" * 60)

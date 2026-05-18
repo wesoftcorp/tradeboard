@@ -1,13 +1,13 @@
 """
 Mapping utilities for Dhan broker integration.
-Provides exchange code mappings between Tradeboard and Dhan formats.
+Provides exchange code mappings between TradeBoard and Dhan formats.
 """
 
 from typing import Dict
 
 # Exchange code mappings
-# Tradeboard exchange code -> Dhan exchange code
-TRADEBOARD_TO_DHAN_EXCHANGE = {
+# TradeBoard exchange code -> Dhan exchange code
+TradeBoard_TO_DHAN_EXCHANGE = {
     "NSE": "NSE_EQ",
     "BSE": "BSE_EQ",
     "NFO": "NSE_FNO",
@@ -19,31 +19,31 @@ TRADEBOARD_TO_DHAN_EXCHANGE = {
     "BSE_INDEX": "IDX_I",
 }
 
-# Dhan exchange code -> Tradeboard exchange code
-DHAN_TO_TRADEBOARD_EXCHANGE = {v: k for k, v in TRADEBOARD_TO_DHAN_EXCHANGE.items()}
+# Dhan exchange code -> TradeBoard exchange code
+DHAN_TO_TradeBoard_EXCHANGE = {v: k for k, v in TradeBoard_TO_DHAN_EXCHANGE.items()}
 
 
-def get_dhan_exchange(tradeboard_exchange: str) -> str:
+def get_dhan_exchange(TradeBoard_exchange: str) -> str:
     """
-    Convert Tradeboard exchange code to Dhan exchange code.
+    Convert TradeBoard exchange code to Dhan exchange code.
 
     Args:
-        tradeboard_exchange (str): Exchange code in Tradeboard format
+        TradeBoard_exchange (str): Exchange code in TradeBoard format
 
     Returns:
         str: Exchange code in Dhan format
     """
-    return TRADEBOARD_TO_DHAN_EXCHANGE.get(tradeboard_exchange, tradeboard_exchange)
+    return TradeBoard_TO_DHAN_EXCHANGE.get(TradeBoard_exchange, TradeBoard_exchange)
 
 
-def get_tradeboard_exchange(dhan_exchange: str) -> str:
+def get_TradeBoard_exchange(dhan_exchange: str) -> str:
     """
-    Convert Dhan exchange code to Tradeboard exchange code.
+    Convert Dhan exchange code to TradeBoard exchange code.
 
     Args:
         dhan_exchange (str): Exchange code in Dhan format
 
     Returns:
-        str: Exchange code in Tradeboard format
+        str: Exchange code in TradeBoard format
     """
-    return DHAN_TO_TRADEBOARD_EXCHANGE.get(dhan_exchange, dhan_exchange)
+    return DHAN_TO_TradeBoard_EXCHANGE.get(dhan_exchange, dhan_exchange)

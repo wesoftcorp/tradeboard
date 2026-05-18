@@ -1,16 +1,16 @@
-# 01 - What is Tradeboard?
+﻿# 01 - What is TradeBoard?
 
 ## Introduction
 
-**Tradeboard** is a free, open-source algorithmic trading platform that bridges your trading ideas with execution. Built with Python Flask and a modern React frontend, it provides a unified API layer across 29 Indian brokers, enabling seamless automation from TradingView, Amibroker, Python scripts, Excel, and AI agents.
+**TradeBoard** is a free, open-source algorithmic trading platform that bridges your trading ideas with execution. Built with Python Flask and a modern React frontend, it provides a unified API layer across 29 Indian brokers, enabling seamless automation from TradingView, Amibroker, Python scripts, Excel, and AI agents.
 
-**Website**: [https://wesoftcorp.com](https://wesoftcorp.com)
+**Website**: [https://TradeBoard.in](https://TradeBoard.in)
 **GitHub**: [https://github.com/wesoftcorp/tradeboard](https://github.com/wesoftcorp/tradeboard)
-**Documentation**: [https://docs.wesoftcorp.com](https://docs.wesoftcorp.com)
+**Documentation**: [https://docs.TradeBoard.in](https://docs.TradeBoard.in)
 
-## The Problem Tradeboard Solves
+## The Problem TradeBoard Solves
 
-### Before Tradeboard
+### Before TradeBoard
 
 ```
 You see a buy signal on TradingView
@@ -26,19 +26,19 @@ You click buy
 Signal is 2 minutes old by now!
 ```
 
-### With Tradeboard
+### With TradeBoard
 
 ```
 TradingView sends a signal
         ↓
-Tradeboard receives it instantly
+TradeBoard receives it instantly
         ↓
 Order placed with your broker
         ↓
 All in under 1 second!
 ```
 
-## Who is Tradeboard For?
+## Who is TradeBoard For?
 
 ### Retail Traders
 - Tired of manually placing orders
@@ -82,7 +82,7 @@ All in under 1 second!
 | Feature | Description |
 |---------|-------------|
 | **Flow Visual Builder** | No-code strategy builder with drag-and-drop nodes |
-| **Python Strategy Hosting** | Host and schedule Python strategies directly in Tradeboard |
+| **Python Strategy Hosting** | Host and schedule Python strategies directly in TradeBoard |
 | **TradingView Integration** | Pine Script alerts to automatic orders via webhooks |
 | **Amibroker Integration** | AFL strategies with direct API communication |
 | **ChartInk Integration** | Stock scanner alerts to automated trades |
@@ -131,7 +131,7 @@ All in under 1 second!
 │                              │                                           │
 │                              ▼                                           │
 │  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                         Tradeboard Platform                          │  │
+│  │                         TradeBoard Platform                          │  │
 │  │                                                                    │  │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐               │  │
 │  │  │  REST API   │  │  WebSocket  │  │    Flow     │               │  │
@@ -164,7 +164,7 @@ All in under 1 second!
 | **Banks** | ICICI Direct, HDFC Securities, Kotak Neo |
 | **Others** | 5paisa, Finvasia, Flattrade, Firstock, Nubra, and more |
 
-**Benefit**: Switch brokers without changing your strategy code - Tradeboard's unified API handles the translation.
+**Benefit**: Switch brokers without changing your strategy code - TradeBoard's unified API handles the translation.
 
 ## Supported Exchanges
 
@@ -251,9 +251,9 @@ Test strategies with ₹1 Crore sandbox capital:
 - Market depth (5/20 levels)
 - Order status updates
 
-## What Tradeboard is NOT
+## What TradeBoard is NOT
 
-Let's be clear about what Tradeboard doesn't do:
+Let's be clear about what TradeBoard doesn't do:
 
 | Misconception | Reality |
 |---------------|---------|
@@ -277,7 +277,7 @@ Let's be clear about what Tradeboard doesn't do:
 
 Ready to begin? Here's your path:
 
-1. **Next**: Learn [Why Build with Tradeboard](../02-why-build-with-tradeboard/README.md)
+1. **Next**: Learn [Why Build with TradeBoard](../02-why-build-with-TradeBoard/README.md)
 2. Understand [Key Concepts](../03-key-concepts/README.md)
 3. Check [System Requirements](../03-system-requirements/README.md)
 4. Follow [Installation Guide](../04-installation/README.md)
@@ -289,13 +289,13 @@ Ready to begin? Here's your path:
 | Resource | Link |
 |----------|------|
 | **GitHub** | [github.com/wesoftcorp/tradeboard](https://github.com/wesoftcorp/tradeboard) |
-| **Documentation** | [docs.wesoftcorp.com](https://docs.wesoftcorp.com) |
+| **Documentation** | [docs.TradeBoard.in](https://docs.TradeBoard.in) |
 | **API Reference** | [/api/docs](http://localhost:5000/api/docs) (after installation) |
 | **Discord Community** | Join for support and discussions |
 
 ## Summary
 
-| Aspect | Tradeboard |
+| Aspect | TradeBoard |
 |--------|----------|
 | **Cost** | Free (Open Source, MIT License) |
 | **Brokers** | 29 Indian brokers |
@@ -311,4 +311,4 @@ Ready to begin? Here's your path:
 
 ---
 
-**Next**: [02 - Why Build with Tradeboard](../02-why-build-with-tradeboard/README.md) - Understand the value proposition.
+**Next**: [02 - Why Build with TradeBoard](../02-why-build-with-TradeBoard/README.md) - Understand the value proposition.

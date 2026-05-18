@@ -1,8 +1,8 @@
 """
-Nubra WebSocket streaming module for Tradeboard.
+Nubra WebSocket streaming module for TradeBoard.
 
 This module provides WebSocket integration with Nubra's market data streaming API,
-following the Tradeboard WebSocket proxy architecture.
+following the TradeBoard WebSocket proxy architecture.
 """
 
 from .nubra_adapter import NubraWebSocketAdapter

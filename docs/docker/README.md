@@ -1,6 +1,6 @@
-# Docker Documentation
+﻿# Docker Documentation
 
-Complete Docker deployment and troubleshooting documentation for Tradeboard.
+Complete Docker deployment and troubleshooting documentation for TradeBoard.
 
 ---
 
@@ -114,24 +114,24 @@ For environment variable issues, see [docker_env_changes.md](docker_env_changes.
 
 ### Current Setup
 
-Tradeboard uses a **multi-stage build** with the following configuration:
+TradeBoard uses a **multi-stage build** with the following configuration:
 
 ```yaml
 services:
-  tradeboard:
-    image: tradeboard:latest
-    container_name: tradeboard-web
+  TradeBoard:
+    image: TradeBoard:latest
+    container_name: TradeBoard-web
 
     ports:
       - "5000:5000"   # Web UI
       - "8765:8765"   # WebSocket
 
     volumes:
-      - tradeboard_db:/app/db
-      - tradeboard_log:/app/log
-      - tradeboard_strategies:/app/strategies
-      - tradeboard_keys:/app/keys
-      - tradeboard_tmp:/app/tmp
+      - TradeBoard_db:/app/db
+      - TradeBoard_log:/app/log
+      - TradeBoard_strategies:/app/strategies
+      - TradeBoard_keys:/app/keys
+      - TradeBoard_tmp:/app/tmp
       - ./.env:/app/.env:ro
 
     shm_size: '2gb'  # For scipy/numba operations
@@ -157,10 +157,10 @@ The Docker image includes:
 ### Verify Installation
 ```bash
 # Check container status
-docker ps --filter "name=tradeboard"
+docker ps --filter "name=TradeBoard"
 
 # Test numba/scipy
-docker exec tradeboard python -c "import numba, scipy; print('✓ OK')"
+docker exec TradeBoard python -c "import numba, scipy; print('✓ OK')"
 
 # View logs
 docker-compose logs -f
@@ -168,13 +168,13 @@ docker-compose logs -f
 
 ### Verify Shared Memory
 ```bash
-docker inspect tradeboard --format='{{.HostConfig.ShmSize}}'
+docker inspect TradeBoard --format='{{.HostConfig.ShmSize}}'
 # Should show: 2147483648 (2GB)
 ```
 
 ### Verify Volumes
 ```bash
-docker inspect tradeboard --format='{{range .Mounts}}{{.Destination}} {{end}}'
+docker inspect TradeBoard --format='{{range .Mounts}}{{.Destination}} {{end}}'
 # Should include: /app/tmp /app/keys
 ```
 
@@ -209,7 +209,7 @@ If you encounter issues:
 
 3. **Verify Configuration**
    ```bash
-   docker inspect tradeboard
+   docker inspect TradeBoard
    ```
 
 4. **Community Support**
@@ -221,7 +221,7 @@ If you encounter issues:
 ## 🔗 Related Documentation
 
 - [Installation Scripts](/install/) - Desktop and server installation scripts
-- [Main Documentation](https://docs.wesoftcorp.com) - Official documentation site
+- [Main Documentation](https://docs.TradeBoard.in) - Official documentation site
 - [CLAUDE.md](/CLAUDE.md) - Development guide
 
 ---
@@ -229,4 +229,4 @@ If you encounter issues:
 **Last Updated:** 2026-01-28
 **Docker Image:** wesoftcorp/tradeboard:latest
 **Python Version:** 3.12+
-**Tradeboard Version:** 2.0.0.0
+**TradeBoard Version:** 2.0.0.0

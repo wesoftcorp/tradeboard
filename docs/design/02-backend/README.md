@@ -1,8 +1,8 @@
-# 02 - Backend Architecture
+﻿# 02 - Backend Architecture
 
 ## Overview
 
-Tradeboard backend is a production-ready Flask application providing a unified API layer across **29 Indian brokers**. It features a plugin-based broker system, multi-database architecture, real-time WebSocket streaming, and comprehensive security layers.
+TradeBoard backend is a production-ready Flask application providing a unified API layer across **29 Indian brokers**. It features a plugin-based broker system, multi-database architecture, real-time WebSocket streaming, and comprehensive security layers.
 
 ## Technology Stack
 
@@ -64,7 +64,7 @@ Tradeboard backend is a production-ready Flask application providing a unified A
 │                           Database Layer (5 DBs)                              │
 │                                                                               │
 │  ┌──────────────┐  ┌──────────┐  ┌────────────┐  ┌───────────┐  ┌─────────┐ │
-│  │ tradeboard.db  │  │ logs.db  │  │ latency.db │  │sandbox.db │  │historify│ │
+│  │ TradeBoard.db  │  │ logs.db  │  │ latency.db │  │sandbox.db │  │historify│ │
 │  │   (main)     │  │(traffic) │  │ (metrics)  │  │  (paper)  │  │ .duckdb │ │
 │  └──────────────┘  └──────────┘  └────────────┘  └───────────┘  └─────────┘ │
 └──────────────────────────────────────────────────────────────────────────────┘
@@ -73,7 +73,7 @@ Tradeboard backend is a production-ready Flask application providing a unified A
 ## Directory Structure
 
 ```
-tradeboard/
+TradeBoard/
 ├── app.py                      # Application entry point
 ├── extensions.py               # Flask extensions (SocketIO)
 ├── limiter.py                  # Rate limiting configuration
@@ -227,8 +227,8 @@ broker/zerodha/
 ```json
 {
     "Plugin Name": "zerodha",
-    "Plugin URI": "https://wesoftcorp.com",
-    "Description": "Zerodha Tradeboard Plugin",
+    "Plugin URI": "https://TradeBoard.in",
+    "Description": "Zerodha TradeBoard Plugin",
     "Version": "1.0",
     "Author": "Rajandran R"
 }
@@ -370,7 +370,7 @@ API_KEY_PEPPER=<32+ char pepper>
 VALID_BROKERS=zerodha,dhan,angel
 
 # Database
-DATABASE_URL=sqlite:///db/tradeboard.db
+DATABASE_URL=sqlite:///db/TradeBoard.db
 
 # WebSocket
 WEBSOCKET_HOST=127.0.0.1

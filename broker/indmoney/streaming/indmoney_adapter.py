@@ -396,7 +396,7 @@ class IndmoneyWebSocketAdapter(BaseBrokerWebSocketAdapter):
             symbol = subscription["symbol"]
             exchange = subscription["exchange"]
 
-            # Map INDmoney mode to Tradeboard mode string
+            # Map INDmoney mode to TradeBoard mode string
             mode_str = "LTP" if mode == "ltp" else "QUOTE"
             topic = f"{exchange}_{symbol}_{mode_str}"
 

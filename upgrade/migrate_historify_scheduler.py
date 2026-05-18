@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Historify Scheduler Migration Script for Tradeboard
+Historify Scheduler Migration Script for TradeBoard
 
 This migration adds scheduler tables to the Historify DuckDB database:
 - historify_schedules: Store schedule configurations

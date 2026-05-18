@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 
 from broker.dhan_sandbox.mapping.transform_data import map_exchange
 from database.token_db import get_symbol
@@ -9,7 +9,7 @@ logger = get_logger(__name__)
 
 # IST is UTC+5:30
 _IST = timezone(timedelta(hours=5, minutes=30))
-_UTC = timezone.utc
+_UTC = UTC
 
 
 def _utc_to_ist(timestamp_str):
@@ -42,8 +42,12 @@ def map_order_data(order_data):
     - The modified order_data with updated 'tradingsymbol' and 'product' fields.
     """
     # Handle error responses from the API (e.g., after-hours errors, auth errors)
-    if isinstance(order_data, dict) and (order_data.get("errorType") or order_data.get("status") in ("error", "failed")):
-        logger.info(f"API returned error, no order data to map: {order_data.get('errorType', order_data.get('status', 'unknown'))}")
+    if isinstance(order_data, dict) and (
+        order_data.get("errorType") or order_data.get("status") in ("error", "failed")
+    ):
+        logger.info(
+            f"API returned error, no order data to map: {order_data.get('errorType', order_data.get('status', 'unknown'))}"
+        )
         return []
 
     # Check if 'data' is None

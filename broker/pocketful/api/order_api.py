@@ -1,8 +1,8 @@
 import json
-
-from flask import session
 import threading
 import time
+
+from flask import session
 
 from broker.pocketful.mapping.transform_data import (
     map_product_type,
@@ -509,14 +509,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -567,7 +567,7 @@ def get_open_position(tradingsymbol, exchange, product, auth):
     # Initialize net quantity to 0
     net_qty = "0"
 
-    # Convert Trading Symbol from Tradeboard Format to Broker Format Before Search in OpenPosition
+    # Convert Trading Symbol from TradeBoard Format to Broker Format Before Search in OpenPosition
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
 
     logger.debug(
@@ -639,7 +639,7 @@ def place_order_api(data, auth_token):
         else:
             return None, info_response, None
     logger.info(f"Client ID: {client_id}")
-    # Transform Tradeboard order format to Pocketful format
+    # Transform TradeBoard order format to Pocketful format
     newdata = transform_data(data, client_id=client_id)
     logger.info(f"Transformed data: {newdata}")
     # Make the API request
@@ -699,9 +699,15 @@ def place_smartorder_api(data, auth):
 
         elif position_size == current_position:
             if int(data["quantity"]) == 0:
-                response = {"status": "success", "message": "No OpenPosition Found. Not placing Exit order."}
+                response = {
+                    "status": "success",
+                    "message": "No OpenPosition Found. Not placing Exit order.",
+                }
             else:
-                response = {"status": "success", "message": "No action needed. Position size matches current position"}
+                response = {
+                    "status": "success",
+                    "message": "No action needed. Position size matches current position",
+                }
             orderid = None
             return res, response, orderid
 
@@ -987,7 +993,7 @@ def modify_order(data, auth):
     logger.info(f"Client ID: {client_id}")
     logger.info(f"Original order data: {data}")
 
-    # Transform Tradeboard modify order format to Pocketful format
+    # Transform TradeBoard modify order format to Pocketful format
     transformed_data = transform_modify_order_data(data, client_id=client_id)
     logger.info(f"Transformed order data: {transformed_data}")
 

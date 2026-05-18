@@ -129,12 +129,48 @@ class KotakWebSocket:
             self._subscriptions.discard((exchange, token, sub_type))
             # Clean up cached state if no subscriptions remain for this symbol
             symbol_key = f"{exchange}|{token}"
-            has_remaining = any(
-                ex == exchange and tk == token for ex, tk, _ in self._subscriptions
-            )
+            has_remaining = any(ex == exchange and tk == token for ex, tk, _ in self._subscriptions)
             if not has_remaining:
                 self._symbol_state.pop(symbol_key, None)
         msg = {"type": sub_type, "scrips": f"{exchange}|{token}", "channelnum": channelnum}
+        self._send(msg)
+
+    def subscribe_batch(self, scrips, sub_type="mws", channelnum="1"):
+        """Subscribe to multiple scrips in a single WebSocket frame.
+
+        Args:
+            scrips: iterable of (exchange, token) tuples
+            sub_type: mws (quote), dps (depth), ifs (index)
+            channelnum: HSI channel number
+        """
+        scrips = list(scrips)
+        if not scrips:
+            return
+        with self._lock:
+            for exchange, token in scrips:
+                self._subscriptions.add((exchange, token, sub_type))
+        # HSI protocol uses '&' as the scrip separator (see HSWebSocketLib.is_scrip_ok)
+        scrip_str = "&".join(f"{ex}|{tk}" for ex, tk in scrips)
+        msg = {"type": sub_type, "scrips": scrip_str, "channelnum": channelnum}
+        logger.info(f"[KOTAK WSS BATCH] sub_type={sub_type} count={len(scrips)} scrips={scrip_str}")
+        self._send(msg)
+
+    def unsubscribe_batch(self, scrips, sub_type="mwu", channelnum="1"):
+        """Unsubscribe from multiple scrips in a single WebSocket frame."""
+        scrips = list(scrips)
+        if not scrips:
+            return
+        with self._lock:
+            for exchange, token in scrips:
+                self._subscriptions.discard((exchange, token, sub_type))
+                symbol_key = f"{exchange}|{token}"
+                has_remaining = any(
+                    ex == exchange and tk == token for ex, tk, _ in self._subscriptions
+                )
+                if not has_remaining:
+                    self._symbol_state.pop(symbol_key, None)
+        scrip_str = "&".join(f"{ex}|{tk}" for ex, tk in scrips)
+        msg = {"type": sub_type, "scrips": scrip_str, "channelnum": channelnum}
         self._send(msg)
 
     def _send(self, msg):
@@ -250,18 +286,14 @@ class KotakWebSocket:
                     self._is_authenticated = True
                 self._flush_pending_subscriptions()
             else:
-                logger.error(
-                    f"[KOTAK WSS HANDSHAKE] Connection authentication failed: {msg}"
-                )
+                logger.error(f"[KOTAK WSS HANDSHAKE] Connection authentication failed: {msg}")
                 with self._lock:
                     self._is_connected = False
                     self._is_authenticated = False
                 with self._lock:
                     on_error = self._on_error
                 if on_error:
-                    on_error(
-                        Exception(f"Authentication failed: {msg.get('stat', 'unknown')}")
-                    )
+                    on_error(Exception(f"Authentication failed: {msg.get('stat', 'unknown')}"))
             return
 
         # **CRITICAL FIX**: Create symbol key for state management
@@ -324,7 +356,11 @@ class KotakWebSocket:
         """
         # Snapshot previous state under lock
         with self._lock:
-            prev_state = self._symbol_state.get(symbol_key, {}).copy() if symbol_key in self._symbol_state else None
+            prev_state = (
+                self._symbol_state.get(symbol_key, {}).copy()
+                if symbol_key in self._symbol_state
+                else None
+            )
 
         # Check if this is a partial update (pure computation, no lock needed)
         is_partial = self._is_partial_update(msg)
@@ -387,7 +423,11 @@ class KotakWebSocket:
         if not has_price_data:
             # Snapshot previous state under lock for merging
             with self._lock:
-                stored_data = self._symbol_state.get(symbol_key, {}).copy() if symbol_key in self._symbol_state else None
+                stored_data = (
+                    self._symbol_state.get(symbol_key, {}).copy()
+                    if symbol_key in self._symbol_state
+                    else None
+                )
 
             if stored_data is not None:
                 # This is a partial update with only quantities - merge with stored state

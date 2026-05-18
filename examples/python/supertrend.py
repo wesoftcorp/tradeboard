@@ -4,14 +4,14 @@ from datetime import datetime, timedelta
 
 import numpy as np
 import pandas as pd
-from tradeboard import api
+from TradeBoard import api
 
-# Get API key from tradeboard portal
-api_key = "your-tradeboard-api-key"
+# Get API key from TradeBoard portal
+api_key = "your-TradeBoard-api-key"
 
 # Set the strategy details and trading parameters
 strategy = "Supertrend Python"
-symbol = "RELIANCE"  # Tradeboard Symbol
+symbol = "RELIANCE"  # TradeBoard Symbol
 exchange = "NSE"
 product = "MIS"
 quantity = 1
@@ -90,7 +90,7 @@ def supertrend_strategy():
             end_date = datetime.now().strftime("%Y-%m-%d")
             start_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
 
-            # Fetch 1-minute historical data using Tradeboard
+            # Fetch 1-minute historical data using TradeBoard
             df = client.history(
                 symbol=symbol,
                 exchange=exchange,

@@ -141,7 +141,7 @@ def download_csv_data(output_path):
 
 def process_flattrade_nse_data(output_path):
     """
-    Processes the Flattrade NSE data (NSE_Equity.csv) to generate Tradeboard symbols.
+    Processes the Flattrade NSE data (NSE_Equity.csv) to generate TradeBoard symbols.
     Separates EQ, BE symbols, and Index symbols.
     """
     logger.info("Processing Flattrade NSE Data")
@@ -189,8 +189,8 @@ def process_flattrade_nse_data(output_path):
         df["symbol"] = df["brsymbol"].copy()  # Initialize 'symbol' with 'brsymbol'
         df["tick_size"] = 0.05  # Default tick size for NSE
 
-        # Apply transformation for Tradeboard symbols
-        def get_tradeboard_symbol(broker_symbol):
+        # Apply transformation for TradeBoard symbols
+        def get_TradeBoard_symbol(broker_symbol):
             if pd.isna(broker_symbol) or not broker_symbol:  # Handle NaN and empty values
                 return broker_symbol  # Return as is, will be filtered out later
             broker_symbol = str(broker_symbol)  # Convert to string to ensure string operations work
@@ -200,11 +200,11 @@ def process_flattrade_nse_data(output_path):
             elif "-BE" in broker_symbol:
                 return broker_symbol.replace("-BE", "")
             else:
-                # For other symbols (including index), Tradeboard symbol remains the same as broker symbol
+                # For other symbols (including index), TradeBoard symbol remains the same as broker symbol
                 return broker_symbol
 
         # Update the 'symbol' column
-        df["symbol"] = df["brsymbol"].apply(get_tradeboard_symbol)
+        df["symbol"] = df["brsymbol"].apply(get_TradeBoard_symbol)
 
         # Define Exchange: 'NSE' for EQ and BE, 'NSE_INDEX' for indexes
         df["instrumenttype"] = df["instrumenttype"].fillna("EQ")  # Fill NaN values with 'EQ'
@@ -266,17 +266,19 @@ def process_flattrade_nse_data(output_path):
         )
 
         # Explicit overrides for NSE_INDEX symbols that don't follow simple concatenation
-        df_filtered.loc[nse_idx_mask, "symbol"] = df_filtered.loc[nse_idx_mask, "symbol"].replace({
-            # Major Indices
-            "NIFTY50": "NIFTY",
-            "NIFTYBANK": "BANKNIFTY",
-            "NIFTYFIN": "FINNIFTY",
-            "NIFTYFINSERVICE": "FINNIFTY",
-            "NIFTYFINANCIALSERVICES": "FINNIFTY",
-            "NIFTYNEXT50": "NIFTYNXT50",
-            "NIFTYMIDSELECT": "MIDCPNIFTY",
-            "NIFTYMIDCAPSELECT": "MIDCPNIFTY",
-        })
+        df_filtered.loc[nse_idx_mask, "symbol"] = df_filtered.loc[nse_idx_mask, "symbol"].replace(
+            {
+                # Major Indices
+                "NIFTY50": "NIFTY",
+                "NIFTYBANK": "BANKNIFTY",
+                "NIFTYFIN": "FINNIFTY",
+                "NIFTYFINSERVICE": "FINNIFTY",
+                "NIFTYFINANCIALSERVICES": "FINNIFTY",
+                "NIFTYNEXT50": "NIFTYNXT50",
+                "NIFTYMIDSELECT": "MIDCPNIFTY",
+                "NIFTYMIDCAPSELECT": "MIDCPNIFTY",
+            }
+        )
 
         logger.info(f"Successfully processed {len(df_filtered)} NSE records")
         return df_filtered
@@ -288,7 +290,7 @@ def process_flattrade_nse_data(output_path):
 
 def process_flattrade_nfo_data(output_path):
     """
-    Processes the Flattrade NFO data (NFO.csv) to generate Tradeboard symbols.
+    Processes the Flattrade NFO data (NFO.csv) to generate TradeBoard symbols.
     Handles both futures and options formatting.
     """
     logger.info("Processing Flattrade NFO Data")
@@ -402,7 +404,7 @@ def process_flattrade_nfo_data(output_path):
 
 def process_flattrade_cds_data(output_path):
     """
-    Processes the Flattrade CDS data (Currency_Derivatives.csv) to generate Tradeboard symbols.
+    Processes the Flattrade CDS data (Currency_Derivatives.csv) to generate TradeBoard symbols.
     Handles both futures and options formatting.
     """
     logger.info("Processing Flattrade CDS Data")
@@ -516,7 +518,7 @@ def process_flattrade_cds_data(output_path):
 
 def process_flattrade_mcx_data(output_path):
     """
-    Processes the Flattrade MCX data (Commodity.csv) to generate Tradeboard symbols.
+    Processes the Flattrade MCX data (Commodity.csv) to generate TradeBoard symbols.
     Handles both futures and options formatting.
     """
     logger.info("Processing Flattrade MCX Data")
@@ -630,7 +632,7 @@ def process_flattrade_mcx_data(output_path):
 
 def process_flattrade_bse_data(output_path):
     """
-    Processes the Flattrade BSE data (BSE_Equity.csv) to generate Tradeboard symbols.
+    Processes the Flattrade BSE data (BSE_Equity.csv) to generate TradeBoard symbols.
     Ensures that the instrument type is always 'EQ'.
     """
     logger.info("Processing Flattrade BSE Data")
@@ -658,12 +660,12 @@ def process_flattrade_bse_data(output_path):
     df["symbol"] = df["brsymbol"]  # Initialize 'symbol' with 'brsymbol'
     df["tick_size"] = 0.05  # Default tick size for BSE
 
-    # Apply transformation for Tradeboard symbols (no special logic needed here)
-    def get_tradeboard_symbol(broker_symbol):
+    # Apply transformation for TradeBoard symbols (no special logic needed here)
+    def get_TradeBoard_symbol(broker_symbol):
         return broker_symbol
 
     # Update the 'symbol' column
-    df["symbol"] = df["brsymbol"].apply(get_tradeboard_symbol)
+    df["symbol"] = df["brsymbol"].apply(get_TradeBoard_symbol)
 
     # Set Exchange based on Instrument type: BSE_INDEX for UNDIND, BSE for others
     df["exchange"] = df["instrumenttype"].apply(lambda x: "BSE_INDEX" if x == "UNDIND" else "BSE")
@@ -720,14 +722,16 @@ def process_flattrade_bse_data(output_path):
     )
 
     # Explicit overrides for BSE_INDEX symbols that don't follow simple concatenation
-    df_filtered.loc[bse_idx_mask, "symbol"] = df_filtered.loc[bse_idx_mask, "symbol"].replace({
-        "BSESENSEX": "SENSEX",
-        "S&PBSESENSEX": "SENSEX",
-        "BSESENSEX50": "SENSEX50",
-        "S&PBSESENSEX50": "SENSEX50",
-        "BSESENSEXNEXT50": "BSESENSEXNEXT50",
-        "S&PBSESENSEXNEXT50": "BSESENSEXNEXT50",
-    })
+    df_filtered.loc[bse_idx_mask, "symbol"] = df_filtered.loc[bse_idx_mask, "symbol"].replace(
+        {
+            "BSESENSEX": "SENSEX",
+            "S&PBSESENSEX": "SENSEX",
+            "BSESENSEX50": "SENSEX50",
+            "S&PBSESENSEX50": "SENSEX50",
+            "BSESENSEXNEXT50": "BSESENSEXNEXT50",
+            "S&PBSESENSEXNEXT50": "BSESENSEXNEXT50",
+        }
+    )
 
     logger.info(f"Successfully processed {len(df_filtered)} BSE records")
     # Return the processed DataFrame
@@ -736,7 +740,7 @@ def process_flattrade_bse_data(output_path):
 
 def process_flattrade_bfo_data(output_path):
     """
-    Processes the Flattrade BFO data (BFO.csv) to generate Tradeboard symbols.
+    Processes the Flattrade BFO data (BFO.csv) to generate TradeBoard symbols.
     Handles both futures and options formatting.
     """
     logger.info("Processing Flattrade BFO Data")

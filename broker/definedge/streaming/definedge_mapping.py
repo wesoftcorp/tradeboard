@@ -2,7 +2,7 @@ import logging
 
 
 class DefinedgeExchangeMapper:
-    """Maps Tradeboard exchange codes to DefinEdge-specific exchange types"""
+    """Maps TradeBoard exchange codes to DefinEdge-specific exchange types"""
 
     # Exchange mapping for DefinEdge broker (as per API docs)
     EXCHANGE_MAP = {
@@ -19,10 +19,10 @@ class DefinedgeExchangeMapper:
     @staticmethod
     def get_exchange_code(exchange):
         """
-        Convert Tradeboard exchange code to DefinEdge exchange code
+        Convert TradeBoard exchange code to DefinEdge exchange code
 
         Args:
-            exchange (str): Tradeboard exchange code
+            exchange (str): TradeBoard exchange code
 
         Returns:
             str: DefinEdge exchange code

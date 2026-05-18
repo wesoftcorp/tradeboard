@@ -1,8 +1,8 @@
-# 37 - API Key & Playground
+﻿# 37 - API Key & Playground
 
 ## Overview
 
-Tradeboard provides a secure API key management system and an interactive API Playground for testing REST API and WebSocket endpoints. API keys are hashed using Argon2 with pepper for storage and encrypted using Fernet for retrieval.
+TradeBoard provides a secure API key management system and an interactive API Playground for testing REST API and WebSocket endpoints. API keys are hashed using Argon2 with pepper for storage and encrypted using Fernet for retrieval.
 
 ## Architecture Diagram
 

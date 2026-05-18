@@ -1,4 +1,4 @@
-# CI/CD & Security Audit Report
+﻿# CI/CD & Security Audit Report
 
 **Date:** 2026-01-25
 **Auditor:** Claude Code
@@ -46,7 +46,7 @@
 - name: Trivy vulnerability scan
   uses: aquasecurity/trivy-action@master
   with:
-    image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/tradeboard:latest
+    image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/TradeBoard:latest
 ```
 
 **Problem:** `DOCKERHUB_USERNAME` may be empty on PRs from forks, causing scan to fail silently.
@@ -56,7 +56,7 @@
 - name: Trivy vulnerability scan
   uses: aquasecurity/trivy-action@master
   with:
-    image-ref: tradeboard:ci
+    image-ref: TradeBoard:ci
   if: github.event_name == 'pull_request'
 ```
 

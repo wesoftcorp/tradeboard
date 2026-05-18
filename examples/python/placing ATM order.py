@@ -1,6 +1,6 @@
-from tradeboard import api
+from TradeBoard import api
 
-print("🔁 Tradeboard Python Bot is running.")
+print("🔁 TradeBoard Python Bot is running.")
 
 # ------------------------------------------
 # Initialize API client

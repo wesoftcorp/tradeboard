@@ -1,10 +1,10 @@
 """
 Mapping utilities for Kotak broker integration.
-Provides exchange, product, and order type mappings between Tradeboard and Kotak formats.
+Provides exchange, product, and order type mappings between TradeBoard and Kotak formats.
 """
 
 # Exchange code mappings
-TRADEBOARD_TO_KOTAK_EXCHANGE = {
+TradeBoard_TO_KOTAK_EXCHANGE = {
     "NSE": "nse_cm",
     "nse": "nse_cm",
     "BSE": "bse_cm",
@@ -23,10 +23,10 @@ TRADEBOARD_TO_KOTAK_EXCHANGE = {
     "BSE_INDEX": "bse_cm",
 }
 
-KOTAK_TO_TRADEBOARD_EXCHANGE = {v: k for k, v in TRADEBOARD_TO_KOTAK_EXCHANGE.items()}
+KOTAK_TO_TradeBoard_EXCHANGE = {v: k for k, v in TradeBoard_TO_KOTAK_EXCHANGE.items()}
 
 # Product type mappings
-TRADEBOARD_TO_KOTAK_PRODUCT = {
+TradeBoard_TO_KOTAK_PRODUCT = {
     "Normal": "NRML",
     "NRML": "NRML",
     "CNC": "CNC",
@@ -44,10 +44,10 @@ TRADEBOARD_TO_KOTAK_PRODUCT = {
     "bo": "Bracket Order",
 }
 
-KOTAK_TO_TRADEBOARD_PRODUCT = {v: k for k, v in TRADEBOARD_TO_KOTAK_PRODUCT.items()}
+KOTAK_TO_TradeBoard_PRODUCT = {v: k for k, v in TradeBoard_TO_KOTAK_PRODUCT.items()}
 
 # Order type mappings
-TRADEBOARD_TO_KOTAK_ORDER_TYPE = {
+TradeBoard_TO_KOTAK_ORDER_TYPE = {
     "Limit": "L",
     "L": "L",
     "l": "L",
@@ -71,46 +71,46 @@ TRADEBOARD_TO_KOTAK_ORDER_TYPE = {
     "Three leg": "3L",
 }
 
-KOTAK_TO_TRADEBOARD_ORDER_TYPE = {v: k for k, v in TRADEBOARD_TO_KOTAK_ORDER_TYPE.items()}
+KOTAK_TO_TradeBoard_ORDER_TYPE = {v: k for k, v in TradeBoard_TO_KOTAK_ORDER_TYPE.items()}
 
 
-def get_kotak_exchange(tradeboard_exchange: str) -> str:
+def get_kotak_exchange(TradeBoard_exchange: str) -> str:
     """
-    Convert Tradeboard exchange code to Kotak exchange code.
+    Convert TradeBoard exchange code to Kotak exchange code.
     """
-    return TRADEBOARD_TO_KOTAK_EXCHANGE.get(tradeboard_exchange, tradeboard_exchange)
+    return TradeBoard_TO_KOTAK_EXCHANGE.get(TradeBoard_exchange, TradeBoard_exchange)
 
 
-def get_tradeboard_exchange(kotak_exchange: str) -> str:
+def get_TradeBoard_exchange(kotak_exchange: str) -> str:
     """
-    Convert Kotak exchange code to Tradeboard exchange code.
+    Convert Kotak exchange code to TradeBoard exchange code.
     """
-    return KOTAK_TO_TRADEBOARD_EXCHANGE.get(kotak_exchange, kotak_exchange)
+    return KOTAK_TO_TradeBoard_EXCHANGE.get(kotak_exchange, kotak_exchange)
 
 
-def get_kotak_product(tradeboard_product: str) -> str:
+def get_kotak_product(TradeBoard_product: str) -> str:
     """
-    Convert Tradeboard product type to Kotak product type.
+    Convert TradeBoard product type to Kotak product type.
     """
-    return TRADEBOARD_TO_KOTAK_PRODUCT.get(tradeboard_product, tradeboard_product)
+    return TradeBoard_TO_KOTAK_PRODUCT.get(TradeBoard_product, TradeBoard_product)
 
 
-def get_tradeboard_product(kotak_product: str) -> str:
+def get_TradeBoard_product(kotak_product: str) -> str:
     """
-    Convert Kotak product type to Tradeboard product type.
+    Convert Kotak product type to TradeBoard product type.
     """
-    return KOTAK_TO_TRADEBOARD_PRODUCT.get(kotak_product, kotak_product)
+    return KOTAK_TO_TradeBoard_PRODUCT.get(kotak_product, kotak_product)
 
 
-def get_kotak_order_type(tradeboard_order_type: str) -> str:
+def get_kotak_order_type(TradeBoard_order_type: str) -> str:
     """
-    Convert Tradeboard order type to Kotak order type.
+    Convert TradeBoard order type to Kotak order type.
     """
-    return TRADEBOARD_TO_KOTAK_ORDER_TYPE.get(tradeboard_order_type, tradeboard_order_type)
+    return TradeBoard_TO_KOTAK_ORDER_TYPE.get(TradeBoard_order_type, TradeBoard_order_type)
 
 
-def get_tradeboard_order_type(kotak_order_type: str) -> str:
+def get_TradeBoard_order_type(kotak_order_type: str) -> str:
     """
-    Convert Kotak order type to Tradeboard order type.
+    Convert Kotak order type to TradeBoard order type.
     """
-    return KOTAK_TO_TRADEBOARD_ORDER_TYPE.get(kotak_order_type, kotak_order_type)
+    return KOTAK_TO_TradeBoard_ORDER_TYPE.get(kotak_order_type, kotak_order_type)

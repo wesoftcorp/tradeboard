@@ -1,8 +1,8 @@
-# 51 - Broker and System Config
+﻿# 51 - Broker and System Config
 
 ## Overview
 
-The Profile section in Tradeboard provides configuration interfaces for broker credentials and system settings. These settings are stored in the `.env` file and database, with security measures for sensitive data.
+The Profile section in TradeBoard provides configuration interfaces for broker credentials and system settings. These settings are stored in the `.env` file and database, with security measures for sensitive data.
 
 ## Architecture Diagram
 
@@ -183,7 +183,7 @@ def get_masked_credentials(broker):
 │                                                                             │
 │  Database                                                                   │
 │  ─────────────────                                                          │
-│  DATABASE_URL     = sqlite:///db/tradeboard.db                               │
+│  DATABASE_URL     = sqlite:///db/TradeBoard.db                               │
 │  LOGS_DB_URL      = sqlite:///db/logs.db                                   │
 │                                                                             │
 │  Logging                                                                    │

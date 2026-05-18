@@ -1,5 +1,5 @@
 """
-Fixed Dhan WebSocket adapter for Tradeboard.
+Fixed Dhan WebSocket adapter for TradeBoard.
 Implements the broker-specific WebSocket adapter for Dhan with proper mode mapping.
 """
 
@@ -21,7 +21,7 @@ from database.auth_db import get_auth_token
 from database.token_db import get_token
 from websocket_proxy.base_adapter import BaseBrokerWebSocketAdapter
 
-from .dhan_mapping import get_dhan_exchange, get_tradeboard_exchange
+from .dhan_mapping import get_dhan_exchange, get_TradeBoard_exchange
 
 # Import the WebSocket client
 from .dhan_websocket import DhanWebSocket
@@ -41,7 +41,7 @@ def _get_dhan_client_id() -> str | None:
 class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
     """
     Dhan-specific implementation of the WebSocket adapter.
-    Implements Tradeboard WebSocket proxy interface with proper mode mapping.
+    Implements TradeBoard WebSocket proxy interface with proper mode mapping.
     """
 
     # No fallback token mappings - using database lookups only
@@ -71,9 +71,18 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
         self.max_reconnect_delay = 300  # Max 5 minutes between attempts
         self.reconnecting = False  # Flag to prevent multiple concurrent reconnections
 
-        # Extended mode mapping to handle all possible Tradeboard modes
+        # Subscribe coalescing queue (issue #1344 — mirrors production
+        # broker/dhan/streaming/dhan_adapter.py:67-69). Bursty per-symbol
+        # subscribe() calls collapse into one batched ws_client.subscribe_tokens
+        # call per (mode, exchange) group instead of N individual broker
+        # messages. 500ms window matches the rest of the fleet.
+        self.subscription_queue: list[dict] = []
+        self.batch_timer: threading.Timer | None = None
+        self.batch_delay = 0.5
+
+        # Extended mode mapping to handle all possible TradeBoard modes
         self.mode_map = {
-            # Standard Tradeboard modes
+            # Standard TradeBoard modes
             1: DhanWebSocket.MODE_LTP,  # LTP -> "ltp"
             2: DhanWebSocket.MODE_QUOTE,  # Quote -> "marketdata"
             3: DhanWebSocket.MODE_FULL,  # Map mode 8 to FULL
@@ -186,6 +195,58 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 "message": f"Error connecting to {self.broker_name} WebSocket: {e}",
             }
 
+    def _start_batch_timer(self):
+        """Arm the coalescing timer that drains subscription_queue.
+
+        Called from within self.lock when a fresh subscribe enters an empty
+        queue. Subsequent enqueues during the window join the same flush.
+        Mirrors broker/dhan/streaming/dhan_adapter.py:161-167.
+        """
+        if self.batch_timer:
+            self.batch_timer.cancel()
+        self.batch_timer = threading.Timer(self.batch_delay, self._process_batch_subscriptions)
+        self.batch_timer.daemon = True
+        self.batch_timer.start()
+
+    def _process_batch_subscriptions(self):
+        """Drain the queue and emit one ws_client.subscribe_tokens call per
+        (mode, exchange_code) group. Mirrors production dhan adapter pattern
+        but adapted for the sandbox's single ws_client architecture.
+        """
+        with self.lock:
+            if not self.subscription_queue:
+                self.batch_timer = None
+                return
+            pending = list(self.subscription_queue)
+            self.subscription_queue.clear()
+            self.batch_timer = None
+            ws_client = self.ws_client
+
+        if not ws_client:
+            self.logger.warning(f"Dropping batch of {len(pending)} subscriptions — ws_client gone")
+            return
+
+        # Group by (mode, exchange_code) — Dhan's subscribe_tokens accepts
+        # one mode per call, with per-token exchange_codes mapping
+        groups: dict[tuple, dict] = {}
+        for item in pending:
+            key = (item["mode"], item["exchange_code"])
+            grp = groups.setdefault(key, {"tokens": [], "exchange_codes": {}})
+            grp["tokens"].append(item["token"])
+            grp["exchange_codes"][item["token"]] = item["exchange_code"]
+
+        for (mode, exch_code), grp in groups.items():
+            try:
+                ws_client.subscribe_tokens(
+                    grp["tokens"], mode, exchange_codes=grp["exchange_codes"]
+                )
+                self.logger.info(
+                    f"Batch subscribed {len(grp['tokens'])} tokens in mode {mode} "
+                    f"(exchange_code={exch_code})"
+                )
+            except Exception as e:
+                self.logger.error(f"Batch subscribe failed for mode {mode}: {e}")
+
     def disconnect(self):
         """
         Disconnect from the Dhan WebSocket server.
@@ -196,6 +257,14 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
         self.logger.info(f"Disconnecting from {self.broker_name} WebSocket server")
 
         try:
+            # Cancel pending batch flush so the timer thread cannot fire
+            # after ws_client is gone (issue #1344).
+            with self.lock:
+                if self.batch_timer:
+                    self.batch_timer.cancel()
+                    self.batch_timer = None
+                self.subscription_queue.clear()
+
             if self.ws_client:
                 self.ws_client.stop()
                 self.ws_client = None
@@ -327,30 +396,34 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
             except (ValueError, TypeError):
                 self.logger.warning(f"DEBUG: Could not convert mode {mode} to int, using as is")
 
-            # Map Tradeboard mode to Dhan mode with explicit handling of all possible modes
+            # Map TradeBoard mode to Dhan mode with explicit handling of all possible modes
             if mode == 1:
                 # Standard LTP mode
                 dhan_mode = DhanWebSocket.MODE_LTP
-                self.logger.info(f"Mapped Tradeboard mode {mode} (LTP) to Dhan mode '{dhan_mode}'")
+                self.logger.info(f"Mapped TradeBoard mode {mode} (LTP) to Dhan mode '{dhan_mode}'")
             elif mode == 2:
                 # Standard QUOTE mode
                 dhan_mode = DhanWebSocket.MODE_QUOTE
-                self.logger.info(f"Mapped Tradeboard mode {mode} (QUOTE) to Dhan mode '{dhan_mode}'")
+                self.logger.info(
+                    f"Mapped TradeBoard mode {mode} (QUOTE) to Dhan mode '{dhan_mode}'"
+                )
             elif mode == 3:
                 # Standard DEPTH mode
                 dhan_mode = DhanWebSocket.MODE_FULL
-                self.logger.info(f"Mapped Tradeboard mode {mode} (DEPTH) to Dhan mode '{dhan_mode}'")
+                self.logger.info(
+                    f"Mapped TradeBoard mode {mode} (DEPTH) to Dhan mode '{dhan_mode}'"
+                )
             else:
                 # All other modes (4-8) map to FULL/DEPTH
                 dhan_mode = DhanWebSocket.MODE_FULL
                 self.logger.info(
-                    f"Mapped Tradeboard mode {mode} (DEPTH/FULL) to Dhan mode '{dhan_mode}'"
+                    f"Mapped TradeBoard mode {mode} (DEPTH/FULL) to Dhan mode '{dhan_mode}'"
                 )
 
             # Add symbol to subscription tracking
             with self.lock:
                 self.subscribed_symbols[symbol] = {
-                    "exchange": exchange,  # Store original Tradeboard exchange
+                    "exchange": exchange,  # Store original TradeBoard exchange
                     "dhan_exchange": dhan_exchange,  # Store Dhan exchange
                     "token": actual_token,
                     "mode": mode,
@@ -365,7 +438,7 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 )
                 self.logger.info(f"📝 Current token_to_symbol: {self.token_to_symbol}")
 
-            # Map Tradeboard exchange to Dhan exchange code
+            # Map TradeBoard exchange to Dhan exchange code
             exchange_code = 1  # Default to NSE_EQ
             if exchange == "NSE":
                 exchange_code = 1  # NSE_EQ
@@ -409,16 +482,23 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 )
                 # Don't fail here - let the subscription attempt proceed
 
-            # Perform subscription
-            success = self.ws_client.subscribe_tokens(
-                [actual_token], dhan_mode, exchange_codes={actual_token: exchange_code}
-            )
-
-            if success:
-                self.logger.info(f"✅ Successfully subscribed to {exchange}:{symbol}")
-            else:
-                self.logger.error(f"❌ Failed to subscribe to {exchange}:{symbol}")
-                return {"status": "error", "message": f"Failed to subscribe to {exchange}:{symbol}"}
+            # Queue for batched subscribe (issue #1344). The actual
+            # ws_client.subscribe_tokens call is dispatched by
+            # _process_batch_subscriptions() after the coalescing window so
+            # bursty per-symbol startups collapse into one broker message
+            # per (mode, exchange-code) group.
+            with self.lock:
+                self.subscription_queue.append(
+                    {
+                        "token": int(actual_token),
+                        "mode": dhan_mode,
+                        "exchange_code": exchange_code,
+                        "symbol": symbol,
+                        "exchange": exchange,
+                    }
+                )
+                if len(self.subscription_queue) == 1:
+                    self._start_batch_timer()
 
             return {"status": "success", "message": f"Subscribed to {exchange}:{symbol}"}
 
@@ -664,7 +744,7 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 # Get original subscription exchange for topic generation
                 subscription_exchange = exchange
 
-                # Convert to Tradeboard format for data field
+                # Convert to TradeBoard format for data field
                 data_exchange = self._map_data_exchange(subscription_exchange)
 
                 # Set the data exchange field in the tick
@@ -681,7 +761,7 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 # Map numeric mode to string format
                 mode_str = {1: "LTP", 2: "QUOTE", 3: "DEPTH"}.get(mode, "LTP")
 
-                # Normalize tick format to Tradeboard standard
+                # Normalize tick format to TradeBoard standard
                 normalized_tick = self._normalize_tick(tick)
 
                 # Set mode based on packet type
@@ -734,7 +814,7 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
         Args:
             symbol: The trading symbol
-            exchange: The exchange code in Tradeboard format
+            exchange: The exchange code in TradeBoard format
             mode_str: The subscription mode (LTP, QUOTE, DEPTH)
 
         Returns:
@@ -762,7 +842,7 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
     def _normalize_tick(self, tick: dict[str, Any]) -> dict[str, Any]:
         """
-        Normalize Dhan tick data to Tradeboard format.
+        Normalize Dhan tick data to TradeBoard format.
 
         This method handles OHLC data that may come in different formats:
         - Nested under 'ohlc' dictionary
@@ -779,12 +859,12 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
             # Debug log for troubleshooting
             self.logger.debug(f"Raw tick data: {tick}")
 
-            # Ensure exchange is in Tradeboard format
+            # Ensure exchange is in TradeBoard format
             exchange = tick.get("exchange")
             if exchange:
-                tradeboard_exchange = get_tradeboard_exchange(exchange)
+                TradeBoard_exchange = get_TradeBoard_exchange(exchange)
             else:
-                tradeboard_exchange = exchange
+                TradeBoard_exchange = exchange
 
             # Safely get numeric values with validation
             def safe_float(value, default=0.0):
@@ -809,7 +889,7 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
             # Create base normalized tick
             normalized = {
                 "symbol": tick.get("symbol"),
-                "exchange": tradeboard_exchange,
+                "exchange": TradeBoard_exchange,
                 "token": tick.get("token") or tick.get("instrument_token"),
                 "ltt": timestamp,
                 "timestamp": timestamp,
@@ -1052,7 +1132,7 @@ class DhanWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
             # Backup original callbacks
             original_callbacks = {}
-            for mode in [1, 2, 3, 4, 5]:  # Tradeboard modes
+            for mode in [1, 2, 3, 4, 5]:  # TradeBoard modes
                 if mode in self.callbacks:
                     original_callbacks[mode] = self.callbacks[mode].copy()
                 else:

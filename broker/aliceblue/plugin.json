@@ -1,10 +1,10 @@
-{
+﻿{
     "Plugin Name": "aliceblue",
-    "Plugin URI": "https://wesoftcorp.com",
-    "Description": "AliceBlue Tradeboard Plugin",
+    "Plugin URI": "https://TradeBoard.in",
+    "Description": "AliceBlue TradeBoard Plugin",
     "Version": "1.0",
     "Author": "Deepanshu Goyal",
-    "Author URI": "https://wesoftcorp.com",
+    "Author URI": "https://TradeBoard.in",
     "supported_exchanges": ["NSE", "BSE", "NFO", "BFO", "CDS", "BCD", "MCX", "NSE_INDEX", "BSE_INDEX"],
     "broker_type": "IN_stock",
     "leverage_config": false

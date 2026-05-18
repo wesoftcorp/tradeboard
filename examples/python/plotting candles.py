@@ -1,18 +1,18 @@
 """
 RELIANCE 5-Minute Candlestick Chart - Last 20 Days
 With Bollinger Bands (Top) and RSI (Bottom)
-Author : Tradeboard GPT
+Author : TradeBoard GPT
 Description: Plots RELIANCE 5m candlestick chart using Plotly with category x-axis
 """
 
-print("🔁 Tradeboard Python Bot is running.")
+print("🔁 TradeBoard Python Bot is running.")
 
 from datetime import datetime
 
 import pandas as pd
 import plotly.graph_objects as go
-from tradeboard import api, ta
 from plotly.subplots import make_subplots
+from TradeBoard import api, ta
 
 # ───────────────────────── CONFIG ─────────────────────────
 API_KEY = "3f75e26648a543a886c9b38332a6942e30e0710bbf0488cf432ef27745de8ae7"
@@ -46,7 +46,7 @@ def fetch_historical_data():
     # Print the raw response
     print(f"History Response: {response}")
 
-    # Tradeboard history() returns DataFrame directly (not a dict)
+    # TradeBoard history() returns DataFrame directly (not a dict)
     if isinstance(response, pd.DataFrame):
         df = response.copy()
     else:
@@ -89,7 +89,7 @@ BB_STD_DEV = 2.0
 
 # ───────────────────── CALCULATE INDICATORS ─────────────────────
 def calculate_indicators(df: pd.DataFrame):
-    """Calculate RSI and Bollinger Bands using Tradeboard ta library"""
+    """Calculate RSI and Bollinger Bands using TradeBoard ta library"""
 
     # RSI (20)
     df["rsi"] = ta.rsi(df["close"], period=RSI_PERIOD)

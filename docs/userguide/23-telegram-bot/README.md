@@ -1,8 +1,8 @@
-# 23 - Telegram Bot
+﻿# 23 - Telegram Bot
 
 ## Introduction
 
-Tradeboard's Telegram Bot integration provides real-time notifications and remote control capabilities directly from your Telegram app. Get trade alerts, monitor positions, and execute commands without accessing the dashboard.
+TradeBoard's Telegram Bot integration provides real-time notifications and remote control capabilities directly from your Telegram app. Get trade alerts, monitor positions, and execute commands without accessing the dashboard.
 
 ## Features
 
@@ -35,8 +35,8 @@ Tradeboard's Telegram Bot integration provides real-time notifications and remot
 1. Open Telegram and search for **@BotFather**
 2. Send command: `/newbot`
 3. Follow prompts:
-   - Enter bot name (e.g., "My Tradeboard Bot")
-   - Enter username (e.g., "mytradeboard_bot")
+   - Enter bot name (e.g., "My TradeBoard Bot")
+   - Enter username (e.g., "myTradeBoard_bot")
 4. **Save the API token** provided
 
 ```
@@ -58,7 +58,7 @@ Keep your token secure and store it safely!
    ```
 4. Save this Chat ID
 
-### Step 3: Configure in Tradeboard
+### Step 3: Configure in TradeBoard
 
 1. Go to **Settings** → **Telegram**
 2. Enter:
@@ -259,7 +259,7 @@ Win Rate: 66.7%
 ```
 🔧 SYSTEM STATUS
 
-Tradeboard: ✅ Running
+TradeBoard: ✅ Running
 Broker: ✅ Connected
 WebSocket: ✅ Active
 Last Order: 10:45:10
@@ -277,7 +277,7 @@ For team environments:
 1. Create Telegram Group
 2. Add your bot to the group
 3. Get group Chat ID (starts with -)
-4. Configure in Tradeboard
+4. Configure in TradeBoard
 
 ```
 Group Chat ID: -1001234567890
@@ -308,7 +308,7 @@ Send custom notifications from strategies:
 
 **Python Strategy:**
 ```python
-from tradeboard import api
+from TradeBoard import api
 
 client = api(api_key="YOUR_KEY", host="http://127.0.0.1:5000")
 
@@ -343,7 +343,7 @@ client.send_telegram("Custom alert: Strategy triggered!")
 
 Expected message:
 ```
-🔔 Tradeboard Test
+🔔 TradeBoard Test
 
 This is a test message.
 Your Telegram integration is working correctly!

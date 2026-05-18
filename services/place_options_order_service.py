@@ -53,7 +53,7 @@ def place_single_split_order(
 
     Args:
         order_data: Order data with symbol, exchange, action, quantity, etc.
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
         order_num: Order number in the sequence
         total_orders: Total number of orders
         auth_token: Direct broker auth token (optional)
@@ -124,7 +124,7 @@ def place_options_order(
             - disclosed_quantity: Disclosed quantity
             - strategy: Strategy name
             - apikey: API key
-        api_key: Tradeboard API key (for API-based calls)
+        api_key: TradeBoard API key (for API-based calls)
         auth_token: Direct broker authentication token (for internal calls)
         broker: Direct broker name (for internal calls)
 
@@ -316,22 +316,24 @@ def place_options_order(
             request_log["api_type"] = "optionsorder"
 
             successful_orders = sum(1 for r in results if r.get("status") == "success")
-            bus.publish(OptionsOrderCompletedEvent(
-                mode=mode,
-                api_type="optionsorder",
-                strategy=options_data.get("strategy", ""),
-                symbol=resolved_symbol,
-                exchange=resolved_exchange,
-                action=options_data.get("action", ""),
-                pricetype=options_data.get("pricetype", "MARKET"),
-                product=options_data.get("product", "MIS"),
-                results=results,
-                successful=successful_orders,
-                total=len(results),
-                request_data=request_log,
-                response_data=response_data,
-                api_key=api_key or "",
-            ))
+            bus.publish(
+                OptionsOrderCompletedEvent(
+                    mode=mode,
+                    api_type="optionsorder",
+                    strategy=options_data.get("strategy", ""),
+                    symbol=resolved_symbol,
+                    exchange=resolved_exchange,
+                    action=options_data.get("action", ""),
+                    pricetype=options_data.get("pricetype", "MARKET"),
+                    product=options_data.get("product", "MIS"),
+                    results=results,
+                    successful=successful_orders,
+                    total=len(results),
+                    request_data=request_log,
+                    response_data=response_data,
+                    api_key=api_key or "",
+                )
+            )
 
             logger.info(
                 f"Split options order completed: {successful_orders}/{len(results)} successful"

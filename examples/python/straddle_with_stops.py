@@ -2,12 +2,12 @@ import time
 
 import pytz
 from apscheduler.schedulers.background import BackgroundScheduler
-from tradeboard import api
+from TradeBoard import api
 
-print("🔁 Tradeboard Python Bot is running.")
+print("🔁 TradeBoard Python Bot is running.")
 
 # =====================================
-# Tradeboard Client
+# TradeBoard Client
 # =====================================
 client = api(
     api_key="83ad96143dd5081d033abcfd20e9108daee5708fbea404121a762bed1e498dd0",

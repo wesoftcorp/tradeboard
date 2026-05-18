@@ -1,8 +1,8 @@
-# Session Management
+﻿# Session Management
 
 ## Overview
 
-Tradeboard supports multi-device login with automatic session synchronization. A user can authenticate once with their broker (OAuth) and then access Tradeboard from additional devices without repeating the broker login flow.
+TradeBoard supports multi-device login with automatic session synchronization. A user can authenticate once with their broker (OAuth) and then access TradeBoard from additional devices without repeating the broker login flow.
 
 ## Architecture
 

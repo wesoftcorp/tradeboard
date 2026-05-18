@@ -1,4 +1,4 @@
-# Python Strategies API Reference
+﻿# Python Strategies API Reference
 
 Complete API documentation for the Python Strategy Hosting feature.
 
@@ -402,20 +402,20 @@ When a strategy runs, these environment variables are available:
 
 | Variable | Description |
 |----------|-------------|
-| `TRADEBOARD_APIKEY` | API key for Tradeboard requests |
-| `TRADEBOARD_HOST` | Tradeboard server URL |
+| `TradeBoard_APIKEY` | API key for TradeBoard requests |
+| `TradeBoard_HOST` | TradeBoard server URL |
 | `PYTHONUNBUFFERED` | Set to '1' for real-time output |
 
-### Using Tradeboard SDK in Strategy
+### Using TradeBoard SDK in Strategy
 
 ```python
 #!/usr/bin/env python
 import os
-from tradeboard import api
+from TradeBoard import api
 
 # Get credentials from environment
-API_KEY = os.getenv('TRADEBOARD_APIKEY')
-HOST = os.getenv('TRADEBOARD_HOST', 'http://127.0.0.1:5000')
+API_KEY = os.getenv('TradeBoard_APIKEY')
+HOST = os.getenv('TradeBoard_HOST', 'http://127.0.0.1:5000')
 
 # Initialize client
 client = api(api_key=API_KEY, host=HOST)

@@ -1,8 +1,8 @@
-# 35 - Development & Testing Guide
+﻿# 35 - Development & Testing Guide
 
 ## Overview
 
-This guide covers running Tradeboard in development and production modes using the uv package manager, along with comprehensive testing strategies including unit tests, E2E tests, accessibility tests, and linting.
+This guide covers running TradeBoard in development and production modes using the uv package manager, along with comprehensive testing strategies including unit tests, E2E tests, accessibility tests, and linting.
 
 ## Running the Application
 
@@ -10,7 +10,7 @@ This guide covers running Tradeboard in development and production modes using t
 
 ```bash
 # Navigate to project directory
-cd /path/to/tradeboard
+cd /path/to/TradeBoard
 
 # Copy environment file (first time only)
 cp .sample.env .env
@@ -372,7 +372,7 @@ uv run pytest test/ --cov
 ### Test Structure
 
 ```
-tradeboard/
+TradeBoard/
 └── test/
     ├── test_broker.py            # Broker integration tests
     ├── test_rate_limits_simple.py # Rate limit tests

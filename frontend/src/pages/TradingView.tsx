@@ -1,4 +1,4 @@
-import { AlertTriangle, BookOpen, Copy, ExternalLink, RefreshCw } from 'lucide-react'
+﻿import { AlertTriangle, BookOpen, Copy, ExternalLink, RefreshCw } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { showToast } from '@/utils/toast'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -229,7 +229,7 @@ export default function TradingView() {
             <strong>Webhook URL not accessible!</strong> TradingView cannot send alerts to
             localhost. Use <strong>ngrok</strong>, <strong>Cloudflare Tunnel</strong>,{' '}
             <strong>VS Code Dev Tunnel</strong>, or a <strong>custom domain</strong> to expose your
-            OpenAlgo instance to the internet. Update <code>HOST_SERVER</code> in your <code>.env</code> file with your external URL.
+            TradeBoard instance to the internet. Update <code>HOST_SERVER</code> in your <code>.env</code> file with your external URL.
           </AlertDescription>
         </Alert>
       )}
@@ -441,7 +441,7 @@ export default function TradingView() {
               </p>
               <Button asChild variant="default">
                 <a
-                  href="https://docs.openalgo.in/trading-platform/tradingview"
+                  href="https://docs.TradeBoard.in/trading-platform/tradingview"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

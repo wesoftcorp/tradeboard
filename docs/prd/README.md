@@ -1,8 +1,8 @@
-# Product Requirements Document - Tradeboard
+﻿# Product Requirements Document - TradeBoard
 
 ## Product Overview
 
-**Product Name:** Tradeboard
+**Product Name:** TradeBoard
 **Version:** 2.0
 **Type:** Open-source algorithmic trading platform
 

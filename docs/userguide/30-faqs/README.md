@@ -1,18 +1,18 @@
-# 30 - Frequently Asked Questions (FAQs)
+﻿# 30 - Frequently Asked Questions (FAQs)
 
 ## General Questions
 
-### What is Tradeboard?
+### What is TradeBoard?
 
-Tradeboard is an open-source algorithmic trading platform that connects various trading platforms (TradingView, Amibroker, Python) to Indian stock brokers through a unified API.
+TradeBoard is an open-source algorithmic trading platform that connects various trading platforms (TradingView, Amibroker, Python) to Indian stock brokers through a unified API.
 
-### Is Tradeboard free?
+### Is TradeBoard free?
 
-Yes, Tradeboard is completely free and open-source. You can download, use, and modify it without any cost.
+Yes, TradeBoard is completely free and open-source. You can download, use, and modify it without any cost.
 
 ### Which brokers are supported?
 
-Tradeboard supports 29 Indian brokers including:
+TradeBoard supports 29 Indian brokers including:
 - Zerodha
 - Angel One
 - Dhan
@@ -20,9 +20,9 @@ Tradeboard supports 29 Indian brokers including:
 - Fyers
 - And many more (see full list in documentation)
 
-### Can I use Tradeboard for live trading?
+### Can I use TradeBoard for live trading?
 
-Yes, Tradeboard supports live trading with real money. However, we strongly recommend:
+Yes, TradeBoard supports live trading with real money. However, we strongly recommend:
 1. Testing in Analyzer Mode first
 2. Starting with small quantities
 3. Monitoring your first few trades closely
@@ -45,12 +45,12 @@ Yes, Tradeboard supports live trading with real money. However, we strongly reco
 | OS | Windows 10+, Ubuntu 20+, macOS 11+ |
 | Internet | Stable broadband |
 
-### How do I install Tradeboard?
+### How do I install TradeBoard?
 
 ```bash
 # Clone repository
 git clone https://github.com/wesoftcorp/tradeboard.git
-cd tradeboard
+cd TradeBoard
 
 # Setup environment
 cp .sample.env .env
@@ -61,19 +61,19 @@ uv run app.py
 
 See [Installation Guide](../04-installation/README.md) for details.
 
-### Can I run Tradeboard on a VPS/Cloud?
+### Can I run TradeBoard on a VPS/Cloud?
 
-Yes, Tradeboard can run on:
+Yes, TradeBoard can run on:
 - AWS EC2/Lightsail
 - Google Cloud
 - DigitalOcean
 - Azure
 - Any Linux VPS
 
-### How do I update Tradeboard?
+### How do I update TradeBoard?
 
 ```bash
-cd tradeboard
+cd TradeBoard
 git pull origin main
 uv sync
 ```
@@ -82,11 +82,11 @@ uv sync
 
 ### Why do I need to login daily?
 
-Most Indian brokers require daily authentication for security. This is a broker requirement, not an Tradeboard limitation.
+Most Indian brokers require daily authentication for security. This is a broker requirement, not an TradeBoard limitation.
 
 ### Can I use multiple brokers?
 
-Currently, Tradeboard supports one broker at a time. You can switch between brokers by changing the configuration.
+Currently, TradeBoard supports one broker at a time. You can switch between brokers by changing the configuration.
 
 ### Why is my broker not connecting?
 
@@ -107,7 +107,7 @@ Most brokers provide API access free or at minimal cost. Check with your specifi
 ### What is the latency for order execution?
 
 Typical latency:
-- Tradeboard processing: 5-20ms
+- TradeBoard processing: 5-20ms
 - Broker API: 50-200ms
 - Total: 100-500ms
 
@@ -115,22 +115,22 @@ See [Latency Monitor](../25-latency-monitor/README.md) for details.
 
 ### Can I trade F&O (Futures & Options)?
 
-Yes, Tradeboard fully supports F&O trading. Use correct symbol format:
+Yes, TradeBoard fully supports F&O trading. Use correct symbol format:
 - Futures: `NIFTY30JAN25FUT`
 - Options: `NIFTY30JAN2521500CE`
 
 ### What is Analyzer Mode?
 
-Analyzer Mode is Tradeboard's sandbox testing environment. It simulates trading with ₹1 Crore sandbox capital using real market prices but no real money.
+Analyzer Mode is TradeBoard's sandbox testing environment. It simulates trading with ₹1 Crore sandbox capital using real market prices but no real money.
 
 ### Can I backtest strategies?
 
-Tradeboard is primarily for live trading and walkforward testing strategies. For backtesting:
+TradeBoard is primarily for live trading and walkforward testing strategies. For backtesting:
 - Use TradingView's strategy tester
 - Use Amibroker's backtesting
 - Use Python backtesting libraries
 
-### What happens if Tradeboard crashes during a trade?
+### What happens if TradeBoard crashes during a trade?
 
 - Open positions remain with your broker
 - You can manage them through broker terminal
@@ -140,7 +140,7 @@ Tradeboard is primarily for live trading and walkforward testing strategies. For
 
 ### How do I get an API key?
 
-1. Login to Tradeboard
+1. Login to TradeBoard
 2. Go to API Key page
 3. Click Generate New Key
 4. Copy and store securely
@@ -167,11 +167,11 @@ Yes:
 
 ## TradingView Questions
 
-### How do I connect TradingView to Tradeboard?
+### How do I connect TradingView to TradeBoard?
 
-1. Enable Tradeboard accessible via internet (ngrok/cloud)
+1. Enable TradeBoard accessible via internet (ngrok/cloud)
 2. Create webhook alert in TradingView
-3. Use Tradeboard endpoint URL
+3. Use TradeBoard endpoint URL
 4. Configure JSON payload
 
 See [TradingView Integration](../16-tradingview-integration/README.md).
@@ -203,7 +203,7 @@ Yes:
 ### How do I install the Python library?
 
 ```bash
-pip install tradeboard
+pip install TradeBoard
 ```
 
 ### Can I run multiple strategies?
@@ -235,7 +235,7 @@ Use recovery codes to regain access. Store them safely when setting up 2FA.
 
 ### How do I report a security issue?
 
-Report security vulnerabilities to: security@wesoftcorp.com (or via GitHub private advisory)
+Report security vulnerabilities to: security@TradeBoard.in (or via GitHub private advisory)
 
 ## Static IP Questions
 
@@ -275,10 +275,10 @@ If your strategy consistently places over 10 orders per second, you may need for
 
 ### Where can I get help?
 
-Tradeboard is community-driven. Get help through:
+TradeBoard is community-driven. Get help through:
 
-1. Documentation: [https://docs.wesoftcorp.com](https://docs.wesoftcorp.com)
-2. Discord Community: [http://wesoftcorp.com/discord](http://wesoftcorp.com/discord)
+1. Documentation: [https://docs.TradeBoard.in](https://docs.TradeBoard.in)
+2. Discord Community: [http://TradeBoard.in/discord](http://TradeBoard.in/discord)
 3. GitHub Issues: [https://github.com/wesoftcorp/tradeboard/issues](https://github.com/wesoftcorp/tradeboard/issues)
 4. YouTube tutorials: For video guides
 
@@ -287,7 +287,7 @@ Tradeboard is community-driven. Get help through:
 1. Go to GitHub Issues
 2. Use the bug report template
 3. Include:
-   - Tradeboard version
+   - TradeBoard version
    - Steps to reproduce
    - Error messages
    - Screenshots
@@ -306,13 +306,13 @@ Yes! Submit feature requests on GitHub Issues with the "enhancement" label.
 
 ## Pricing Questions
 
-### Is Tradeboard really free?
+### Is TradeBoard really free?
 
-Yes, Tradeboard is 100% free and open-source under the AGPL license.
+Yes, TradeBoard is 100% free and open-source under the AGPL license.
 
 ### Are there any hidden costs?
 
-No hidden costs from Tradeboard. You may have:
+No hidden costs from TradeBoard. You may have:
 - Broker API charges (varies by broker)
 - Cloud hosting costs (if using cloud)
 - TradingView subscription (for webhooks)
@@ -323,21 +323,21 @@ Currently, support is community-based. For enterprise needs, contact the maintai
 
 ## Common Misconceptions
 
-### "Tradeboard is a trading bot"
+### "TradeBoard is a trading bot"
 
-Tradeboard is a **bridge/platform**, not a trading bot. It connects your strategy signals to your broker. You still need to create or use existing strategies.
+TradeBoard is a **bridge/platform**, not a trading bot. It connects your strategy signals to your broker. You still need to create or use existing strategies.
 
 ### "I can make guaranteed profits"
 
-No trading system guarantees profits. Tradeboard is a tool - your results depend on your strategy.
+No trading system guarantees profits. TradeBoard is a tool - your results depend on your strategy.
 
 ### "It works without internet"
 
-Tradeboard requires internet connection to communicate with brokers and receive signals.
+TradeBoard requires internet connection to communicate with brokers and receive signals.
 
 ### "I can trade after market hours"
 
-Tradeboard follows exchange timings. F&O can be traded during extended hours as per exchange rules.
+TradeBoard follows exchange timings. F&O can be traded during extended hours as per exchange rules.
 
 ## Symbol Format Quick Reference
 

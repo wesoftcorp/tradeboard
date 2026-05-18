@@ -1,10 +1,10 @@
-{
+﻿{
     "Plugin Name": "DefinedGe Securities",
-    "Plugin URI": "https://wesoftcorp.com",
-    "Description": "DefinedGe Securities Tradeboard Plugin",
+    "Plugin URI": "https://TradeBoard.in",
+    "Description": "DefinedGe Securities TradeBoard Plugin",
     "Version": "1.0",
-    "Author": "Tradeboard Team",
-    "Author URI": "https://wesoftcorp.com",
+    "Author": "TradeBoard Team",
+    "Author URI": "https://TradeBoard.in",
     "supported_exchanges": ["NSE", "BSE", "NFO", "BFO", "CDS", "MCX", "NSE_INDEX", "BSE_INDEX"],
     "broker_type": "IN_stock",
     "leverage_config": false

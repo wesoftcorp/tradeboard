@@ -1,6 +1,6 @@
-# Tradeboard Docker Build Guide
+﻿# TradeBoard Docker Build Guide
 
-Complete guide to building and deploying Tradeboard with numba/llvmlite/scipy support.
+Complete guide to building and deploying TradeBoard with numba/llvmlite/scipy support.
 
 ## Quick Start
 
@@ -36,29 +36,29 @@ docker-compose build --no-cache
 docker-compose up -d
 
 # Verify it's working
-docker-compose exec tradeboard python -c "import numba; import llvmlite; import scipy; print('✓ Success')"
+docker-compose exec TradeBoard python -c "import numba; import llvmlite; import scipy; print('✓ Success')"
 ```
 
 ### Option 3: Manual Build with Docker CLI
 
 ```bash
 # Build the image
-docker build --no-cache -t tradeboard:latest .
+docker build --no-cache -t TradeBoard:latest .
 
 # Run the container
 docker run -d \
-  --name tradeboard-web \
+  --name TradeBoard-web \
   --shm-size=2g \
   -p 5000:5000 \
   -p 8765:8765 \
-  -v tradeboard_db:/app/db \
-  -v tradeboard_log:/app/log \
-  -v tradeboard_strategies:/app/strategies \
-  -v tradeboard_keys:/app/keys \
+  -v TradeBoard_db:/app/db \
+  -v TradeBoard_log:/app/log \
+  -v TradeBoard_strategies:/app/strategies \
+  -v TradeBoard_keys:/app/keys \
   -v "$(pwd)/.env:/app/.env:ro" \
   --tmpfs /app/tmp:size=1g,mode=1777 \
   --restart unless-stopped \
-  tradeboard:latest
+  TradeBoard:latest
 ```
 
 ## Build Process Details
@@ -146,13 +146,13 @@ None required - all configuration is in `.env` file.
 ### Step 1: Check Container is Running
 
 ```bash
-docker ps | grep tradeboard
+docker ps | grep TradeBoard
 ```
 
 Expected output:
 ```
 CONTAINER ID   IMAGE             COMMAND          CREATED          STATUS          PORTS                                            NAMES
-abc123def456   tradeboard:latest   "/app/start.sh"  10 seconds ago   Up 9 seconds    0.0.0.0:5000->5000/tcp, 0.0.0.0:8765->8765/tcp   tradeboard-web
+abc123def456   TradeBoard:latest   "/app/start.sh"  10 seconds ago   Up 9 seconds    0.0.0.0:5000->5000/tcp, 0.0.0.0:8765->8765/tcp   TradeBoard-web
 ```
 
 ### Step 2: Check Application Health
@@ -167,12 +167,12 @@ Expected output: HTTP 200 response
 
 **Test imports:**
 ```bash
-docker-compose exec tradeboard python -c "import numba; import llvmlite; import scipy; print('✓ Imports successful')"
+docker-compose exec TradeBoard python -c "import numba; import llvmlite; import scipy; print('✓ Imports successful')"
 ```
 
 **Test numba JIT:**
 ```bash
-docker-compose exec tradeboard python -c "
+docker-compose exec TradeBoard python -c "
 from numba import jit
 import numpy as np
 
@@ -193,7 +193,7 @@ print(f'✓ EMA calculated: {ema[-1]:.4f}')
 
 **Test scipy:**
 ```bash
-docker-compose exec tradeboard python -c "
+docker-compose exec TradeBoard python -c "
 from scipy import stats
 result = stats.norm.cdf(0)
 print(f'✓ SciPy works: {result:.4f}')
@@ -220,7 +220,7 @@ docker-compose logs | grep -i error
 
 ```bash
 # Check if WebSocket server is running
-docker-compose exec tradeboard ps aux | grep websocket_proxy
+docker-compose exec TradeBoard ps aux | grep websocket_proxy
 ```
 
 Expected output showing `python -m websocket_proxy.server`
@@ -244,8 +244,8 @@ docker-compose logs --tail=100
 
 **Solution 2:** Verify .env file is mounted:
 ```bash
-docker-compose exec tradeboard ls -la /app/.env
-docker-compose exec tradeboard head -5 /app/.env
+docker-compose exec TradeBoard ls -la /app/.env
+docker-compose exec TradeBoard head -5 /app/.env
 ```
 
 **Solution 3:** Restart container:
@@ -272,19 +272,19 @@ If missing, rebuild with the updated docker-compose.yaml.
 
 **Solution:** Check directory permissions inside container:
 ```bash
-docker-compose exec tradeboard ls -la /app/
-docker-compose exec tradeboard ls -la /app/tmp/
+docker-compose exec TradeBoard ls -la /app/
+docker-compose exec TradeBoard ls -la /app/tmp/
 
 # Fix if needed (run as root)
-docker-compose exec -u root tradeboard chown -R appuser:appuser /app/tmp
-docker-compose exec -u root tradeboard chmod -R 755 /app/tmp
+docker-compose exec -u root TradeBoard chown -R appuser:appuser /app/tmp
+docker-compose exec -u root TradeBoard chmod -R 755 /app/tmp
 ```
 
 ### Issue: Numba compilation is slow
 
 **Solution:** Verify cache directory is writable:
 ```bash
-docker-compose exec tradeboard bash -c '
+docker-compose exec TradeBoard bash -c '
 echo "Testing numba cache..."
 python -c "
 from numba import jit
@@ -315,21 +315,21 @@ docker-compose up -d
 
 ```bash
 # For ARM64 (Apple Silicon, ARM servers)
-docker buildx build --platform linux/arm64 -t tradeboard:arm64 .
+docker buildx build --platform linux/arm64 -t TradeBoard:arm64 .
 
 # For AMD64 (Intel/AMD)
-docker buildx build --platform linux/amd64 -t tradeboard:amd64 .
+docker buildx build --platform linux/amd64 -t TradeBoard:amd64 .
 
 # Multi-platform (requires buildx)
-docker buildx build --platform linux/amd64,linux/arm64 -t tradeboard:latest .
+docker buildx build --platform linux/amd64,linux/arm64 -t TradeBoard:latest .
 ```
 
 ### Build with Custom Tag
 
 ```bash
 docker-compose build --no-cache
-docker tag tradeboard:latest tradeboard:v2.0.0
-docker tag tradeboard:latest myregistry.com/tradeboard:latest
+docker tag TradeBoard:latest TradeBoard:v2.0.0
+docker tag TradeBoard:latest myregistry.com/TradeBoard:latest
 ```
 
 ### Build and Push to Registry
@@ -339,10 +339,10 @@ docker tag tradeboard:latest myregistry.com/tradeboard:latest
 docker-compose build --no-cache
 
 # Tag for registry
-docker tag tradeboard:latest your-registry.com/tradeboard:latest
+docker tag TradeBoard:latest your-registry.com/TradeBoard:latest
 
 # Push
-docker push your-registry.com/tradeboard:latest
+docker push your-registry.com/TradeBoard:latest
 ```
 
 ### Development Build (with source code mounted)
@@ -351,15 +351,15 @@ For development, you can mount source code as volume:
 
 ```bash
 docker run -d \
-  --name tradeboard-dev \
+  --name TradeBoard-dev \
   --shm-size=2g \
   -p 5000:5000 \
   -p 8765:8765 \
   -v "$(pwd):/app" \
-  -v tradeboard_db:/app/db \
+  -v TradeBoard_db:/app/db \
   --tmpfs /app/tmp:size=1g,mode=1777 \
   -e FLASK_DEBUG=1 \
-  tradeboard:latest
+  TradeBoard:latest
 ```
 
 **Warning:** Don't use mounted source in production!
@@ -432,11 +432,11 @@ Platforms auto-detect Dockerfile and build automatically.
 ### Kubernetes
 ```bash
 # Build
-docker build -t tradeboard:latest .
+docker build -t TradeBoard:latest .
 
 # Push to registry
-docker tag tradeboard:latest your-registry/tradeboard:latest
-docker push your-registry/tradeboard:latest
+docker tag TradeBoard:latest your-registry/TradeBoard:latest
+docker push your-registry/TradeBoard:latest
 
 # Deploy with kubectl
 kubectl apply -f k8s/deployment.yaml
@@ -462,7 +462,7 @@ kubectl apply -f k8s/deployment.yaml
    ```bash
    # Using Trivy (included in CI/CD)
    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-     aquasec/trivy:latest image tradeboard:latest
+     aquasec/trivy:latest image TradeBoard:latest
    ```
 
 ### Runtime Security
@@ -506,7 +506,7 @@ The repository includes GitHub Actions workflow (`.github/workflows/ci.yml`):
 - **Docker Documentation:** https://docs.docker.com
 - **Dockerfile Reference:** https://docs.docker.com/engine/reference/builder/
 - **Docker Compose Reference:** https://docs.docker.com/compose/compose-file/
-- **Tradeboard Documentation:** https://docs.wesoftcorp.com
+- **TradeBoard Documentation:** https://docs.TradeBoard.in
 - **Numba Documentation:** https://numba.readthedocs.io
 - **SciPy Documentation:** https://scipy.org
 
@@ -538,13 +538,13 @@ docker-compose restart
 docker-compose logs -f
 
 # Shell access
-docker-compose exec tradeboard bash
+docker-compose exec TradeBoard bash
 
 # Run Python script
-docker-compose exec tradeboard uv run python /app/strategies/scripts/your_script.py
+docker-compose exec TradeBoard uv run python /app/strategies/scripts/your_script.py
 
 # Test dependencies
-docker-compose exec tradeboard python -c "import numba; import scipy; print('OK')"
+docker-compose exec TradeBoard python -c "import numba; import scipy; print('OK')"
 
 # Update image
 docker-compose pull

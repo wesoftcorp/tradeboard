@@ -41,7 +41,7 @@ def debug_telegram_users():
     if users:
         for user in users:
             print(f"\n   User #{user.get('id')}:")
-            print(f"   - Tradeboard Username: {user.get('tradeboard_username', 'N/A')}")
+            print(f"   - TradeBoard Username: {user.get('TradeBoard_username', 'N/A')}")
             print(f"   - Telegram ID: {user.get('telegram_id', 'N/A')}")
             print(f"   - Telegram Username: @{user.get('telegram_username', 'N/A')}")
             print(f"   - Name: {user.get('first_name', '')} {user.get('last_name', '')}")
@@ -69,7 +69,7 @@ def debug_telegram_users():
 
         # Check if telegram users match
         for tg_user in users:
-            tg_username = tg_user.get("tradeboard_username", "")
+            tg_username = tg_user.get("TradeBoard_username", "")
             # Remove @ if present for comparison
             clean_tg_username = tg_username.replace("@", "")
 

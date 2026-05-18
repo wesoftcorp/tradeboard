@@ -122,7 +122,7 @@ class BrokerData:
         }
 
     def _get_index_name(self, symbol: str) -> str:
-        """Map Tradeboard index symbols to Samco index names"""
+        """Map TradeBoard index symbols to Samco index names"""
         index_map = {
             "NIFTY": "Nifty 50",
             "BANKNIFTY": "Nifty Bank",
@@ -685,7 +685,7 @@ class BrokerData:
         """
         Helper method to fetch historical data from Samco historical endpoint
         Args:
-            symbol: Trading symbol (Tradeboard format)
+            symbol: Trading symbol (TradeBoard format)
             br_symbol: Broker symbol
             exchange: Exchange
             interval: Candle interval
@@ -779,7 +779,7 @@ class BrokerData:
                 .reset_index(drop=True)
             )
 
-            # Reorder columns to match Tradeboard format
+            # Reorder columns to match TradeBoard format
             df = df[["close", "high", "low", "open", "timestamp", "volume", "oi"]]
 
             return df
@@ -801,7 +801,7 @@ class BrokerData:
         """
         Get intraday data for a date range using Samco intraday endpoint
         Args:
-            symbol: Trading symbol (Tradeboard format)
+            symbol: Trading symbol (TradeBoard format)
             br_symbol: Broker symbol
             exchange: Exchange
             interval: Candle interval
@@ -913,7 +913,7 @@ class BrokerData:
                 .reset_index(drop=True)
             )
 
-            # Reorder columns to match Tradeboard format
+            # Reorder columns to match TradeBoard format
             df = df[["close", "high", "low", "open", "timestamp", "volume", "oi"]]
 
             return df

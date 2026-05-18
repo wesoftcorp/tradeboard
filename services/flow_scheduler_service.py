@@ -46,7 +46,7 @@ class FlowScheduler:
                 return
 
             if db_url is None:
-                db_url = os.getenv("DATABASE_URL", "sqlite:///db/tradeboard.db")
+                db_url = os.getenv("DATABASE_URL", "sqlite:///db/TradeBoard.db")
 
             self._api_key = api_key
 

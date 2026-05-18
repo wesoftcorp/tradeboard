@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
     """
-    Adapter for Kotak WebSocket streaming, suitable for Tradeboard or similar frameworks.
+    Adapter for Kotak WebSocket streaming, suitable for TradeBoard or similar frameworks.
     Each instance is isolated and manages its own KotakWebSocket client.
     """
 
@@ -37,8 +37,8 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
         self._running = False
         self._reconnecting = False
         self._reconnect_timer = None
-        self._reconnect_delay = 5        # base delay in seconds
-        self._max_reconnect_delay = 60   # maximum delay in seconds
+        self._reconnect_delay = 5  # base delay in seconds
+        self._max_reconnect_delay = 60  # maximum delay in seconds
         self._reconnect_attempts = 0
         self._max_reconnect_attempts = 10
 
@@ -49,11 +49,21 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
         self._symbol_state = {}  # {broker_exchange|token: data} for partial update merging
         self._depth_poll_state = {}  # {exchange|symbol: data} for depth polling state
 
-        # Mapping from Kotak format to Tradeboard format - critical for data flow
-        self._kotak_to_tradeboard = {}  # {(kotak_exchange, token): (exchange, symbol)}
+        # Mapping from Kotak format to TradeBoard format - critical for data flow
+        self._kotak_to_TradeBoard = {}  # {(kotak_exchange, token): (exchange, symbol)}
 
         # Track active subscription modes per symbol - CRITICAL FOR MULTI-CLIENT SUPPORT
         self._symbol_modes = {}  # {(kotak_exchange, token): set of active modes}
+
+        # Batch subscription management - debounced fan-in so a burst of
+        # subscribe() calls collapses into one HSI frame per sub_type.
+        # Each entry: {"kotak_exchange": str, "token": str, "sub_type": str, "channelnum": str}
+        self._subscription_queue = []
+        self._batch_timer = None
+        # 50ms is enough to coalesce a burst (e.g. option chain load) without
+        # adding a perceptible floor to single-symbol cold subscribes.
+        self._batch_delay = 0.05
+        self._max_batch_size = 100  # HSI MAX_SCRIPS limit per frame
 
     def initialize(self, broker_name: str, user_id: str, auth_data=None):
         """Initialize adapter for a specific user/session - following AliceBlue pattern."""
@@ -312,7 +322,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
                 # Store the complete data only for mapped symbols (avoids unbounded growth
                 # from unsolicited broker data for symbols we're not subscribed to)
-                if (broker_exchange, token) in self._kotak_to_tradeboard:
+                if (broker_exchange, token) in self._kotak_to_TradeBoard:
                     self._symbol_state[symbol_key] = {
                         **parsed_data,
                         "bids": parsed_data.get("bids", []),
@@ -329,8 +339,8 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
             publish_queue = []
 
             with self._lock:
-                if mapping_key in self._kotak_to_tradeboard:
-                    exchange, symbol = self._kotak_to_tradeboard[mapping_key]
+                if mapping_key in self._kotak_to_TradeBoard:
+                    exchange, symbol = self._kotak_to_TradeBoard[mapping_key]
                     cache_key = (exchange, symbol)
 
                     # For LTP data, update LTP cache
@@ -358,7 +368,9 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                     # Snapshot active modes and cached depth for publish queue building
                     active_modes = set(self._symbol_modes.get(mapping_key, set()))
                     effective_ltp = float(ltp) if has_ltp_data else cached_ltp
-                    local_depth_cache = self._depth_cache.get(cache_key, {}).copy() if not has_depth_data else None
+                    local_depth_cache = (
+                        self._depth_cache.get(cache_key, {}).copy() if not has_depth_data else None
+                    )
                 else:
                     exchange = symbol = cache_key = None
                     active_modes = set()
@@ -465,6 +477,65 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
         return False  # Default to processing the update
 
+    def _start_batch_timer(self):
+        """Arm the debounce timer that flushes the subscription queue."""
+        if self._batch_timer:
+            self._batch_timer.cancel()
+
+        self._batch_timer = threading.Timer(self._batch_delay, self._process_batch_subscriptions)
+        self._batch_timer.daemon = True
+        self._batch_timer.start()
+
+    def _enqueue_subscription(self, kotak_exchange, token, sub_type, channelnum="1"):
+        """Append a subscription to the queue and arm the batch timer if idle."""
+        with self._lock:
+            self._subscription_queue.append(
+                {
+                    "kotak_exchange": kotak_exchange,
+                    "token": str(token),
+                    "sub_type": sub_type,
+                    "channelnum": channelnum,
+                }
+            )
+            should_start = len(self._subscription_queue) == 1
+        if should_start:
+            self._start_batch_timer()
+
+    def _process_batch_subscriptions(self):
+        """Drain the queue, group by (sub_type, channelnum), send batched frames."""
+        with self._lock:
+            self._batch_timer = None
+            if not self._subscription_queue:
+                return
+
+            # Group by (sub_type, channelnum) and dedupe per group so we
+            # never send the same scrip twice in one frame.
+            groups = {}
+            for sub in self._subscription_queue:
+                key = (sub["sub_type"], sub["channelnum"])
+                groups.setdefault(key, [])
+                pair = (sub["kotak_exchange"], sub["token"])
+                if pair not in groups[key]:
+                    groups[key].append(pair)
+            self._subscription_queue.clear()
+            ws = self._ws_client
+
+        if not ws:
+            logger.warning("Batch subscribe skipped — WebSocket client not available")
+            return
+
+        for (sub_type, channelnum), scrips in groups.items():
+            for i in range(0, len(scrips), self._max_batch_size):
+                chunk = scrips[i : i + self._max_batch_size]
+                try:
+                    logger.info(
+                        f"Batch subscribing {len(chunk)} scrips "
+                        f"(sub_type={sub_type}, channel={channelnum})"
+                    )
+                    ws.subscribe_batch(chunk, sub_type=sub_type, channelnum=channelnum)
+                except Exception as e:
+                    logger.error(f"Batch subscribe failed for sub_type={sub_type}: {e}")
+
     def connect(self):
         """Connect to WebSocket - following AliceBlue pattern."""
         if not self._ws_client:
@@ -502,6 +573,12 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 self._reconnect_timer = None
                 logger.debug("Cancelled pending reconnection timer")
 
+            # Cancel any pending batch subscription timer and drop unsent items
+            if self._batch_timer:
+                self._batch_timer.cancel()
+                self._batch_timer = None
+            self._subscription_queue.clear()
+
         try:
             if self._ws_client:
                 try:
@@ -519,7 +596,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 self._depth_cache.clear()
                 self._symbol_state.clear()
                 self._depth_poll_state.clear()
-                self._kotak_to_tradeboard.clear()
+                self._kotak_to_TradeBoard.clear()
                 self._symbol_modes.clear()
                 self.subscriptions.clear()
                 self._reconnect_attempts = 0
@@ -553,13 +630,11 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 return
 
             delay = min(
-                self._reconnect_delay * (2 ** self._reconnect_attempts),
+                self._reconnect_delay * (2**self._reconnect_attempts),
                 self._max_reconnect_delay,
             )
 
-            logger.info(
-                f"Reconnecting in {delay}s (attempt {self._reconnect_attempts + 1})"
-            )
+            logger.info(f"Reconnecting in {delay}s (attempt {self._reconnect_attempts + 1})")
 
             # Cancel any existing timer before creating new one
             if self._reconnect_timer:
@@ -619,9 +694,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                             sub_info["exchange"],
                             sub_info["mode"],
                         )
-                        logger.info(
-                            f"Resubscribed to {sub_info['exchange']}:{sub_info['symbol']}"
-                        )
+                        logger.info(f"Resubscribed to {sub_info['exchange']}:{sub_info['symbol']}")
                     except Exception as e:
                         failed_resubs.append(f"{sub_info['exchange']}:{sub_info['symbol']}")
                         logger.error(
@@ -649,9 +722,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
         try:
             auth_string = get_auth_token(self._user_id)
             if not auth_string:
-                logger.error(
-                    f"Cannot recreate client - no auth token for user {self._user_id}"
-                )
+                logger.error(f"Cannot recreate client - no auth token for user {self._user_id}")
                 self._ws_client = None
                 return
 
@@ -691,15 +762,17 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 if self._reconnect_timer:
                     self._reconnect_timer.cancel()
                     self._reconnect_timer = None
+                if self._batch_timer:
+                    self._batch_timer.cancel()
+                    self._batch_timer = None
+                self._subscription_queue.clear()
 
             # Disconnect WebSocket if connected
             if self._ws_client:
                 try:
                     self._ws_client.close()
                 except Exception as ws_err:
-                    logger.error(
-                        f"Error closing WebSocket client during cleanup: {ws_err}"
-                    )
+                    logger.error(f"Error closing WebSocket client during cleanup: {ws_err}")
                 finally:
                     self._ws_client = None
 
@@ -714,7 +787,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 self._depth_cache.clear()
                 self._symbol_state.clear()
                 self._depth_poll_state.clear()
-                self._kotak_to_tradeboard.clear()
+                self._kotak_to_TradeBoard.clear()
                 self._symbol_modes.clear()
                 self.subscriptions.clear()
 
@@ -729,9 +802,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
             try:
                 self.cleanup_zmq()
             except Exception as zmq_err:
-                logger.error(
-                    f"Error cleaning up ZMQ during final cleanup attempt: {zmq_err}"
-                )
+                logger.error(f"Error cleaning up ZMQ during final cleanup attempt: {zmq_err}")
 
     def __del__(self):
         """
@@ -771,7 +842,9 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 success = self.subscribe_depth(exchange, symbol, mode)
                 quote_success = self.subscribe_quote(exchange, symbol, mode)
                 if not quote_success:
-                    logger.warning(f"Depth subscribed but quote (LTP) subscription failed for {exchange}:{symbol}")
+                    logger.warning(
+                        f"Depth subscribed but quote (LTP) subscription failed for {exchange}:{symbol}"
+                    )
             else:
                 logger.error(f"Unknown subscribe mode: {mode}")
                 return self._create_error_response(
@@ -832,7 +905,9 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
                 # Clean up caches if no modes remain (mapping_key already removed
                 # by unsubscribe_quote/unsubscribe_depth, or still present but empty)
-                modes_empty = mapping_key not in self._symbol_modes or not self._symbol_modes.get(mapping_key)
+                modes_empty = mapping_key not in self._symbol_modes or not self._symbol_modes.get(
+                    mapping_key
+                )
                 if modes_empty:
                     cache_key = (exchange, symbol)
                     self._ltp_cache.pop(cache_key, None)
@@ -871,7 +946,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
             # Store mapping and track mode - CRITICAL FOR MULTI-CLIENT SUPPORT
             with self._lock:
                 mapping_key = (kotak_exchange, str(token))
-                self._kotak_to_tradeboard[mapping_key] = (exchange, symbol)
+                self._kotak_to_TradeBoard[mapping_key] = (exchange, symbol)
 
                 # Track active modes for this symbol
                 if mapping_key not in self._symbol_modes:
@@ -881,15 +956,15 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 logger.debug(f"Stored mapping: {mapping_key} -> ({exchange}, {symbol})")
                 logger.debug(f"Active modes for {mapping_key}: {self._symbol_modes[mapping_key]}")
 
-            # Subscribe using Kotak's market watch streaming
             # Re-check ws_client after releasing lock to avoid race with disconnect()
-            ws = self._ws_client
-            if not ws:
+            if not self._ws_client:
                 logger.error("WebSocket client became None during subscribe_quote")
                 return False
-            ws.subscribe(kotak_exchange, token, sub_type="mws")
+
+            # Enqueue for batched dispatch — flushed by _process_batch_subscriptions.
+            self._enqueue_subscription(kotak_exchange, token, sub_type="mws")
             logger.debug(
-                f"Subscribed to quote: {exchange}:{symbol} (kotak: {kotak_exchange}|{token})"
+                f"Queued quote subscription: {exchange}:{symbol} (kotak: {kotak_exchange}|{token})"
             )
             return True
 
@@ -932,7 +1007,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
                     # Clean up mapping and cached state only if NO modes are active
                     if not self._symbol_modes[mapping_key]:
-                        self._kotak_to_tradeboard.pop(mapping_key, None)
+                        self._kotak_to_TradeBoard.pop(mapping_key, None)
                         self._symbol_modes.pop(mapping_key, None)
                         # Clean up symbol state to prevent unbounded memory growth
                         symbol_key = f"{kotak_exchange}|{token}"
@@ -969,7 +1044,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
             # Store mapping and track mode
             with self._lock:
                 mapping_key = (kotak_exchange, str(token))
-                self._kotak_to_tradeboard[mapping_key] = (exchange, symbol)
+                self._kotak_to_TradeBoard[mapping_key] = (exchange, symbol)
 
                 # Track active modes for this symbol
                 if mapping_key not in self._symbol_modes:
@@ -977,13 +1052,14 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
                 self._symbol_modes[mapping_key].add(mode)
 
             # Re-check ws_client after releasing lock to avoid race with disconnect()
-            ws = self._ws_client
-            if not ws:
+            if not self._ws_client:
                 logger.error("WebSocket client became None during subscribe_depth")
                 return False
-            ws.subscribe(kotak_exchange, token, sub_type="dps")
+
+            # Enqueue for batched dispatch — flushed by _process_batch_subscriptions.
+            self._enqueue_subscription(kotak_exchange, token, sub_type="dps")
             logger.debug(
-                f"Subscribed to depth: {exchange}:{symbol} (kotak: {kotak_exchange}|{token})"
+                f"Queued depth subscription: {exchange}:{symbol} (kotak: {kotak_exchange}|{token})"
             )
             return True
 
@@ -1023,7 +1099,7 @@ class KotakWebSocketAdapter(BaseBrokerWebSocketAdapter):
 
                     # Clean up mapping and cached state only if NO modes are active
                     if not self._symbol_modes[mapping_key]:
-                        self._kotak_to_tradeboard.pop(mapping_key, None)
+                        self._kotak_to_TradeBoard.pop(mapping_key, None)
                         self._symbol_modes.pop(mapping_key, None)
                         # Clean up symbol state to prevent unbounded memory growth
                         symbol_key = f"{kotak_exchange}|{token}"

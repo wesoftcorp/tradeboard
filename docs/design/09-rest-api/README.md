@@ -1,8 +1,8 @@
-# 09 - REST API Documentation
+﻿# 09 - REST API Documentation
 
 ## Overview
 
-Tradeboard provides a comprehensive REST API built with Flask-RESTX at `/api/v1/`. The API enables trading operations, market data retrieval, and account management across 29 Indian brokers through a unified interface.
+TradeBoard provides a comprehensive REST API built with Flask-RESTX at `/api/v1/`. The API enables trading operations, market data retrieval, and account management across 29 Indian brokers through a unified interface.
 
 ## Architecture Diagram
 

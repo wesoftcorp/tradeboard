@@ -1,11 +1,11 @@
-# Volume
+﻿# Volume
 
 Volume indicators analyze trading volume to assess the strength of price movements and identify potential trend changes. These indicators help determine whether price movements are supported by volume activity.
 
 ### Import Statement
 
 ```python
-from tradeboard import ta, api
+from TradeBoard import ta, api
 ```
 
 ### Getting Sample Data
@@ -618,7 +618,7 @@ print(df[['volume', 'RVOL_20']].tail())
 ### Complete Volume Analysis Example
 
 ```python
-from tradeboard import ta, api
+from TradeBoard import ta, api
 import pandas as pd
 
 # Get data
@@ -679,7 +679,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.wesoftcorp.com/trading-platform/python/indicators/volume.md?ask=<question>
+GET https://docs.TradeBoard.in/trading-platform/python/indicators/volume.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

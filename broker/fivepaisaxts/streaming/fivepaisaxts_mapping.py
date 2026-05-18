@@ -2,10 +2,10 @@ import logging
 
 
 class FivepaisaXTSExchangeMapper:
-    """Maps between Tradeboard exchange codes and Fivepaisa XTS specific exchange types"""
+    """Maps between TradeBoard exchange codes and Fivepaisa XTS specific exchange types"""
 
     # Exchange type mapping for Fivepaisa XTS broker
-    # Format: {Tradeboard_Exchange: Fivepaisa_Exchange_Code}
+    # Format: {TradeBoard_Exchange: Fivepaisa_Exchange_Code}
     # Based on Fivepaisa API documentation:
     # "NSECM": 1, "NSEFO": 2, "NSECD": 3, "BSECM": 11, "BSEFO": 12, "MCXFO": 51
     EXCHANGE_TYPES = {
@@ -29,8 +29,8 @@ class FivepaisaXTSExchangeMapper:
         "MCXFO": 51,  # MCX F&O
     }
 
-    # Reverse mapping for converting Fivepaisa exchange codes to Tradeboard format
-    # Format: {Fivepaisa_Exchange_Code: Tradeboard_Exchange}
+    # Reverse mapping for converting Fivepaisa exchange codes to TradeBoard format
+    # Format: {Fivepaisa_Exchange_Code: TradeBoard_Exchange}
     REVERSE_EXCHANGE_TYPES = {
         1: "NSE",  # NSECM
         2: "NFO",  # NSEFO
@@ -43,7 +43,7 @@ class FivepaisaXTSExchangeMapper:
     @staticmethod
     def get_exchange_type(exchange):
         """
-        Convert Tradeboard exchange code to Fivepaisa XTS specific exchange type
+        Convert TradeBoard exchange code to Fivepaisa XTS specific exchange type
 
         Args:
             exchange: Exchange code (e.g., 'NSE', 'BSE', 'NSEFO')
@@ -62,7 +62,7 @@ class FivepaisaXTSExchangeMapper:
         # Mapping based on Fivepaisa API documentation:
         # "NSECM": 1, "NSEFO": 2, "NSECD": 3, "BSECM": 11, "BSEFO": 12, "MCXFO": 51
         all_exchange_mappings = {
-            # Tradeboard standard codes
+            # TradeBoard standard codes
             "NSE": 1,  # NSE Cash Market
             "NFO": 2,  # NSE F&O
             "CDS": 3,  # NSE Currency Derivatives
@@ -100,15 +100,15 @@ class FivepaisaXTSExchangeMapper:
         return 1
 
     @staticmethod
-    def get_tradeboard_exchange(fivepaisaxts_code):
+    def get_TradeBoard_exchange(fivepaisaxts_code):
         """
-        Convert Fivepaisa XTS exchange code to Tradeboard exchange code
+        Convert Fivepaisa XTS exchange code to TradeBoard exchange code
 
         Args:
             fivepaisaxts_code (int): Fivepaisa exchange code
 
         Returns:
-            str: Tradeboard exchange code
+            str: TradeBoard exchange code
         """
         return FivepaisaXTSExchangeMapper.REVERSE_EXCHANGE_TYPES.get(
             fivepaisaxts_code, "NSE"

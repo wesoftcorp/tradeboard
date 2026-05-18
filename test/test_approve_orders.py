@@ -23,8 +23,8 @@ def test_order_execution():
     print("PENDING ORDERS IN ACTION CENTER")
     print("=" * 80)
 
-    # Note: Replace 'tradeboard' with your actual user_id
-    user_id = "tradeboard"
+    # Note: Replace 'TradeBoard' with your actual user_id
+    user_id = "TradeBoard"
 
     orders = get_pending_orders(user_id, status="pending")
 

@@ -1,4 +1,4 @@
-import { Check, ChevronDown, History, Info, Search, Trash2, X } from 'lucide-react'
+﻿import { Check, ChevronDown, History, Info, Search, Trash2, X } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -32,7 +32,7 @@ interface SearchHistoryEntry {
   ts: number
 }
 
-const HISTORY_KEY = 'openalgo:search-history'
+const HISTORY_KEY = 'TradeBoard:search-history'
 const HISTORY_MAX = 10
 
 function loadHistory(): SearchHistoryEntry[] {
@@ -150,7 +150,12 @@ export default function Token() {
     const fetchData = async () => {
       try {
         const [underlyingsRes, expiriesRes] = await Promise.all([
-          fetch(`/search/api/underlyings?exchange=${exchange}`, { credentials: 'include' }),
+          // include_futures=true so MCX commodities with only live FUT contracts
+          // (NATURALGASMINI, COPPER, LEADMINI, ...) appear in the dropdown.
+          // Option-chain pages keep the default (options-only) behaviour.
+          fetch(`/search/api/underlyings?exchange=${exchange}&include_futures=true`, {
+            credentials: 'include',
+          }),
           fetch(`/search/api/expiries?exchange=${exchange}`, { credentials: 'include' }),
         ])
 

@@ -1,8 +1,8 @@
-# PRD: CI/CD Pipeline
+﻿# PRD: CI/CD Pipeline
 
 ## Overview
 
-Automated CI/CD pipeline for Tradeboard v2 providing continuous integration, security scanning, and quality gates for the Flask backend and React frontend. Designed for minimal maintenance overhead and fast developer feedback.
+Automated CI/CD pipeline for TradeBoard v2 providing continuous integration, security scanning, and quality gates for the Flask backend and React frontend. Designed for minimal maintenance overhead and fast developer feedback.
 
 ## Problem Statement
 

@@ -1,8 +1,8 @@
-# 29 - Troubleshooting
+﻿# 29 - Troubleshooting
 
 ## Introduction
 
-This guide helps you diagnose and resolve common issues in Tradeboard. Problems are organized by category with step-by-step solutions.
+This guide helps you diagnose and resolve common issues in TradeBoard. Problems are organized by category with step-by-step solutions.
 
 ## Quick Diagnostic Checklist
 
@@ -13,7 +13,7 @@ Before diving deep, check these basics:
 │  Quick Diagnostic Checklist                                                 │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  □ Is Tradeboard running? (Check terminal/service status)                    │
+│  □ Is TradeBoard running? (Check terminal/service status)                    │
 │  □ Is your broker logged in? (Check broker status indicator)               │
 │  □ Is the market open? (Check exchange timings)                            │
 │  □ Is your internet working? (Test connectivity)                           │
@@ -73,9 +73,9 @@ uv run app.py --port 5001
 **Symptom**: `database is locked`
 
 **Solution**:
-1. Stop Tradeboard
+1. Stop TradeBoard
 2. Close all connections
-3. Restart Tradeboard
+3. Restart TradeBoard
 4. If persistent, delete and recreate database
 
 ## Broker Connection Issues
@@ -104,7 +104,7 @@ uv run app.py --port 5001
 **Symptom**: `Session expired` or `Token invalid`
 
 **Solution**:
-1. Go to Tradeboard dashboard
+1. Go to TradeBoard dashboard
 2. Click on broker status
 3. Re-authenticate with broker
 4. Complete OAuth flow again
@@ -186,13 +186,13 @@ Options: NIFTY30JAN2521500CE (with date, strike, type)
 
 ### Webhook Not Receiving
 
-**Symptom**: TradingView/ChartInk alerts not reaching Tradeboard
+**Symptom**: TradingView/ChartInk alerts not reaching TradeBoard
 
 **Checklist**:
-1. Is Tradeboard accessible from internet?
+1. Is TradeBoard accessible from internet?
    ```bash
    # Test with curl from external machine
-   curl https://your-tradeboard-url/health
+   curl https://your-TradeBoard-url/health
    ```
 
 2. Is the URL correct?
@@ -219,7 +219,7 @@ Options: NIFTY30JAN2521500CE (with date, strike, type)
 **Symptom**: TradingView shows webhook failed
 
 **Solution**:
-1. Check Tradeboard is running
+1. Check TradeBoard is running
 2. Check server response time
 3. Increase timeout if needed
 4. Check Traffic Logs for details
@@ -229,7 +229,7 @@ Options: NIFTY30JAN2521500CE (with date, strike, type)
 **Symptom**: `Invalid API key` error
 
 **Solution**:
-1. Copy API key from Tradeboard dashboard
+1. Copy API key from TradeBoard dashboard
 2. Ensure no extra spaces
 3. Check key hasn't been regenerated
 4. Verify key in webhook payload
@@ -261,7 +261,7 @@ Options: NIFTY30JAN2521500CE (with date, strike, type)
 2. Verify symbol subscription
 3. Restart WebSocket server:
    ```bash
-   # Restart Tradeboard
+   # Restart TradeBoard
    uv run app.py
    ```
 
@@ -287,7 +287,7 @@ Options: NIFTY30JAN2521500CE (with date, strike, type)
 
 ### High Memory Usage
 
-**Symptom**: Tradeboard consuming too much RAM
+**Symptom**: TradeBoard consuming too much RAM
 
 **Solution**:
 ```bash
@@ -295,7 +295,7 @@ Options: NIFTY30JAN2521500CE (with date, strike, type)
 ps aux | grep python
 
 # Restart to clear memory
-systemctl restart tradeboard
+systemctl restart TradeBoard
 
 # Consider database cleanup
 # Delete old logs and data
@@ -309,7 +309,7 @@ systemctl restart tradeboard
 1. Clean old logs
 2. Vacuum database:
    ```bash
-   sqlite3 db/tradeboard.db "VACUUM;"
+   sqlite3 db/TradeBoard.db "VACUUM;"
    ```
 3. Consider archiving old data
 
@@ -323,7 +323,7 @@ systemctl restart tradeboard
 1. Clear browser cache
 2. Try incognito mode
 3. Check browser console for errors
-4. Verify Tradeboard is running
+4. Verify TradeBoard is running
 
 ### Login Issues
 
@@ -385,10 +385,10 @@ systemctl restart tradeboard
 
 ```bash
 # Application logs
-tail -f logs/tradeboard.log
+tail -f logs/TradeBoard.log
 
 # Check for errors
-grep -i error logs/tradeboard.log
+grep -i error logs/TradeBoard.log
 
 # Check Traffic Logs in UI
 ```
@@ -416,8 +416,8 @@ grep -i error logs/tradeboard.log
 If all else fails:
 
 ```bash
-# Stop Tradeboard
-pkill -f tradeboard
+# Stop TradeBoard
+pkill -f TradeBoard
 
 # Backup current data
 cp -r db/ db_backup/
@@ -432,8 +432,8 @@ uv run app.py
 ### Restore from Backup
 
 ```bash
-# Stop Tradeboard
-pkill -f tradeboard
+# Stop TradeBoard
+pkill -f TradeBoard
 
 # Restore backup
 cp -r db_backup/* db/
@@ -447,7 +447,7 @@ uv run app.py
 ### Before Contacting Support
 
 Gather this information:
-1. Tradeboard version
+1. TradeBoard version
 2. Error messages (exact text)
 3. Steps to reproduce
 4. Screenshots if applicable
@@ -455,26 +455,26 @@ Gather this information:
 
 ### Support Channels
 
-Tradeboard is community-driven:
+TradeBoard is community-driven:
 
 | Channel | Use For | Link |
 |---------|---------|------|
 | GitHub Issues | Bug reports, feature requests | [github.com/wesoftcorp/tradeboard/issues](https://github.com/wesoftcorp/tradeboard/issues) |
-| Discord | Community support, questions | [wesoftcorp.com/discord](http://wesoftcorp.com/discord) |
-| Documentation | How-to guides | [docs.wesoftcorp.com](https://docs.wesoftcorp.com) |
+| Discord | Community support, questions | [TradeBoard.in/discord](http://TradeBoard.in/discord) |
+| Documentation | How-to guides | [docs.TradeBoard.in](https://docs.TradeBoard.in) |
 
 ### Useful Commands
 
 ```bash
-# Check Tradeboard version
-uv run python -c "import tradeboard; print(tradeboard.__version__)"
+# Check TradeBoard version
+uv run python -c "import TradeBoard; print(TradeBoard.__version__)"
 
 # Check system info
 uname -a
 python --version
 
 # Check running processes
-ps aux | grep tradeboard
+ps aux | grep TradeBoard
 
 # Check port usage
 netstat -tlnp | grep 5000

@@ -9,6 +9,7 @@ logger = get_logger(__name__)
 
 NUBRA_BASE_URL = "https://api.nubra.io"
 
+
 def calculate_margin_api(positions, auth):
     """
     Calculate margin requirement for a basket of positions using Nubra API.
@@ -16,14 +17,14 @@ def calculate_margin_api(positions, auth):
     API: POST /orders/v2/margin_required
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
         auth: Authentication token (session_token) for Nubra
 
     Returns:
         Tuple of (response, response_data)
     """
     AUTH_TOKEN = auth
-    device_id = "OPENALGO"
+    device_id = "TradeBoard"
 
     # Transform positions to Nubra format (this returns the full payload)
     payload_data = transform_margin_positions(positions)
@@ -67,7 +68,7 @@ def calculate_margin_api(positions, auth):
 
         # Add status attribute for compatibility with the existing codebase
         response.status = response.status_code
-        
+
         # Log raw response for debugging
         logger.debug(f"Nubra margin raw response: {response.text}")
 

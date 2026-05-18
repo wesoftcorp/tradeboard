@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Flattrade Broking Parameters https://piconnect.flattrade.in/docs/
 
 from broker.flattrade.api.data import BrokerData

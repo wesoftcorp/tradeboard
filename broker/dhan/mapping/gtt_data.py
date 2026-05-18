@@ -1,4 +1,4 @@
-# Dhan Forever Order payload transforms (Tradeboard ⇄ Dhan).
+# Dhan Forever Order payload transforms (TradeBoard ⇄ Dhan).
 # Dhan v2 reference: https://dhanhq.co/docs/v2/forever/
 
 from broker.dhan.mapping.transform_data import (
@@ -9,8 +9,7 @@ from broker.dhan.mapping.transform_data import (
 )
 from database.token_db import get_oa_symbol, get_token
 
-
-# Dhan Forever Order status → Tradeboard GTT status.
+# Dhan Forever Order status → TradeBoard GTT status.
 _STATUS_MAP = {
     "TRANSIT": "active",
     "PENDING": "active",
@@ -34,7 +33,7 @@ def _resolve_single_trigger(data):
 
 
 def transform_place_gtt(data):
-    """Transform an Tradeboard flat place-GTT payload into Dhan's POST /forever/orders body.
+    """Transform an TradeBoard flat place-GTT payload into Dhan's POST /forever/orders body.
 
     SINGLE → ``triggerPrice`` (= resolved trigger) + ``price`` + ``quantity``.
     OCO    → primary (stoploss) leg uses ``price`` (= ``stoploss``) +
@@ -73,7 +72,7 @@ def transform_place_gtt(data):
         body["triggerPrice1"] = float(data["triggerprice_tg"])
         body["quantity1"] = int(data["quantity"])
 
-    # Tradeboard's ``strategy`` doubles as Dhan's correlationId (max 30 chars).
+    # TradeBoard's ``strategy`` doubles as Dhan's correlationId (max 30 chars).
     correlation_id = data.get("correlation_id") or data.get("strategy") or ""
     if correlation_id:
         body["correlationId"] = str(correlation_id)[:30]
@@ -82,13 +81,13 @@ def transform_place_gtt(data):
 
 
 def transform_modify_gtt(data, leg_name):
-    """Transform an Tradeboard modify-GTT payload into Dhan's PUT /forever/orders/{id} body.
+    """Transform an TradeBoard modify-GTT payload into Dhan's PUT /forever/orders/{id} body.
 
     Dhan modifies one leg at a time. Field semantics dispatch by
-    ``trigger_type`` (the Tradeboard flag), not by ``leg_name`` — Dhan's leg
+    ``trigger_type`` (the TradeBoard flag), not by ``leg_name`` — Dhan's leg
     labels for SINGLE orders can be ENTRY_LEG / STOP_LOSS_LEG / TARGET_LEG
     depending on the action+trigger relationship to LTP at place-time, but
-    for Tradeboard a SINGLE always carries its values in ``price`` and the
+    for TradeBoard a SINGLE always carries its values in ``price`` and the
     resolved trigger.
 
         - SINGLE (any leg_name) → ``price`` + resolved trigger.
@@ -125,12 +124,12 @@ def transform_modify_gtt(data, leg_name):
 
 
 def map_gtt_book(gtt_list):
-    """Normalise Dhan's GET /forever/orders response into an Tradeboard-shaped list.
+    """Normalise Dhan's GET /forever/orders response into an TradeBoard-shaped list.
 
     Dhan returns a flat list of legs (one row per leg). SINGLE has one leg
     (``ENTRY_LEG``); OCO has two (``STOP_LOSS_LEG`` + ``TARGET_LEG``) sharing
     one ``orderId``. We group by orderId, sort triggers ascending, and emit
-    one Tradeboard entry per order. ``last_price`` is not returned by Dhan, so
+    one TradeBoard entry per order. ``last_price`` is not returned by Dhan, so
     it is left as 0 — the frontend will display "₹0.00".
     """
     if not isinstance(gtt_list, list):
@@ -154,14 +153,10 @@ def map_gtt_book(gtt_list):
         first = legs[0]
         ex = map_exchange(first.get("exchangeSegment", "")) or ""
         br_sym = first.get("tradingSymbol", "")
-        oa_sym = (
-            get_oa_symbol(brsymbol=br_sym, exchange=ex) if br_sym and ex else br_sym
-        )
+        oa_sym = get_oa_symbol(brsymbol=br_sym, exchange=ex) if br_sym and ex else br_sym
 
         # Sort legs so STOP_LOSS_LEG (lower trigger) comes first for OCO.
-        sorted_legs = sorted(
-            legs, key=lambda l: float(l.get("triggerPrice", 0) or 0)
-        )
+        sorted_legs = sorted(legs, key=lambda l: float(l.get("triggerPrice", 0) or 0))
         trigger_prices = [float(l.get("triggerPrice", 0) or 0) for l in sorted_legs]
 
         out_legs = []
@@ -170,34 +165,38 @@ def map_gtt_book(gtt_list):
             # Dhan's GET response doesn't expose LIMIT/MARKET — infer from price.
             # MARKET GTTs are stored with price=0; LIMIT GTTs carry the limit.
             inferred_pricetype = "MARKET" if leg_price == 0 else "LIMIT"
-            out_legs.append({
-                "action": (leg.get("transactionType", "") or "").upper(),
-                "quantity": leg.get("quantity", 0),
-                "price": leg.get("price", 0),
-                "pricetype": inferred_pricetype,
-                "product": reverse_map_product_type(leg.get("productType", "")) or "CNC",
-                # Dhan-internal legName needed by modify (STOP_LOSS_LEG / TARGET_LEG / ENTRY_LEG).
-                "leg_name": leg.get("legName", "") or "",
-            })
+            out_legs.append(
+                {
+                    "action": (leg.get("transactionType", "") or "").upper(),
+                    "quantity": leg.get("quantity", 0),
+                    "price": leg.get("price", 0),
+                    "pricetype": inferred_pricetype,
+                    "product": reverse_map_product_type(leg.get("productType", "")) or "CNC",
+                    # Dhan-internal legName needed by modify (STOP_LOSS_LEG / TARGET_LEG / ENTRY_LEG).
+                    "leg_name": leg.get("legName", "") or "",
+                }
+            )
 
         # Dhan reuses the ``orderType`` field in the GET response for the SINGLE/OCO flag.
         flag = (first.get("orderType") or "").upper()
         trigger_type_oa = "two-leg" if flag == "OCO" else "single"
         status_raw = (first.get("orderStatus") or "").upper()
 
-        result.append({
-            "trigger_id": oid,
-            "trigger_type": trigger_type_oa,
-            "status": _STATUS_MAP.get(status_raw, status_raw.lower()),
-            "symbol": oa_sym or br_sym,
-            "exchange": ex,
-            "trigger_prices": trigger_prices,
-            "last_price": 0,  # Dhan does not return LTP in this response
-            "legs": out_legs,
-            "created_at": first.get("createTime", "") or "",
-            "updated_at": first.get("updateTime", "") or "",
-            # Dhan Forever Orders have no explicit expiry — leave blank.
-            "expires_at": "",
-        })
+        result.append(
+            {
+                "trigger_id": oid,
+                "trigger_type": trigger_type_oa,
+                "status": _STATUS_MAP.get(status_raw, status_raw.lower()),
+                "symbol": oa_sym or br_sym,
+                "exchange": ex,
+                "trigger_prices": trigger_prices,
+                "last_price": 0,  # Dhan does not return LTP in this response
+                "legs": out_legs,
+                "created_at": first.get("createTime", "") or "",
+                "updated_at": first.get("updateTime", "") or "",
+                # Dhan Forever Orders have no explicit expiry — leave blank.
+                "expires_at": "",
+            }
+        )
 
     return result

@@ -1,8 +1,8 @@
 import json
 import os
-import urllib.parse
 import threading
 import time
+import urllib.parse
 
 import httpx
 
@@ -71,14 +71,14 @@ def get_holdings(auth_token):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -113,9 +113,8 @@ def _invalidate_position_cache(auth):
         _position_cache.pop(auth, None)
 
 
-
 def get_open_position(tradingsymbol, exchange, producttype, auth_token):
-    # Convert Trading Symbol from Tradeboard Format to Broker Format Before Search in OpenPosition
+    # Convert Trading Symbol from TradeBoard Format to Broker Format Before Search in OpenPosition
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
     positions_data = _get_cached_positions(auth_token)
     logger.info(f"{positions_data}")
@@ -148,7 +147,7 @@ def place_order_api(data, auth_token):
     client = get_httpx_client()
 
     token_id = get_token(data["symbol"], data["exchange"])
-    newdata = transform_data(data, token_id, auth_token)
+    newdata = transform_data(data, token_id)
 
     json_string = json.dumps(newdata)
     payload = f"jData={urllib.parse.quote(json_string)}"
@@ -166,6 +165,7 @@ def place_order_api(data, auth_token):
 
     try:
         response = client.post(url, headers=headers, content=payload)
+        logger.info(f"PLACE ORDER API Response: {response.status_code} {response.text}")
 
         # Add status attribute for compatibility with the existing codebase
         response.status = response.status_code
@@ -297,7 +297,7 @@ def close_all_positions(current_api_key, auth_token):
             action = "SELL" if net_qty > 0 else "BUY"
             quantity = abs(net_qty)
 
-            # get tradeboard symbol to send to placeorder function
+            # get TradeBoard symbol to send to placeorder function
             symboltoken = position["tok"]
             exchange = map_exchange(position["exSeg"])
             position["exSeg"] = exchange
@@ -380,7 +380,7 @@ def modify_order(data, auth_token):
     client = get_httpx_client()
 
     token_id = get_token(data["symbol"], data["exchange"])
-    newdata = transform_modify_order_data(data, token_id, auth_token)
+    newdata = transform_modify_order_data(data, token_id)
 
     logger.info(f"MODIFY ORDER - Transformed data: {newdata}")
 

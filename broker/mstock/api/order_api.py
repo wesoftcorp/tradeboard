@@ -1,9 +1,9 @@
 import json
 import os
-
-import httpx
 import threading
 import time
+
+import httpx
 
 from broker.mstock.mapping.transform_data import (
     get_mstock_symbol,
@@ -91,14 +91,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -133,13 +133,12 @@ def _invalidate_position_cache(auth):
         _position_cache.pop(auth, None)
 
 
-
 def get_open_position(tradingsymbol, exchange, producttype, auth):
     """
     Get open position for a specific symbol and product type.
 
     Args:
-        tradingsymbol: Tradeboard format symbol
+        tradingsymbol: TradeBoard format symbol
         exchange: Exchange name
         producttype: Product type (mapped to broker format)
         auth: Authentication token
@@ -182,7 +181,7 @@ def place_order_api(data, auth):
     Place a regular order on mStock Type B API.
 
     Args:
-        data: Tradeboard order data
+        data: TradeBoard order data
         auth: Authentication token
 
     Returns:
@@ -251,7 +250,7 @@ def place_smartorder_api(data, auth):
     Place a smart order that adjusts based on current position.
 
     Args:
-        data: Tradeboard order data with position_size
+        data: TradeBoard order data with position_size
         auth: Authentication token
 
     Returns:
@@ -388,7 +387,7 @@ def close_all_positions(current_api_key, auth):
                 elif exchange == "BSE":
                     lookup_exchange = "BFO"
 
-            # Get Tradeboard symbol to send to placeorder function
+            # Get TradeBoard symbol to send to placeorder function
             symbol = get_symbol(position["symboltoken"], lookup_exchange)
 
             # Skip if symbol not found
@@ -498,9 +497,9 @@ def modify_order(data, auth):
     Modify an existing order on mStock Type B API.
 
     Args:
-        data: Tradeboard modify order data with fields:
+        data: TradeBoard modify order data with fields:
             - orderid: Order ID to modify
-            - symbol: Tradeboard symbol
+            - symbol: TradeBoard symbol
             - exchange: Exchange code
             - action: BUY/SELL
             - quantity: Order quantity

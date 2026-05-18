@@ -1,6 +1,6 @@
 # utils/ngrok_manager.py
 """
-Ngrok tunnel manager for Tradeboard.
+Ngrok tunnel manager for TradeBoard.
 Handles tunnel creation, cleanup, and graceful shutdown.
 Cross-platform compatible (Windows, Linux, macOS).
 """

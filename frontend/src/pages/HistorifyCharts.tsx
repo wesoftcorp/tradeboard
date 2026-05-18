@@ -1,4 +1,4 @@
-import {
+﻿import {
   ArrowLeft,
   BarChart3,
   BookOpen,
@@ -736,7 +736,7 @@ export default function HistorifyCharts() {
               ))}
               <DropdownMenuItem asChild>
                 <a
-                  href="https://docs.openalgo.in"
+                  href="https://docs.TradeBoard.in"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"

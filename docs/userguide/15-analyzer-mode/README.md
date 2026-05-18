@@ -1,8 +1,8 @@
-# 15 - Analyzer Mode (Sandbox Testing)
+﻿# 15 - Analyzer Mode (Sandbox Testing)
 
 ## Introduction
 
-Analyzer Mode is Tradeboard's sandbox testing environment. It lets you test strategies with real market data but sandbox capital (₹1 Crore), ensuring you never risk real money while learning or validating strategies.
+Analyzer Mode is TradeBoard's sandbox testing environment. It lets you test strategies with real market data but sandbox capital (₹1 Crore), ensuring you never risk real money while learning or validating strategies.
 
 ## What is Analyzer Mode?
 
@@ -31,7 +31,7 @@ Analyzer Mode is Tradeboard's sandbox testing environment. It lets you test stra
 
 ### 1. Learn Without Risk
 
-- New to Tradeboard? Learn the interface
+- New to TradeBoard? Learn the interface
 - New to trading? Understand order flow
 - Test features before going live
 
@@ -57,7 +57,7 @@ Analyzer Mode is Tradeboard's sandbox testing environment. It lets you test stra
 
 ### Method 1: Web Interface
 
-1. Login to Tradeboard
+1. Login to TradeBoard
 2. Navigate to **Analyzer** page
 3. Click **Enable Analyzer Mode**
 4. Confirm the action
@@ -171,7 +171,7 @@ View sandbox P&L on the Sandbox P&L page:
 
 ### Step 1: Enable Analyzer Mode
 
-Turn on Analyzer Mode in Tradeboard.
+Turn on Analyzer Mode in TradeBoard.
 
 ### Step 2: Configure TradingView Alert
 
@@ -194,7 +194,7 @@ Check:
 ## Testing Python Strategies
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 
 # Connect (same as production)
 client = api(api_key="your-key", host="http://127.0.0.1:5000")

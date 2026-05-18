@@ -115,6 +115,7 @@ def cleanup_websocket_server():
         # Clean up shared ZMQ context (handles app restart without process exit)
         try:
             from .base_adapter import BaseBrokerWebSocketAdapter
+
             BaseBrokerWebSocketAdapter.cleanup_shared_context()
             logger.info("Shared ZMQ context cleaned up")
         except Exception as e:

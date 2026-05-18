@@ -1,8 +1,8 @@
-# 46 - Search
+﻿# 46 - Search
 
 ## Overview
 
-Tradeboard provides fast symbol search across equity, futures, and options instruments. The search system uses an in-memory cache with database fallback for optimal performance.
+TradeBoard provides fast symbol search across equity, futures, and options instruments. The search system uses an in-memory cache with database fallback for optimal performance.
 
 ## Architecture Diagram
 

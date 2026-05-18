@@ -1,4 +1,4 @@
-# PRD: Sandbox - Sandbox Trading Environment
+﻿# PRD: Sandbox - Sandbox Trading Environment
 
 > **Status:** ✅ Stable - Fully implemented, production-ready
 
@@ -27,7 +27,7 @@ A complete sandbox trading environment that:
 
 | User | Use Case |
 |------|----------|
-| New User | Learn Tradeboard safely |
+| New User | Learn TradeBoard safely |
 | Strategy Developer | Test before live |
 | Educator | Demonstrate without risk |
 | Debugger | Isolate integration issues |

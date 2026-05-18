@@ -1,4 +1,4 @@
-# Margin
+﻿# Margin
 
 Calculate margin requirement for a basket of positions. Useful for pre-trade margin checks.
 
@@ -81,7 +81,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/margin \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | positions | Array of position objects (max 50) | Mandatory | - |
 
 ### Position Object Fields

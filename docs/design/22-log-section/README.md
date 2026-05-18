@@ -1,8 +1,8 @@
-# 22 - Log Section
+﻿# 22 - Log Section
 
 ## Overview
 
-Tradeboard provides comprehensive log viewing and management through the web interface, supporting both API order logs and general application logs.
+TradeBoard provides comprehensive log viewing and management through the web interface, supporting both API order logs and general application logs.
 
 ## Architecture Diagram
 
@@ -69,7 +69,7 @@ Logs from sandbox/sandbox trading mode.
 
 ### 3. Application Logs
 
-**Location:** `log/tradeboard.log`
+**Location:** `log/TradeBoard.log`
 
 File-based logs for debugging and monitoring.
 
@@ -270,13 +270,13 @@ LOG_RETENTION=14
 
 ```bash
 # View current log
-tail -f log/tradeboard.log
+tail -f log/TradeBoard.log
 
 # Search for errors
-grep ERROR log/tradeboard.log
+grep ERROR log/TradeBoard.log
 
 # View last 100 lines
-tail -100 log/tradeboard.log
+tail -100 log/TradeBoard.log
 ```
 
 ## Security Considerations

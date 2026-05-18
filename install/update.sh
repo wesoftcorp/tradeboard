@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 # Colors for output
 RED='\033[0;31m'
@@ -7,21 +7,19 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Tradeboard Installation Banner
+# TradeBoard Update Banner
 echo -e "${BLUE}"
-echo " ████████╗██████╗  █████╗ ██████╗ ███████╗██████╗  ██████╗  █████╗ ██████╗ ██████╗ "
-echo "    ██╔══╝██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔══██╗"
-echo "    ██║   ██████╔╝███████║██║  ██║█████╗  ██████╔╝██║   ██║███████║██████╔╝██║  ██║"
-echo "    ██║   ██╔══██╗██╔══██║██║  ██║██╔══╝  ██╔══██╗██║   ██║██╔══██║██╔══██╗██║  ██║"
-echo "    ██║   ██║  ██║██║  ██║██████╔╝███████╗██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝"
-echo "    ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ "
-echo "                                                                                      "
-echo "                  Tradeboard -- Installation & Configuration Script                  "
-echo "                       Repository: wesoftcorp/tradeboard                             "
+echo "  ██████╗ ██████╗ ███████╗███╗   ██╗ █████╗ ██╗      ██████╗  ██████╗ "
+echo " ██╔═══██╗██╔══██╗██╔════╝████╗  ██║██╔══██╗██║     ██╔════╝ ██╔═══██╗"
+echo " ██║   ██║██████╔╝███████╗██╔██╗ ██║███████║██║     ██║  ███╗██║   ██║"
+echo " ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║██╔══██║██║     ██║   ██║██║   ██║"
+echo " ╚██████╔╝██╗     ███████╗██║ ╚████║██║  ██║███████╗╚██████╔╝╚██████╔╝"
+echo "  ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ "
+echo "                          UPDATE  SCRIPT                                "
 echo -e "${NC}"
 
-# Tradeboard Update Script
-# Updates an existing Tradeboard installation to the latest version using the UV method.
+# TradeBoard Update Script
+# Updates an existing TradeBoard installation to the latest version using the UV method.
 # Supports both server deployments (installed via install.sh) and local development setups.
 
 # Create logs directory if it doesn't exist
@@ -49,7 +47,7 @@ check_status() {
 }
 
 # Start logging
-log_message "Starting Tradeboard update log at: $LOG_FILE" "$BLUE"
+log_message "Starting TradeBoard update log at: $LOG_FILE" "$BLUE"
 log_message "----------------------------------------" "$BLUE"
 
 # Detect OS type
@@ -113,14 +111,14 @@ detect_uv() {
 # Find server deployments installed via install.sh
 #
 # Two layouts are supported:
-#   1. Simple (current install.sh)   /var/python/tradeboard, service "tradeboard"
-#   2. Legacy multi-deploy           /var/python/tradeboard-flask/<deploy>/tradeboard,
-#                                    service "tradeboard-<deploy>" (still produced
+#   1. Simple (current install.sh)   /var/python/TradeBoard, service "TradeBoard"
+#   2. Legacy multi-deploy           /var/python/TradeBoard-flask/<deploy>/TradeBoard,
+#                                    service "TradeBoard-<deploy>" (still produced
 #                                    by install/install-multi.sh)
 # We try the simple layout first because it's unambiguous; only fall back
 # to scanning the legacy parent dir when the simple path is absent.
-SIMPLE_PATH="/var/python/tradeboard"
-DEPLOY_BASE="/var/python/tradeboard-flask"
+SIMPLE_PATH="/var/python/TradeBoard"
+DEPLOY_BASE="/var/python/TradeBoard-flask"
 SERVER_MODE=false
 STASHED=false
 
@@ -128,7 +126,7 @@ find_deployments() {
     local deployments=()
     if [ -d "$DEPLOY_BASE" ]; then
         for dir in "$DEPLOY_BASE"/*/; do
-            if [ -d "${dir}tradeboard/.git" ]; then
+            if [ -d "${dir}TradeBoard/.git" ]; then
                 deploy_name=$(basename "$dir")
                 deployments+=("$deploy_name")
             fi
@@ -139,13 +137,13 @@ find_deployments() {
 
 if [ -d "$SIMPLE_PATH/.git" ] && [ -f "$SIMPLE_PATH/.env" ]; then
     SERVER_MODE=true
-    SELECTED_DEPLOY="tradeboard"
+    SELECTED_DEPLOY="TradeBoard"
     BASE_PATH="$SIMPLE_PATH"
-    TRADEBOARD_PATH="$SIMPLE_PATH"
+    TradeBoard_PATH="$SIMPLE_PATH"
     VENV_PATH="$SIMPLE_PATH/.venv"
-    SERVICE_NAME="tradeboard"
+    SERVICE_NAME="TradeBoard"
 
-    log_message "Found Tradeboard install at $SIMPLE_PATH" "$GREEN"
+    log_message "Found TradeBoard install at $SIMPLE_PATH" "$GREEN"
     log_message "Service: $SERVICE_NAME" "$BLUE"
 else
     DEPLOYMENTS=($(find_deployments))
@@ -177,39 +175,39 @@ if [ "$SERVER_MODE" = false ] && [ ${#DEPLOYMENTS[@]} -gt 0 ]; then
 
     # Derive paths from deployment name (legacy multi-deploy layout)
     BASE_PATH="$DEPLOY_BASE/$SELECTED_DEPLOY"
-    TRADEBOARD_PATH="$BASE_PATH/tradeboard"
+    TradeBoard_PATH="$BASE_PATH/TradeBoard"
     VENV_PATH="$BASE_PATH/venv"
-    SERVICE_NAME="tradeboard-$SELECTED_DEPLOY"
+    SERVICE_NAME="TradeBoard-$SELECTED_DEPLOY"
 
     log_message "\nUpdating deployment: $SELECTED_DEPLOY" "$BLUE"
-    log_message "Path: $TRADEBOARD_PATH" "$BLUE"
+    log_message "Path: $TradeBoard_PATH" "$BLUE"
     log_message "Service: $SERVICE_NAME" "$BLUE"
 fi
 
 if [ "$SERVER_MODE" = false ]; then
-    # Check if we're in or near an tradeboard git repo (local development)
+    # Check if we're in or near an TradeBoard git repo (local development)
     if [ -d ".git" ] && [ -f "app.py" ]; then
-        TRADEBOARD_PATH="$(pwd)"
+        TradeBoard_PATH="$(pwd)"
     elif [ -d "$SCRIPT_DIR/../.git" ] && [ -f "$SCRIPT_DIR/../app.py" ]; then
-        TRADEBOARD_PATH="$(cd "$SCRIPT_DIR/.." && pwd)"
+        TradeBoard_PATH="$(cd "$SCRIPT_DIR/.." && pwd)"
     else
-        log_message "Error: No Tradeboard deployment found." "$RED"
+        log_message "Error: No TradeBoard deployment found." "$RED"
         log_message "For server deployments, ensure install.sh was run first." "$YELLOW"
-        log_message "For local development, run this script from the tradeboard directory." "$YELLOW"
+        log_message "For local development, run this script from the TradeBoard directory." "$YELLOW"
         exit 1
     fi
 
-    log_message "Detected local development setup at: $TRADEBOARD_PATH" "$GREEN"
+    log_message "Detected local development setup at: $TradeBoard_PATH" "$GREEN"
 fi
 
 # Detect uv
 detect_uv
 
 # Get current version info before update
-cd "$TRADEBOARD_PATH"
+cd "$TradeBoard_PATH"
 if [ "$SERVER_MODE" = true ]; then
-    CURRENT_COMMIT=$(sudo git -C "$TRADEBOARD_PATH" rev-parse --short HEAD 2>/dev/null || echo "unknown")
-    CURRENT_BRANCH=$(sudo git -C "$TRADEBOARD_PATH" branch --show-current 2>/dev/null || echo "main")
+    CURRENT_COMMIT=$(sudo git -C "$TradeBoard_PATH" rev-parse --short HEAD 2>/dev/null || echo "unknown")
+    CURRENT_BRANCH=$(sudo git -C "$TradeBoard_PATH" branch --show-current 2>/dev/null || echo "main")
 else
     CURRENT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
     CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "main")
@@ -236,10 +234,10 @@ fi
 # Step 2: Backup databases
 # ============================================
 log_message "\n[Step 2/7] Backing up databases..." "$BLUE"
-BACKUP_DIR="$TRADEBOARD_PATH/db/backup_${TIMESTAMP}"
+BACKUP_DIR="$TradeBoard_PATH/db/backup_${TIMESTAMP}"
 BACKUP_COUNT=0
 
-if [ -d "$TRADEBOARD_PATH/db" ]; then
+if [ -d "$TradeBoard_PATH/db" ]; then
     if [ "$SERVER_MODE" = true ]; then
         sudo mkdir -p "$BACKUP_DIR"
     else
@@ -247,12 +245,12 @@ if [ -d "$TRADEBOARD_PATH/db" ]; then
     fi
 
     # Backup SQLite databases
-    for db_file in tradeboard.db logs.db latency.db sandbox.db; do
-        if [ -f "$TRADEBOARD_PATH/db/$db_file" ]; then
+    for db_file in TradeBoard.db logs.db latency.db sandbox.db; do
+        if [ -f "$TradeBoard_PATH/db/$db_file" ]; then
             if [ "$SERVER_MODE" = true ]; then
-                sudo cp "$TRADEBOARD_PATH/db/$db_file" "$BACKUP_DIR/$db_file"
+                sudo cp "$TradeBoard_PATH/db/$db_file" "$BACKUP_DIR/$db_file"
             else
-                cp "$TRADEBOARD_PATH/db/$db_file" "$BACKUP_DIR/$db_file"
+                cp "$TradeBoard_PATH/db/$db_file" "$BACKUP_DIR/$db_file"
             fi
             log_message "  Backed up: $db_file" "$GREEN"
             BACKUP_COUNT=$((BACKUP_COUNT + 1))
@@ -260,11 +258,11 @@ if [ -d "$TRADEBOARD_PATH/db" ]; then
     done
 
     # Backup DuckDB database
-    if [ -f "$TRADEBOARD_PATH/db/historify.duckdb" ]; then
+    if [ -f "$TradeBoard_PATH/db/historify.duckdb" ]; then
         if [ "$SERVER_MODE" = true ]; then
-            sudo cp "$TRADEBOARD_PATH/db/historify.duckdb" "$BACKUP_DIR/historify.duckdb"
+            sudo cp "$TradeBoard_PATH/db/historify.duckdb" "$BACKUP_DIR/historify.duckdb"
         else
-            cp "$TRADEBOARD_PATH/db/historify.duckdb" "$BACKUP_DIR/historify.duckdb"
+            cp "$TradeBoard_PATH/db/historify.duckdb" "$BACKUP_DIR/historify.duckdb"
         fi
         log_message "  Backed up: historify.duckdb" "$GREEN"
         BACKUP_COUNT=$((BACKUP_COUNT + 1))
@@ -288,11 +286,11 @@ fi
 # Step 3: Pull latest code
 # ============================================
 log_message "\n[Step 3/7] Pulling latest code from repository..." "$BLUE"
-cd "$TRADEBOARD_PATH"
+cd "$TradeBoard_PATH"
 
 # Check for local modifications (excluding untracked files)
 if [ "$SERVER_MODE" = true ]; then
-    LOCAL_CHANGES=$(sudo git -C "$TRADEBOARD_PATH" status --porcelain 2>/dev/null | grep -v "^??" | head -20)
+    LOCAL_CHANGES=$(sudo git -C "$TradeBoard_PATH" status --porcelain 2>/dev/null | grep -v "^??" | head -20)
 else
     LOCAL_CHANGES=$(git status --porcelain 2>/dev/null | grep -v "^??" | head -20)
 fi
@@ -302,7 +300,7 @@ if [ -n "$LOCAL_CHANGES" ]; then
     echo "$LOCAL_CHANGES" | tee -a "$LOG_FILE"
     log_message "\nStashing local changes..." "$YELLOW"
     if [ "$SERVER_MODE" = true ]; then
-        sudo git -C "$TRADEBOARD_PATH" stash push -m "auto-stash before update $TIMESTAMP"
+        sudo git -C "$TradeBoard_PATH" stash push -m "auto-stash before update $TIMESTAMP"
     else
         git stash push -m "auto-stash before update $TIMESTAMP"
     fi
@@ -311,7 +309,7 @@ fi
 
 # Pull latest code
 if [ "$SERVER_MODE" = true ]; then
-    sudo git -C "$TRADEBOARD_PATH" pull origin "$CURRENT_BRANCH"
+    sudo git -C "$TradeBoard_PATH" pull origin "$CURRENT_BRANCH"
 else
     git pull origin "$CURRENT_BRANCH"
 fi
@@ -319,7 +317,7 @@ check_status "Failed to pull latest code. Please resolve any conflicts and try a
 
 # Get new commit hash
 if [ "$SERVER_MODE" = true ]; then
-    NEW_COMMIT=$(sudo git -C "$TRADEBOARD_PATH" rev-parse --short HEAD 2>/dev/null || echo "unknown")
+    NEW_COMMIT=$(sudo git -C "$TradeBoard_PATH" rev-parse --short HEAD 2>/dev/null || echo "unknown")
 else
     NEW_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 fi
@@ -339,10 +337,10 @@ fi
 # ============================================
 log_message "\n[Step 4/7] Checking environment configuration..." "$BLUE"
 
-if [ -f "$TRADEBOARD_PATH/.env" ] && [ -f "$TRADEBOARD_PATH/.sample.env" ]; then
+if [ -f "$TradeBoard_PATH/.env" ] && [ -f "$TradeBoard_PATH/.sample.env" ]; then
     # Extract variable names from both files and compare
-    SAMPLE_VARS=$(grep -oP "^[A-Z_][A-Z_0-9]+ *=" "$TRADEBOARD_PATH/.sample.env" 2>/dev/null | sed 's/ *=$//' | sort -u)
-    CURRENT_VARS=$(grep -oP "^[A-Z_][A-Z_0-9]+ *=" "$TRADEBOARD_PATH/.env" 2>/dev/null | sed 's/ *=$//' | sort -u)
+    SAMPLE_VARS=$(grep -oP "^[A-Z_][A-Z_0-9]+ *=" "$TradeBoard_PATH/.sample.env" 2>/dev/null | sed 's/ *=$//' | sort -u)
+    CURRENT_VARS=$(grep -oP "^[A-Z_][A-Z_0-9]+ *=" "$TradeBoard_PATH/.env" 2>/dev/null | sed 's/ *=$//' | sort -u)
 
     NEW_VARS=$(comm -23 <(echo "$SAMPLE_VARS") <(echo "$CURRENT_VARS") 2>/dev/null)
 
@@ -355,12 +353,12 @@ if [ -f "$TRADEBOARD_PATH/.env" ] && [ -f "$TRADEBOARD_PATH/.sample.env" ]; then
     else
         log_message "Environment configuration is up to date" "$GREEN"
     fi
-elif [ ! -f "$TRADEBOARD_PATH/.env" ]; then
+elif [ ! -f "$TradeBoard_PATH/.env" ]; then
     log_message "Warning: No .env file found. Creating from .sample.env..." "$YELLOW"
     if [ "$SERVER_MODE" = true ]; then
-        sudo cp "$TRADEBOARD_PATH/.sample.env" "$TRADEBOARD_PATH/.env"
+        sudo cp "$TradeBoard_PATH/.sample.env" "$TradeBoard_PATH/.env"
     else
-        cp "$TRADEBOARD_PATH/.sample.env" "$TRADEBOARD_PATH/.env"
+        cp "$TradeBoard_PATH/.sample.env" "$TradeBoard_PATH/.env"
     fi
 
     # Generate fresh APP_KEY and API_KEY_PEPPER and substitute the placeholders.
@@ -371,16 +369,16 @@ elif [ ! -f "$TRADEBOARD_PATH/.env" ]; then
     NEW_APP_KEY=$($PYTHON_CMD -c "import secrets; print(secrets.token_hex(32))")
     NEW_PEPPER=$($PYTHON_CMD -c "import secrets; print(secrets.token_hex(32))")
     if [ "$SERVER_MODE" = true ]; then
-        sudo sed -i "s|TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$NEW_APP_KEY|g" "$TRADEBOARD_PATH/.env"
-        sudo sed -i "s|TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$NEW_PEPPER|g" "$TRADEBOARD_PATH/.env"
-        sudo chmod 600 "$TRADEBOARD_PATH/.env"
+        sudo sed -i "s|TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$NEW_APP_KEY|g" "$TradeBoard_PATH/.env"
+        sudo sed -i "s|TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$NEW_PEPPER|g" "$TradeBoard_PATH/.env"
+        sudo chmod 600 "$TradeBoard_PATH/.env"
     else
-        sed -i.bak "s|TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$NEW_APP_KEY|g" "$TRADEBOARD_PATH/.env" && rm -f "$TRADEBOARD_PATH/.env.bak"
-        sed -i.bak "s|TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$NEW_PEPPER|g" "$TRADEBOARD_PATH/.env" && rm -f "$TRADEBOARD_PATH/.env.bak"
-        chmod 600 "$TRADEBOARD_PATH/.env"
+        sed -i.bak "s|TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE|$NEW_APP_KEY|g" "$TradeBoard_PATH/.env" && rm -f "$TradeBoard_PATH/.env.bak"
+        sed -i.bak "s|TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE|$NEW_PEPPER|g" "$TradeBoard_PATH/.env" && rm -f "$TradeBoard_PATH/.env.bak"
+        chmod 600 "$TradeBoard_PATH/.env"
     fi
-    log_message "Generated fresh APP_KEY and API_KEY_PEPPER in $TRADEBOARD_PATH/.env" "$GREEN"
-    log_message "Please edit $TRADEBOARD_PATH/.env with your broker credentials and settings." "$RED"
+    log_message "Generated fresh APP_KEY and API_KEY_PEPPER in $TradeBoard_PATH/.env" "$GREEN"
+    log_message "Please edit $TradeBoard_PATH/.env with your broker credentials and settings." "$RED"
 fi
 
 # ============================================
@@ -391,44 +389,44 @@ fi
 # `chmod -R 755`) and they don't have TRUST_PROXY_HEADERS set so the
 # default-secure value of FALSE would silently disable IP-based features
 # behind their nginx proxy.
-if [ -f "$TRADEBOARD_PATH/.env" ]; then
+if [ -f "$TradeBoard_PATH/.env" ]; then
     # Tighten .env to mode 0o600 if it isn't already (server mode only —
     # the file is owned by the web user and gunicorn runs as that user, so
     # owner-only read is correct).
     if [ "$SERVER_MODE" = true ]; then
-        ENV_PERMS=$(stat -c '%a' "$TRADEBOARD_PATH/.env" 2>/dev/null || stat -f '%Lp' "$TRADEBOARD_PATH/.env" 2>/dev/null)
+        ENV_PERMS=$(stat -c '%a' "$TradeBoard_PATH/.env" 2>/dev/null || stat -f '%Lp' "$TradeBoard_PATH/.env" 2>/dev/null)
         if [ "$ENV_PERMS" != "600" ]; then
-            sudo chmod 600 "$TRADEBOARD_PATH/.env"
+            sudo chmod 600 "$TradeBoard_PATH/.env"
             log_message "Tightened .env perms: $ENV_PERMS -> 600 (owner-only)" "$GREEN"
         fi
     fi
 
     # Add TRUST_PROXY_HEADERS to .env if missing. Auto-detect whether nginx
     # is configured for this deployment so the default matches reality.
-    if ! grep -q "^TRUST_PROXY_HEADERS" "$TRADEBOARD_PATH/.env"; then
-        # Detect nginx in front of tradeboard: any sites-enabled/ or conf.d/
+    if ! grep -q "^TRUST_PROXY_HEADERS" "$TradeBoard_PATH/.env"; then
+        # Detect nginx in front of TradeBoard: any sites-enabled/ or conf.d/
         # config that mentions a unix-socket proxy_pass or the deployment name.
         BEHIND_NGINX="false"
         if [ -d /etc/nginx/sites-enabled ]; then
-            if find /etc/nginx/sites-enabled -type f -o -type l 2>/dev/null | xargs grep -l "unix:.*\.sock\|tradeboard\|gunicorn" 2>/dev/null | head -1 | grep -q .; then
+            if find /etc/nginx/sites-enabled -type f -o -type l 2>/dev/null | xargs grep -l "unix:.*\.sock\|TradeBoard\|gunicorn" 2>/dev/null | head -1 | grep -q .; then
                 BEHIND_NGINX="true"
             fi
         fi
         if [ "$BEHIND_NGINX" = "false" ] && [ -d /etc/nginx/conf.d ]; then
-            if find /etc/nginx/conf.d -type f -name "*.conf" 2>/dev/null | xargs grep -l "unix:.*\.sock\|tradeboard\|gunicorn" 2>/dev/null | head -1 | grep -q .; then
+            if find /etc/nginx/conf.d -type f -name "*.conf" 2>/dev/null | xargs grep -l "unix:.*\.sock\|TradeBoard\|gunicorn" 2>/dev/null | head -1 | grep -q .; then
                 BEHIND_NGINX="true"
             fi
         fi
         if [ "$BEHIND_NGINX" = "true" ]; then
-            echo "" | sudo tee -a "$TRADEBOARD_PATH/.env" >/dev/null
-            echo "# Auto-added by update.sh — nginx reverse proxy detected." | sudo tee -a "$TRADEBOARD_PATH/.env" >/dev/null
-            echo "TRUST_PROXY_HEADERS = 'TRUE'" | sudo tee -a "$TRADEBOARD_PATH/.env" >/dev/null
+            echo "" | sudo tee -a "$TradeBoard_PATH/.env" >/dev/null
+            echo "# Auto-added by update.sh — nginx reverse proxy detected." | sudo tee -a "$TradeBoard_PATH/.env" >/dev/null
+            echo "TRUST_PROXY_HEADERS = 'TRUE'" | sudo tee -a "$TradeBoard_PATH/.env" >/dev/null
             log_message "Added TRUST_PROXY_HEADERS=TRUE to .env (nginx reverse proxy detected)" "$GREEN"
         else
-            echo "" | sudo tee -a "$TRADEBOARD_PATH/.env" >/dev/null
-            echo "# Auto-added by update.sh — set to TRUE only if behind a reverse proxy" | sudo tee -a "$TRADEBOARD_PATH/.env" >/dev/null
-            echo "# that strips client-supplied X-Forwarded-For / CF-Connecting-IP / X-Real-IP." | sudo tee -a "$TRADEBOARD_PATH/.env" >/dev/null
-            echo "TRUST_PROXY_HEADERS = 'FALSE'" | sudo tee -a "$TRADEBOARD_PATH/.env" >/dev/null
+            echo "" | sudo tee -a "$TradeBoard_PATH/.env" >/dev/null
+            echo "# Auto-added by update.sh — set to TRUE only if behind a reverse proxy" | sudo tee -a "$TradeBoard_PATH/.env" >/dev/null
+            echo "# that strips client-supplied X-Forwarded-For / CF-Connecting-IP / X-Real-IP." | sudo tee -a "$TradeBoard_PATH/.env" >/dev/null
+            echo "TRUST_PROXY_HEADERS = 'FALSE'" | sudo tee -a "$TradeBoard_PATH/.env" >/dev/null
             log_message "Added TRUST_PROXY_HEADERS=FALSE to .env (no proxy detected)" "$YELLOW"
         fi
     fi
@@ -441,7 +439,7 @@ log_message "\n[Step 5/7] Updating Python dependencies..." "$BLUE"
 
 if [ "$SERVER_MODE" = true ]; then
     # Server mode: use uv pip install with the deployment venv
-    sudo $UV_CMD pip install --python "$VENV_PATH/bin/python" -r "$TRADEBOARD_PATH/requirements-nginx.txt"
+    sudo $UV_CMD pip install --python "$VENV_PATH/bin/python" -r "$TradeBoard_PATH/requirements-nginx.txt"
     check_status "Failed to update Python dependencies"
 
     # Ensure gunicorn and eventlet are installed
@@ -456,7 +454,7 @@ if [ "$SERVER_MODE" = true ]; then
     fi
 else
     # Local mode: use uv sync (reads pyproject.toml)
-    cd "$TRADEBOARD_PATH"
+    cd "$TradeBoard_PATH"
     $UV_CMD sync
     check_status "Failed to update Python dependencies"
 fi
@@ -474,25 +472,25 @@ if [ "$SERVER_MODE" = true ]; then
     sudo chmod -R 755 "$BASE_PATH"
 
     # Ensure required directories exist with correct ownership
-    sudo mkdir -p "$TRADEBOARD_PATH/db"
-    sudo mkdir -p "$TRADEBOARD_PATH/tmp/numba_cache"
-    sudo mkdir -p "$TRADEBOARD_PATH/tmp/matplotlib"
-    sudo mkdir -p "$TRADEBOARD_PATH/strategies/scripts"
-    sudo mkdir -p "$TRADEBOARD_PATH/strategies/examples"
-    sudo mkdir -p "$TRADEBOARD_PATH/log/strategies"
-    sudo mkdir -p "$TRADEBOARD_PATH/keys"
-    sudo chown -R "$WEB_USER:$WEB_GROUP" "$TRADEBOARD_PATH"
-    sudo chmod 700 "$TRADEBOARD_PATH/keys"
+    sudo mkdir -p "$TradeBoard_PATH/db"
+    sudo mkdir -p "$TradeBoard_PATH/tmp/numba_cache"
+    sudo mkdir -p "$TradeBoard_PATH/tmp/matplotlib"
+    sudo mkdir -p "$TradeBoard_PATH/strategies/scripts"
+    sudo mkdir -p "$TradeBoard_PATH/strategies/examples"
+    sudo mkdir -p "$TradeBoard_PATH/log/strategies"
+    sudo mkdir -p "$TradeBoard_PATH/keys"
+    sudo chown -R "$WEB_USER:$WEB_GROUP" "$TradeBoard_PATH"
+    sudo chmod 700 "$TradeBoard_PATH/keys"
 
     log_message "Permissions set successfully" "$GREEN"
 
     # Run migrations as the web user (database files are owned by web user)
-    if [ -f "$TRADEBOARD_PATH/upgrade/migrate_all.py" ]; then
+    if [ -f "$TradeBoard_PATH/upgrade/migrate_all.py" ]; then
         log_message "Running database migrations..." "$BLUE"
-        sudo -u "$WEB_USER" bash -c "source $VENV_PATH/bin/activate && cd $TRADEBOARD_PATH && python upgrade/migrate_all.py" 2>&1 | tee -a "$LOG_FILE"
+        sudo -u "$WEB_USER" bash -c "source $VENV_PATH/bin/activate && cd $TradeBoard_PATH && python upgrade/migrate_all.py" 2>&1 | tee -a "$LOG_FILE"
         if [ ${PIPESTATUS[0]} -ne 0 ]; then
             log_message "Retrying migrations with elevated permissions..." "$YELLOW"
-            sudo bash -c "source $VENV_PATH/bin/activate && cd $TRADEBOARD_PATH && python upgrade/migrate_all.py" 2>&1 | tee -a "$LOG_FILE"
+            sudo bash -c "source $VENV_PATH/bin/activate && cd $TradeBoard_PATH && python upgrade/migrate_all.py" 2>&1 | tee -a "$LOG_FILE"
         fi
         log_message "Database migrations completed" "$GREEN"
     else
@@ -500,8 +498,8 @@ if [ "$SERVER_MODE" = true ]; then
     fi
 else
     log_message "\n[Step 6/7] Running database migrations..." "$BLUE"
-    if [ -f "$TRADEBOARD_PATH/upgrade/migrate_all.py" ]; then
-        cd "$TRADEBOARD_PATH"
+    if [ -f "$TradeBoard_PATH/upgrade/migrate_all.py" ]; then
+        cd "$TradeBoard_PATH"
         $UV_CMD run upgrade/migrate_all.py 2>&1 | tee -a "$LOG_FILE"
         log_message "Database migrations completed" "$GREEN"
     else
@@ -518,7 +516,7 @@ if [ "$SERVER_MODE" = true ]; then
     # Reload systemd in case service file changed
     sudo systemctl daemon-reload
 
-    # Start the Tradeboard service
+    # Start the TradeBoard service
     sudo systemctl start "$SERVICE_NAME"
     check_status "Failed to start $SERVICE_NAME"
 
@@ -540,10 +538,10 @@ else
     log_message "\n[Step 7/7] Finalizing update..." "$BLUE"
 
     # Build frontend if dist/ directory is missing and npm is available
-    if [ ! -d "$TRADEBOARD_PATH/frontend/dist" ]; then
+    if [ ! -d "$TradeBoard_PATH/frontend/dist" ]; then
         if command -v npm >/dev/null 2>&1; then
             log_message "Building React frontend (dist/ not found)..." "$BLUE"
-            cd "$TRADEBOARD_PATH/frontend"
+            cd "$TradeBoard_PATH/frontend"
             npm install && npm run build
             if [ $? -eq 0 ]; then
                 log_message "Frontend built successfully" "$GREEN"
@@ -563,11 +561,11 @@ fi
 # Summary
 # ============================================
 log_message "\n========================================" "$GREEN"
-log_message "  Tradeboard Update Summary" "$GREEN"
+log_message "  TradeBoard Update Summary" "$GREEN"
 log_message "========================================" "$GREEN"
 log_message "Version: $CURRENT_COMMIT -> $NEW_COMMIT" "$BLUE"
 log_message "Branch: $CURRENT_BRANCH" "$BLUE"
-log_message "Path: $TRADEBOARD_PATH" "$BLUE"
+log_message "Path: $TradeBoard_PATH" "$BLUE"
 if [ -d "$BACKUP_DIR" ]; then
     log_message "Database Backup: $BACKUP_DIR" "$BLUE"
 fi

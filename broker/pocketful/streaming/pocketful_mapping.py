@@ -2,7 +2,7 @@ import logging
 
 
 class PocketfulExchangeMapper:
-    """Maps Tradeboard exchange codes to Pocketful-specific exchange types"""
+    """Maps TradeBoard exchange codes to Pocketful-specific exchange types"""
 
     # Exchange type mapping for Pocketful broker
     # Based on Pocketful WebSocket API (matching data.py)

@@ -52,13 +52,44 @@ if len(_pepper_value) < 32:
 PEPPER = _pepper_value
 
 
-# Setup Fernet encryption for auth tokens
+# Setup Fernet encryption for auth tokens.
+#
+# The KDF salt has two sources, in order of preference:
+#   1. FERNET_SALT env var (per-install random hex, 32+ chars). This is the
+#      production path. utils/env_check.py auto-provisions it on first boot
+#      (and migrates existing ciphertext) so by the time this module imports,
+#      the env var is set.
+#   2. The legacy hardcoded literal b"TradeBoard_static_salt". This is the
+#      fallback for one-off scripts that import auth_db directly without
+#      going through the env_check bootstrap (CLI utilities, ad-hoc REPL,
+#      docs/typecheck runs). A one-time stderr warning fires so the operator
+#      notices if a real production process ever hits this path.
+def _resolve_fernet_salt() -> bytes:
+    raw = (os.getenv("FERNET_SALT") or "").strip()
+    if raw and len(raw) >= 32:
+        try:
+            return bytes.fromhex(raw)
+        except ValueError:
+            pass
+    # Fallback path. Print once so prod misuse is visible without spamming.
+    if not getattr(_resolve_fernet_salt, "_warned", False):
+        import sys as _sys
+
+        _sys.stderr.write(
+            "[auth_db] WARNING: FERNET_SALT not set or invalid; using legacy\n"
+            "static salt. Run the app once via app.py so utils/env_check.py\n"
+            "auto-provisions a per-install salt.\n"
+        )
+        _resolve_fernet_salt._warned = True  # type: ignore[attr-defined]
+    return b"TradeBoard_static_salt"
+
+
 def get_encryption_key():
-    """Generate a Fernet key from the pepper"""
+    """Generate a Fernet key from PEPPER + per-install FERNET_SALT."""
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
-        salt=b"tradeboard_static_salt",
+        salt=_resolve_fernet_salt(),
         iterations=100000,
     )
     key = base64.urlsafe_b64encode(kdf.derive(PEPPER.encode()))
@@ -192,6 +223,7 @@ class ApiKeys(Base):
 
 class ActiveSession(Base):
     """Tracks active login sessions across devices for a user."""
+
     __tablename__ = "active_sessions"
     id = Column(Integer, primary_key=True)
     username = Column(String(255), nullable=False, index=True)
@@ -202,13 +234,12 @@ class ActiveSession(Base):
     login_time = Column(DateTime(timezone=True), default=func.now())
     last_seen = Column(DateTime(timezone=True), default=func.now())
 
-    __table_args__ = (
-        Index("idx_active_sessions_username", "username"),
-    )
+    __table_args__ = (Index("idx_active_sessions_username", "username"),)
 
 
 class LoginAttempt(Base):
     """Records all login attempts (successful and failed) for security auditing."""
+
     __tablename__ = "login_attempts"
     id = Column(Integer, primary_key=True)
     username = Column(String(255), nullable=False)
@@ -230,12 +261,21 @@ class LoginAttempt(Base):
 def _now_ist():
     """Get current time in IST."""
     from datetime import datetime
+
     import pytz
+
     return datetime.now(pytz.timezone("Asia/Kolkata"))
 
 
-def log_login_attempt(username, ip_address=None, device_info=None, status="failed",
-                      login_type="password", broker=None, failure_reason=None):
+def log_login_attempt(
+    username,
+    ip_address=None,
+    device_info=None,
+    status="failed",
+    login_type="password",
+    broker=None,
+    failure_reason=None,
+):
     """Record a login attempt for audit purposes. All records are retained permanently."""
     try:
         attempt = LoginAttempt(
@@ -306,9 +346,11 @@ def register_session(username, session_id, device_info=None, ip_address=None, br
         # Enforce per-user session cap — remove oldest if at limit
         current_count = ActiveSession.query.filter_by(username=username).count()
         if current_count >= MAX_SESSIONS_PER_USER:
-            oldest = ActiveSession.query.filter_by(username=username).order_by(
-                ActiveSession.login_time.asc()
-            ).first()
+            oldest = (
+                ActiveSession.query.filter_by(username=username)
+                .order_by(ActiveSession.login_time.asc())
+                .first()
+            )
             if oldest:
                 db_session.delete(oldest)
 
@@ -344,9 +386,11 @@ def remove_session(session_id):
 def get_active_sessions(username):
     """Get all active sessions for a user."""
     try:
-        sessions = ActiveSession.query.filter_by(username=username).order_by(
-            ActiveSession.last_seen.desc()
-        ).all()
+        sessions = (
+            ActiveSession.query.filter_by(username=username)
+            .order_by(ActiveSession.last_seen.desc())
+            .all()
+        )
         return [
             {
                 "session_id": s.session_id,
@@ -421,6 +465,15 @@ def encrypt_token(token):
     return fernet.encrypt(token.encode()).decode()
 
 
+# Track ciphertext fingerprints we've already failed to decrypt so we log each
+# orphan row's full traceback once, then suppress the noise on every subsequent
+# call. Without this, a single un-migrated row encrypted under a lost salt
+# (e.g. the row left as-is after a Fernet salt rotation, see issue #1394)
+# triggers a full ERROR + traceback on every WebSocket re-connect attempt,
+# spamming the logs with hundreds of identical entries.
+_decrypt_failure_fingerprints: set[str] = set()
+
+
 def decrypt_token(encrypted_token):
     """Decrypt auth token"""
     if not encrypted_token:
@@ -428,7 +481,31 @@ def decrypt_token(encrypted_token):
     try:
         return fernet.decrypt(encrypted_token.encode()).decode()
     except Exception as e:
-        logger.exception(f"Error decrypting token: {e}")
+        # Hash the ciphertext (not the plaintext — there is no plaintext yet)
+        # so we don't keep the full token in memory just to dedupe log lines.
+        import hashlib
+
+        try:
+            payload = (
+                encrypted_token.encode() if isinstance(encrypted_token, str) else encrypted_token
+            )
+            fp = hashlib.blake2s(payload, digest_size=8).hexdigest()
+        except Exception:
+            fp = "unknown"
+
+        if fp in _decrypt_failure_fingerprints:
+            # Already reported the full traceback once — keep the signal
+            # but at debug level so it doesn't spam ERROR logs.
+            logger.debug(f"Repeat decrypt failure (fingerprint={fp})")
+        else:
+            _decrypt_failure_fingerprints.add(fp)
+            logger.exception(
+                f"Error decrypting token (fingerprint={fp}): {e}. "
+                "This row may have been encrypted under a previous "
+                "API_KEY_PEPPER or FERNET_SALT and survived a rotation. "
+                "Re-authenticate the affected broker / user to overwrite "
+                "the orphan ciphertext with a fresh value."
+            )
         return None
 
 
@@ -476,12 +553,30 @@ def upsert_auth(name, auth_token, broker, feed_token=None, user_id=None, revoke=
     # This notifies WebSocket proxy and other processes to clear their stale caches
     try:
         from database.cache_invalidation import publish_all_cache_invalidation
+
         publish_all_cache_invalidation(name)
         logger.debug(f"Published cache invalidation for user: {name}")
     except Exception as e:
         # Don't fail auth operation if cache invalidation fails
         # The database fallback in other processes will handle it
         logger.warning(f"Failed to publish cache invalidation for user {name}: {e}")
+
+    # Same-process invalidation. Production runs `gunicorn -w 1` per CLAUDE.md
+    # (single worker required for SocketIO state), so the WebSocket proxy's
+    # _POOLED_ADAPTERS registry lives in this very process. The ZeroMQ
+    # publish above is for hypothetical multi-process deployments; without
+    # also discarding the in-process cache here, the next WS connect after
+    # re-login reuses the pool that was initialised with the *old* token
+    # and fails with "Adapter initialization failed: No authentication
+    # token found" until the process is restarted. See issue #1394.
+    try:
+        from websocket_proxy.broker_factory import cleanup_pools_for_user
+
+        cleanup_pools_for_user(name, broker_name=broker)
+    except Exception as e:
+        # Don't fail auth on cleanup error — the user can still trade via
+        # HTTP endpoints; only the WS layer is affected.
+        logger.warning(f"Failed to invalidate WS adapter pool for {name}/{broker}: {e}")
 
     return auth_obj.id
 
@@ -913,7 +1008,9 @@ def get_auth_token_broker(provided_api_key, include_feed_token=False):
                 # (e.g., orphaned users with revoked sessions polled by background services)
                 negative_result = (None, None, None) if include_feed_token else (None, None)
                 auth_cache[cache_key] = negative_result
-                logger.warning(f"No valid auth token or broker found for user_id '{user_id}'. Cached negative result.")
+                logger.warning(
+                    f"No valid auth token or broker found for user_id '{user_id}'. Cached negative result."
+                )
                 return negative_result
         except Exception as e:
             logger.exception(f"Error while querying the database for auth token and broker: {e}")

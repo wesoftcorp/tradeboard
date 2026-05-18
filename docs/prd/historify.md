@@ -1,10 +1,10 @@
-# PRD: Historify - Historical Data Management
+﻿# PRD: Historify - Historical Data Management
 
 > **Status:** 🚧 Beta - Implemented but evolving; some broker integrations may vary
 
 ## Overview
 
-Historify is Tradeboard's historical market data management system for downloading, storing, and exporting OHLCV data for backtesting and analysis.
+Historify is TradeBoard's historical market data management system for downloading, storing, and exporting OHLCV data for backtesting and analysis.
 
 ## Problem Statement
 

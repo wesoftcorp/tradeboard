@@ -30,14 +30,14 @@ from database.historify_db import (
 )
 from database.historify_db import add_to_watchlist as db_add_to_watchlist
 from database.historify_db import bulk_add_to_watchlist as db_bulk_add_to_watchlist
+from database.historify_db import bulk_delete_market_data as db_bulk_delete_market_data
+from database.historify_db import bulk_remove_from_watchlist as db_bulk_remove_from_watchlist
 from database.historify_db import export_to_csv as db_export_to_csv
 from database.historify_db import get_data_catalog as db_get_data_catalog
 from database.historify_db import get_watchlist as db_get_watchlist
 from database.historify_db import import_from_csv as db_import_from_csv
 from database.historify_db import import_from_parquet as db_import_from_parquet
 from database.historify_db import remove_from_watchlist as db_remove_from_watchlist
-from database.historify_db import bulk_remove_from_watchlist as db_bulk_remove_from_watchlist
-from database.historify_db import bulk_delete_market_data as db_bulk_delete_market_data
 from database.token_db_enhanced import get_symbol_info
 from services.history_service import get_history
 from services.intervals_service import get_intervals
@@ -298,7 +298,7 @@ def download_data(
         interval: Time interval - only '1m' or 'D' allowed
         start_date: Start date in YYYY-MM-DD format
         end_date: End date in YYYY-MM-DD format
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
 
     Returns:
         Tuple of (success, response_data, status_code)
@@ -386,7 +386,7 @@ def download_watchlist_data(
         interval: Time interval
         start_date: Start date in YYYY-MM-DD format
         end_date: End date in YYYY-MM-DD format
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
 
     Returns:
         Tuple of (success, response_data, status_code)
@@ -721,7 +721,7 @@ def get_supported_timeframes(api_key: str) -> tuple[bool, dict[str, Any], int]:
     Get supported timeframes from the connected broker.
 
     Args:
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
 
     Returns:
         Tuple of (success, response_data, status_code)
@@ -1366,7 +1366,7 @@ def create_and_start_job(
         interval: Time interval for download
         start_date: Start date (YYYY-MM-DD)
         end_date: End date (YYYY-MM-DD)
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
         config: Optional configuration dict
         incremental: If True, only download data after last available timestamp
 
@@ -2002,7 +2002,7 @@ def retry_failed_items(job_id: str, api_key: str) -> tuple[bool, dict[str, Any],
 
     Args:
         job_id: Job identifier
-        api_key: Tradeboard API key
+        api_key: TradeBoard API key
 
     Returns:
         Tuple of (success, response_data, status_code)

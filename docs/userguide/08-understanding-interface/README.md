@@ -1,8 +1,8 @@
-# 08 - Understanding the Interface
+﻿# 08 - Understanding the Interface
 
 ## Introduction
 
-Tradeboard's interface is designed to be intuitive while providing powerful functionality. This guide helps you navigate and understand each section.
+TradeBoard's interface is designed to be intuitive while providing powerful functionality. This guide helps you navigate and understand each section.
 
 ## Main Navigation
 
@@ -10,7 +10,7 @@ Tradeboard's interface is designed to be intuitive while providing powerful func
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  🔷 Tradeboard          [Search...]       🔔 Notifications    👤 Admin  ▾    │
+│  🔷 TradeBoard          [Search...]       🔔 Notifications    👤 Admin  ▾    │
 └─────────────────────────────────────────────────────────────────────────────┘
      │                       │                    │                │
      Logo                  Search            Alerts          Profile Menu

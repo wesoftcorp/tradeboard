@@ -1,4 +1,4 @@
-# TradeBook
+﻿# TradeBook
 
 Get all executed trades for the current trading day.
 
@@ -64,7 +64,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/tradebook \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 
 ## Response Fields
 

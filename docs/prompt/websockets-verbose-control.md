@@ -1,4 +1,4 @@
-# Websockets (Verbose Control)
+﻿# Websockets (Verbose Control)
 
 The `verbose` parameter manages SDK-level logging for WebSocket feed operations (LTP, Quote, Depth).\
 This helps developers toggle between silent mode, basic logs, or full debug-level market data streaming.
@@ -18,7 +18,7 @@ This helps developers toggle between silent mode, basic logs, or full debug-leve
 ### **Usage**
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 
 # Silent mode (default) - no SDK output
 client = api(api_key="...", host="...", ws_url="...", verbose=False)
@@ -36,9 +36,9 @@ client = api(api_key="...", host="...", ws_url="...", verbose=2)
 
 ```python
 """
-Test verbose control in Tradeboard WebSocket Feed
+Test verbose control in TradeBoard WebSocket Feed
 """
-from tradeboard import api
+from TradeBoard import api
 import time
 
 # Change this to test different levels: False, True, 1, 2
@@ -165,7 +165,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.wesoftcorp.com/trading-platform/python/websockets-verbose-control.md?ask=<question>
+GET https://docs.TradeBoard.in/trading-platform/python/websockets-verbose-control.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

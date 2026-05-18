@@ -1,4 +1,4 @@
-# Mapping Tradeboard API Request https://wesoftcorp.com/docs
+# Mapping TradeBoard API Request https://TradeBoard.in/docs
 # Mapping Nubra API Parameters https://api.nubra.io/docs
 
 from database.token_db import get_br_symbol
@@ -6,16 +6,16 @@ from database.token_db import get_br_symbol
 
 def transform_data(data, token):
     """
-    Transforms the Tradeboard API request structure to Nubra's expected structure.
-    
-    Tradeboard format:
+    Transforms the TradeBoard API request structure to Nubra's expected structure.
+
+    TradeBoard format:
     - action: BUY/SELL
     - product: CNC/MIS/NRML
     - pricetype: MARKET/LIMIT/SL/SL-M
     - price: float (in rupees)
     - trigger_price: float (in rupees, for stoploss orders)
     - quantity: int
-    
+
     Nubra format:
     - order_side: ORDER_SIDE_BUY/ORDER_SIDE_SELL
     - order_delivery_type: ORDER_DELIVERY_TYPE_CNC/ORDER_DELIVERY_TYPE_IDAY
@@ -28,12 +28,12 @@ def transform_data(data, token):
     # Convert price from rupees to paise (multiply by 100)
     price = float(data.get("price", 0))
     price_in_paise = int(round(price * 100)) if price else 0
-    
+
     trigger_price = float(data.get("trigger_price", 0))
     trigger_price_in_paise = int(round(trigger_price * 100)) if trigger_price else 0
-    
+
     pricetype = data.get("pricetype", "MARKET")
-    
+
     # Determine validity type based on price type
     # MARKET and SL-M orders require IOC (Immediate or Cancel)
     # LIMIT and SL orders use DAY validity
@@ -41,7 +41,7 @@ def transform_data(data, token):
         validity_type = "IOC"
     else:
         validity_type = "DAY"
-    
+
     # Build the transformed data structure for Nubra API
     transformed = {
         "ref_id": int(token),  # Instrument reference ID from token
@@ -52,42 +52,40 @@ def transform_data(data, token):
         "order_qty": int(data["quantity"]),
         "validity_type": validity_type,
         "order_price": price_in_paise,
-        "tag": data.get("strategy", "tradeboard"),
+        "tag": data.get("strategy", "TradeBoard"),
     }
-    
+
     # Add algo_params for stoploss orders
     if pricetype in ["SL", "SL-M"]:
-        transformed["algo_params"] = {
-            "trigger_price": trigger_price_in_paise
-        }
+        transformed["algo_params"] = {"trigger_price": trigger_price_in_paise}
         # For SL-M orders, Nubra requires order_price >= trigger_price
         # Set order_price = trigger_price to pass validation;
         # actual execution happens at market price since price_type is MARKET
         if pricetype == "SL-M" and not price_in_paise:
             transformed["order_price"] = trigger_price_in_paise
-    
+
     return transformed
 
 
 def transform_modify_order_data(data, token):
     """
-    Transforms modify order data from Tradeboard format to Nubra's format.
-    
+    Transforms modify order data from TradeBoard format to Nubra's format.
+
     Nubra Modify Order API: POST /orders/v2/modify/{order_id}
-    
+
     Compulsory fields: order_price, order_qty, exchange, order_type
     For ORDER_TYPE_STOPLOSS: also requires trigger_price in algo_params
-    
+
     Note: order_id goes in the URL, not in the payload
     """
     price = float(data.get("price", 0))
     price_in_paise = int(round(price * 100)) if price else 0
-    
+
     trigger_price = float(data.get("trigger_price", 0))
     trigger_price_in_paise = int(round(trigger_price * 100)) if trigger_price else 0
-    
+
     pricetype = data.get("pricetype", "MARKET")
-    
+
     # Build payload per Nubra API requirements
     # order_id is passed in URL, not in payload
     transformed = {
@@ -96,19 +94,17 @@ def transform_modify_order_data(data, token):
         "exchange": data["exchange"],  # Compulsory field
         "order_type": map_order_type(pricetype),
     }
-    
+
     # Add algo_params for stoploss orders (trigger_price is compulsory for stoploss)
     if pricetype in ["SL", "SL-M"]:
-        transformed["algo_params"] = {
-            "trigger_price": trigger_price_in_paise
-        }
-    
+        transformed["algo_params"] = {"trigger_price": trigger_price_in_paise}
+
     return transformed
 
 
 def map_order_side(action):
     """
-    Maps Tradeboard action (BUY/SELL) to Nubra order_side.
+    Maps TradeBoard action (BUY/SELL) to Nubra order_side.
     """
     side_mapping = {
         "BUY": "ORDER_SIDE_BUY",
@@ -119,7 +115,7 @@ def map_order_side(action):
 
 def map_order_delivery_type(product):
     """
-    Maps Tradeboard product type to Nubra order_delivery_type.
+    Maps TradeBoard product type to Nubra order_delivery_type.
     CNC -> ORDER_DELIVERY_TYPE_CNC (Cash & Carry / Delivery)
     MIS -> ORDER_DELIVERY_TYPE_IDAY (Intraday)
     NRML -> ORDER_DELIVERY_TYPE_CNC (Normal for F&O, treated as carry forward)
@@ -134,7 +130,7 @@ def map_order_delivery_type(product):
 
 def map_order_type(pricetype):
     """
-    Maps Tradeboard pricetype to Nubra order_type.
+    Maps TradeBoard pricetype to Nubra order_type.
     Regular orders for MARKET/LIMIT, Stoploss for SL/SL-M
     """
     order_type_mapping = {
@@ -148,21 +144,21 @@ def map_order_type(pricetype):
 
 def map_price_type(pricetype):
     """
-    Maps Tradeboard pricetype to Nubra price_type.
+    Maps TradeBoard pricetype to Nubra price_type.
     Only MARKET or LIMIT in Nubra.
     """
     price_type_mapping = {
         "MARKET": "MARKET",
         "LIMIT": "LIMIT",
-        "SL": "LIMIT",      # Stoploss Limit
-        "SL-M": "LIMIT",    # Nubra doesn't support stoploss+market; use LIMIT with price=trigger
+        "SL": "LIMIT",  # Stoploss Limit
+        "SL-M": "LIMIT",  # Nubra doesn't support stoploss+market; use LIMIT with price=trigger
     }
     return price_type_mapping.get(pricetype.upper(), "MARKET")
 
 
 def map_product_type(product):
     """
-    Maps Tradeboard product type to Nubra's internal product type for position lookup.
+    Maps TradeBoard product type to Nubra's internal product type for position lookup.
     Used for get_open_position to match positions.
     """
     product_type_mapping = {
@@ -175,7 +171,7 @@ def map_product_type(product):
 
 def reverse_map_product_type(product):
     """
-    Maps Nubra's order_delivery_type back to Tradeboard product type.
+    Maps Nubra's order_delivery_type back to TradeBoard product type.
     """
     reverse_product_type_mapping = {
         "ORDER_DELIVERY_TYPE_CNC": "CNC",

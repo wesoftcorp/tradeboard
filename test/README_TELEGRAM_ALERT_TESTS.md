@@ -1,12 +1,12 @@
-# Telegram Alert API Tests
+﻿# Telegram Alert API Tests
 
 This folder contains test scripts for the Telegram Alert API.
 
 ## ⚠️ Important Note
 
-**Username Clarification**: The `username` parameter in the API refers to your **Tradeboard login username** (the username you use to login to the Tradeboard application), NOT your Telegram username (@handle).
+**Username Clarification**: The `username` parameter in the API refers to your **TradeBoard login username** (the username you use to login to the TradeBoard application), NOT your Telegram username (@handle).
 
-- ✅ **Correct**: Use `"rajandran"` (your Tradeboard login username)
+- ✅ **Correct**: Use `"rajandran"` (your TradeBoard login username)
 - ❌ **Wrong**: Use `"@rajandranr"` (your Telegram username)
 
 ## Test Files
@@ -15,12 +15,12 @@ This folder contains test scripts for the Telegram Alert API.
 
 ## Prerequisites
 
-1. **Tradeboard must be running**
-   - Start Tradeboard application
+1. **TradeBoard must be running**
+   - Start TradeBoard application
    - Ensure it's accessible at `http://127.0.0.1:5000`
 
 2. **Telegram Bot Must Be Running**
-   - Go to Tradeboard Telegram settings (`/telegram`)
+   - Go to TradeBoard Telegram settings (`/telegram`)
    - Configure your bot token (get from @BotFather on Telegram)
    - Click "Start Bot"
    - Verify bot status shows "Running"
@@ -29,13 +29,13 @@ This folder contains test scripts for the Telegram Alert API.
    - Open your Telegram bot chat
    - Send `/link your_api_key http://127.0.0.1:5000`
    - Verify linking successful with `/status` command
-   - Username must match your Tradeboard account username
+   - Username must match your TradeBoard account username
 
 4. **API Key and Username**
-   - Get your API key from Tradeboard settings
+   - Get your API key from TradeBoard settings
    - Replace `"your_api_key_here"` in the test files with your actual API key
-   - Replace `"your_username_here"` with your **Tradeboard login username** (the username you use to login to Tradeboard app)
-   - **IMPORTANT**: Use Tradeboard username, NOT your Telegram username (@handle)
+   - Replace `"your_username_here"` with your **TradeBoard login username** (the username you use to login to TradeBoard app)
+   - **IMPORTANT**: Use TradeBoard username, NOT your Telegram username (@handle)
 
 ## How to Run Tests
 
@@ -43,7 +43,7 @@ This folder contains test scripts for the Telegram Alert API.
 
 ```bash
 # Navigate to test directory
-cd D:/tradeboard-sandbox-test/tradeboard/test
+cd D:/TradeBoard-sandbox-test/TradeBoard/test
 
 # Run Telegram Alert API tests
 python test_telegram_alert_api.py
@@ -53,7 +53,7 @@ python test_telegram_alert_api.py
 
 ```bash
 # Navigate to project root
-cd D:/tradeboard-sandbox-test/tradeboard
+cd D:/TradeBoard-sandbox-test/TradeBoard
 
 # Run Telegram Alert API tests
 python test/test_telegram_alert_api.py
@@ -63,7 +63,7 @@ python test/test_telegram_alert_api.py
 
 ```bash
 # From project root
-cd D:/tradeboard-sandbox-test/tradeboard
+cd D:/TradeBoard-sandbox-test/TradeBoard
 
 # Run tests with uv
 uv run python test/test_telegram_alert_api.py
@@ -77,10 +77,10 @@ Edit the test file to configure:
 # Configuration section at the top of the file
 BASE_URL = "http://127.0.0.1:5000"  # Change if using different host/port
 API_KEY = "your_api_key_here"        # Replace with your actual API key
-USERNAME = "your_username_here"      # Replace with your Tradeboard login username (NOT @telegram_handle)
+USERNAME = "your_username_here"      # Replace with your TradeBoard login username (NOT @telegram_handle)
 ```
 
-**IMPORTANT**: `USERNAME` should be your Tradeboard login username (e.g., "rajandran"), NOT your Telegram username (e.g., "@rajandranr").
+**IMPORTANT**: `USERNAME` should be your TradeBoard login username (e.g., "rajandran"), NOT your Telegram username (e.g., "@rajandranr").
 
 ## Test Coverage
 
@@ -142,7 +142,7 @@ ConnectionError: Failed to send notification
 ```
 
 **Solution**:
-1. Go to Tradeboard Telegram settings (`/telegram`)
+1. Go to TradeBoard Telegram settings (`/telegram`)
 2. Click "Start Bot"
 3. Wait for status to show "Running"
 4. Retry the test
@@ -160,8 +160,8 @@ ConnectionError: Failed to send notification
 1. Open your Telegram bot chat
 2. Send `/link your_api_key http://127.0.0.1:5000`
 3. Verify with `/status` command
-4. **Ensure you're using Tradeboard login username, NOT Telegram username**
-   - ✅ Correct: `"rajandran"` (Tradeboard login)
+4. **Ensure you're using TradeBoard login username, NOT Telegram username**
+   - ✅ Correct: `"rajandran"` (TradeBoard login)
    - ❌ Wrong: `"@rajandranr"` (Telegram handle)
 5. Ensure username in test matches exactly (case-sensitive)
 
@@ -175,7 +175,7 @@ ConnectionError: Failed to send notification
 ```
 
 **Solution**:
-1. Go to Tradeboard settings
+1. Go to TradeBoard settings
 2. Copy your API key
 3. Replace in test file: `API_KEY = "your_actual_api_key"`
 
@@ -189,9 +189,9 @@ ConnectionError: Failed to send notification
 5. Network issues - check internet connectivity
 
 **Solution**:
-1. Check bot status in Tradeboard dashboard
+1. Check bot status in TradeBoard dashboard
 2. Verify username with `/status` in Telegram bot
-3. Check Tradeboard logs for errors
+3. Check TradeBoard logs for errors
 4. Test with `/menu` command in Telegram to verify bot responds
 
 ### Module Import Errors
@@ -328,8 +328,8 @@ P&L: ₹{stats['net_pnl']:,.2f}
 ## Support
 
 For issues or questions:
-- Check bot status in Tradeboard Telegram dashboard
+- Check bot status in TradeBoard Telegram dashboard
 - Verify user linking with `/status` in Telegram
-- Review Tradeboard logs for detailed error messages
+- Review TradeBoard logs for detailed error messages
 - Test bot responsiveness with `/menu` command
 - Ensure API key is valid and active

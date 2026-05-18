@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, LogOut, Menu, Moon, Sun, Zap } from 'lucide-react'
+﻿import { BarChart3, BookOpen, LogOut, Menu, Moon, Sun, Zap } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { showToast } from '@/utils/toast'
@@ -99,8 +99,8 @@ export function Navbar() {
                 className="flex items-center gap-2 px-2"
                 onClick={() => setMobileOpen(false)}
               >
-                <img src="/logo.png" alt="Tradeboard" className="h-8 w-8" />
-                <span className="font-semibold">Tradeboard</span>
+                <img src="/logo.png" alt="TradeBoard" className="h-8 w-8" />
+                <span className="font-semibold">TradeBoard</span>
               </Link>
 
               {/* Secondary nav items (not in bottom nav) */}
@@ -148,7 +148,7 @@ export function Navbar() {
                   </Link>
                 ))}
                 <a
-                  href="https://docs.wesoftcorp.com"
+                  href="https://docs.TradeBoard.in"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition-colors min-h-[44px] touch-manipulation hover:bg-muted active:bg-muted"
@@ -164,8 +164,8 @@ export function Navbar() {
 
         {/* Logo */}
         <Link to="/dashboard" className="flex items-center gap-2 mr-6">
-          <img src="/logo.png" alt="Tradeboard" className="h-8 w-8" />
-          <span className="hidden font-semibold sm:inline-block">Tradeboard</span>
+          <img src="/logo.png" alt="TradeBoard" className="h-8 w-8" />
+          <span className="hidden font-semibold sm:inline-block">TradeBoard</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -268,7 +268,7 @@ export function Navbar() {
               ))}
               <DropdownMenuItem asChild>
                 <a
-                  href="https://docs.wesoftcorp.com"
+                  href="https://docs.TradeBoard.in"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"

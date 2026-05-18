@@ -1,8 +1,8 @@
-# 39 - Strategy Module
+﻿# 39 - Strategy Module
 
 ## Overview
 
-The Strategy Module provides a webhook-based system for receiving trading signals from external platforms (TradingView, Amibroker, ChartInk) and executing orders through Tradeboard. It features time-based controls, symbol mappings, automatic square-off, and rate-limited order queuing.
+The Strategy Module provides a webhook-based system for receiving trading signals from external platforms (TradingView, Amibroker, ChartInk) and executing orders through TradeBoard. It features time-based controls, symbol mappings, automatic square-off, and rate-limited order queuing.
 
 ## Architecture Diagram
 
@@ -90,7 +90,7 @@ class StrategySymbolMapping(Base):
     id = Column(Integer, primary_key=True)
     strategy_id = Column(Integer, ForeignKey('strategies.id'))
     signal_symbol = Column(String(50))    # Symbol from webhook signal
-    symbol = Column(String(50))           # Tradeboard symbol to trade
+    symbol = Column(String(50))           # TradeBoard symbol to trade
     exchange = Column(String(10))         # NSE, NFO, etc.
     product_type = Column(String(10))     # MIS, CNC, NRML
     quantity = Column(Integer)            # Override quantity
@@ -147,7 +147,7 @@ def validate_strategy_times(start_time, end_time, squareoff_time):
 
 ## Symbol Mapping
 
-Allows mapping external symbols to Tradeboard format:
+Allows mapping external symbols to TradeBoard format:
 
 ```
 External Signal: "SBIN"

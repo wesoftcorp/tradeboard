@@ -16,9 +16,11 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from tradeboard import api
+    from TradeBoard import api
 except ImportError:
-    print("Error: Could not import tradeboard. Make sure you're running from the correct directory.")
+    print(
+        "Error: Could not import TradeBoard. Make sure you're running from the correct directory."
+    )
     sys.exit(1)
 
 

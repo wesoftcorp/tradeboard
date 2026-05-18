@@ -2,14 +2,14 @@ import datetime
 import json
 import os
 import re
-import uuid
-from datetime import datetime
 import threading
 import time
+import uuid
+from datetime import datetime
 
 from broker.groww.database.master_contract_db import (
-    format_groww_to_tradeboard_symbol,
-    format_tradeboard_to_groww_symbol,
+    format_groww_to_TradeBoard_symbol,
+    format_TradeBoard_to_groww_symbol,
 )
 from broker.groww.mapping.transform_data import (
     EXCHANGE_BSE,
@@ -151,7 +151,7 @@ def direct_get_order_book(auth):
 
         logger.info(f"Successfully fetched total of {len(all_orders)} orders using direct API")
 
-        # Convert all symbols from Groww format to Tradeboard format
+        # Convert all symbols from Groww format to TradeBoard format
         for order in all_orders:
             if "trading_symbol" in order:
                 groww_symbol = order["trading_symbol"]
@@ -162,7 +162,7 @@ def direct_get_order_book(auth):
                 order["brsymbol"] = groww_symbol
                 order["brexchange"] = groww_exchange
 
-                # First, determine the correct Tradeboard exchange
+                # First, determine the correct TradeBoard exchange
                 # For options and futures (F&O), the exchange should be NFO even if Groww returns NSE
                 is_derivative = False
                 is_future = False
@@ -171,7 +171,7 @@ def direct_get_order_book(auth):
                 if any(suffix in groww_symbol for suffix in ["CE", "PE", "C", "P"]):
                     exchange = "NFO"
                     is_derivative = True
-                    order["exchange"] = "NFO"  # Set Tradeboard exchange format
+                    order["exchange"] = "NFO"  # Set TradeBoard exchange format
                     logger.info(
                         f"Remapped exchange from {groww_exchange} to NFO for option symbol: {groww_symbol}"
                     )
@@ -180,7 +180,7 @@ def direct_get_order_book(auth):
                     exchange = "NFO"
                     is_derivative = True
                     is_future = True
-                    order["exchange"] = "NFO"  # Set Tradeboard exchange format
+                    order["exchange"] = "NFO"  # Set TradeBoard exchange format
                     logger.info(
                         f"Remapped exchange from {groww_exchange} to NFO for futures symbol: {groww_symbol}"
                     )
@@ -189,7 +189,7 @@ def direct_get_order_book(auth):
                     order["exchange"] = exchange
 
                 # Now handle the symbol conversion based on the correct exchange
-                # For NFO derivatives (options or futures), convert from Groww format to Tradeboard format
+                # For NFO derivatives (options or futures), convert from Groww format to TradeBoard format
                 if is_derivative:
                     # Try multiple approaches to convert the symbol
 
@@ -202,12 +202,12 @@ def direct_get_order_book(auth):
                         from database.token_db import get_oa_symbol
 
                         if token:
-                            tradeboard_symbol = get_oa_symbol(token, "NFO")
-                            logger.info(f"Tradeboard Symbol: {tradeboard_symbol}")
-                            if tradeboard_symbol:
-                                order["symbol"] = tradeboard_symbol
+                            TradeBoard_symbol = get_oa_symbol(token, "NFO")
+                            logger.info(f"TradeBoard Symbol: {TradeBoard_symbol}")
+                            if TradeBoard_symbol:
+                                order["symbol"] = TradeBoard_symbol
                                 logger.info(
-                                    f"Converted NFO symbol by token: {groww_symbol} -> {tradeboard_symbol}"
+                                    f"Converted NFO symbol by token: {groww_symbol} -> {TradeBoard_symbol}"
                                 )
                                 symbol_converted = True
                     except Exception as e:
@@ -280,13 +280,13 @@ def direct_get_order_book(auth):
                                         else f"M{month_num}"
                                     )
 
-                                    # Format as Tradeboard expects: NIFTY15MAY2526650CE
-                                    tradeboard_symbol = (
+                                    # Format as TradeBoard expects: NIFTY15MAY2526650CE
+                                    TradeBoard_symbol = (
                                         f"{symbol_name}{day}{month_name}{year}{strike}{option_type}"
                                     )
-                                    order["symbol"] = tradeboard_symbol
+                                    order["symbol"] = TradeBoard_symbol
                                     logger.info(
-                                        f"Converted Groww option symbol by pattern: {groww_symbol} -> {tradeboard_symbol}"
+                                        f"Converted Groww option symbol by pattern: {groww_symbol} -> {TradeBoard_symbol}"
                                     )
                                     symbol_converted = True
 
@@ -323,11 +323,11 @@ def direct_get_order_book(auth):
                                         else f"M{month_num}"
                                     )
 
-                                    # Format as Tradeboard expects: NIFTY29MAY25FUT
-                                    tradeboard_symbol = f"{symbol_name}{day}{month_name}{year}FUT"
-                                    order["symbol"] = tradeboard_symbol
+                                    # Format as TradeBoard expects: NIFTY29MAY25FUT
+                                    TradeBoard_symbol = f"{symbol_name}{day}{month_name}{year}FUT"
+                                    order["symbol"] = TradeBoard_symbol
                                     logger.info(
-                                        f"Converted Groww futures symbol by pattern: {groww_symbol} -> {tradeboard_symbol}"
+                                        f"Converted Groww futures symbol by pattern: {groww_symbol} -> {TradeBoard_symbol}"
                                     )
                                     symbol_converted = True
                         except Exception as e:
@@ -742,9 +742,9 @@ def get_trade_book(auth):
         if all_trades:
             logger.info(f"Sample trade data: {json.dumps(all_trades[0], indent=2, default=str)}")
 
-        # Format trades to match Tradeboard's expected format (as used in the REST API)
+        # Format trades to match TradeBoard's expected format (as used in the REST API)
         # This matches the format expected by the order_data.py mapping functions
-        tradeboard_trades = []
+        TradeBoard_trades = []
         for trade in all_trades:
             # Convert price from paise to rupees if needed (Groww returns prices in paise)
             price = trade.get("price", 0)
@@ -752,8 +752,8 @@ def get_trade_book(auth):
                 price = price / 100
 
             # Transform to the exact format expected by map_trade_data and transform_tradebook_data
-            tradeboard_trade = {
-                # Fields expected by Tradeboard's UI
+            TradeBoard_trade = {
+                # Fields expected by TradeBoard's UI
                 "tradingSymbol": trade.get("symbol", ""),  # Capitalized for exact matching
                 "exchangeSegment": trade.get("exchange", ""),
                 "productType": trade.get("product", ""),
@@ -776,12 +776,12 @@ def get_trade_book(auth):
                 "created_at": trade.get("created_at", ""),
                 "status": trade.get("trade_status", "EXECUTED"),
             }
-            tradeboard_trades.append(tradeboard_trade)
+            TradeBoard_trades.append(TradeBoard_trade)
 
         # Log the first transformed trade for debugging
-        if tradeboard_trades:
+        if TradeBoard_trades:
             logger.info(
-                f"Sample Tradeboard trade format: {json.dumps(tradeboard_trades[0], indent=2, default=str)}"
+                f"Sample TradeBoard trade format: {json.dumps(TradeBoard_trades[0], indent=2, default=str)}"
             )
 
         # Create the response with the structure expected by map_trade_data
@@ -789,8 +789,8 @@ def get_trade_book(auth):
         response = {
             "status": "success",
             "message": f"Retrieved {len(all_trades)} trades",
-            "data": tradeboard_trades,  # This is what map_trade_data will look for first
-            "tradebook": tradeboard_trades,  # For compatibility with different naming conventions
+            "data": TradeBoard_trades,  # This is what map_trade_data will look for first
+            "tradebook": TradeBoard_trades,  # For compatibility with different naming conventions
             "raw_data": all_trades,  # Keep the original data for reference
         }
 
@@ -879,7 +879,7 @@ def get_positions(auth):
                     raw_positions = response_data["payload"]["positions"]
                     logger.info(f"Found {len(raw_positions)} positions in CASH segment")
 
-                    # Transform positions to match Tradeboard's expected format
+                    # Transform positions to match TradeBoard's expected format
                     for position in raw_positions:
                         # Calculate net quantities
                         buy_qty = position.get("credit_quantity", 0) + position.get(
@@ -897,7 +897,7 @@ def get_positions(auth):
 
                         # Get the trading symbol
                         groww_symbol = position.get("trading_symbol", "")
-                        tradeboard_symbol = groww_symbol
+                        TradeBoard_symbol = groww_symbol
                         symbol_converted = False
 
                         # Handle symbol conversion for consistency with orderbook
@@ -907,14 +907,14 @@ def get_positions(auth):
                             try:
                                 from database.token_db import get_oa_symbol
                             except ImportError:
-                                from tradeboard.database.token_db import get_oa_symbol
+                                from TradeBoard.database.token_db import get_oa_symbol
 
                             # First try database lookup for any symbol
                             db_symbol = get_oa_symbol(groww_symbol, "NFO")
                             if db_symbol:
-                                tradeboard_symbol = db_symbol
+                                TradeBoard_symbol = db_symbol
                                 logger.info(
-                                    f"Database: Converted Groww symbol: {groww_symbol} -> {tradeboard_symbol}"
+                                    f"Database: Converted Groww symbol: {groww_symbol} -> {TradeBoard_symbol}"
                                 )
                                 symbol_converted = True
                             else:
@@ -952,12 +952,12 @@ def get_positions(auth):
                                         else f"M{month_num}"
                                     )
 
-                                    # Format as Tradeboard expects: NIFTY15MAY2526650CE
-                                    tradeboard_symbol = (
+                                    # Format as TradeBoard expects: NIFTY15MAY2526650CE
+                                    TradeBoard_symbol = (
                                         f"{symbol_name}{day}{month_name}{year}{strike}{option_type}"
                                     )
                                     logger.info(
-                                        f"Pattern: Converted Groww option symbol: {groww_symbol} -> {tradeboard_symbol}"
+                                        f"Pattern: Converted Groww option symbol: {groww_symbol} -> {TradeBoard_symbol}"
                                     )
                                     symbol_converted = True
                                 else:
@@ -992,10 +992,12 @@ def get_positions(auth):
                                             else f"M{month_num}"
                                         )
 
-                                        # Format as Tradeboard expects: NIFTY29MAY25FUT
-                                        tradeboard_symbol = f"{symbol_name}{day}{month_name}{year}FUT"
+                                        # Format as TradeBoard expects: NIFTY29MAY25FUT
+                                        TradeBoard_symbol = (
+                                            f"{symbol_name}{day}{month_name}{year}FUT"
+                                        )
                                         logger.info(
-                                            f"Pattern: Converted Groww futures symbol: {groww_symbol} -> {tradeboard_symbol}"
+                                            f"Pattern: Converted Groww futures symbol: {groww_symbol} -> {TradeBoard_symbol}"
                                         )
                                         symbol_converted = True
 
@@ -1003,18 +1005,18 @@ def get_positions(auth):
                             logger.error(f"Error converting position symbol: {e}")
                             # Fall back to original symbol if conversion fails
 
-                        # Map exchange to Tradeboard format
+                        # Map exchange to TradeBoard format
                         exchange = position.get("exchange", "")
                         if exchange == "NSE":
-                            tradeboard_exchange = "NSE_EQ"
+                            TradeBoard_exchange = "NSE_EQ"
                         elif exchange == "BSE":
-                            tradeboard_exchange = "BSE_EQ"
+                            TradeBoard_exchange = "BSE_EQ"
                         elif exchange == "NFO":
-                            tradeboard_exchange = "NSE_FO"
+                            TradeBoard_exchange = "NSE_FO"
                         else:
-                            tradeboard_exchange = exchange
+                            TradeBoard_exchange = exchange
 
-                        # Create position object in Tradeboard format
+                        # Create position object in TradeBoard format
                         # For CASH segment, use the original trading_symbol as the symbol
                         if position.get("segment") == "CASH":
                             position_symbol = position.get(
@@ -1022,29 +1024,29 @@ def get_positions(auth):
                             )  # Use trading_symbol for cash segment
                         else:
                             position_symbol = (
-                                tradeboard_symbol  # Use converted symbol for other segments
+                                TradeBoard_symbol  # Use converted symbol for other segments
                             )
 
                         transformed_position = {
-                            # Standard Tradeboard fields
+                            # Standard TradeBoard fields
                             "symbol": position_symbol,
                             "tradingsymbol": position_symbol,
-                            "exchange": tradeboard_exchange,
+                            "exchange": TradeBoard_exchange,
                             "product": position.get("product", ""),
                             "quantity": net_qty,
                             "net_quantity": net_qty,
                             "average_price": avg_price,
                             "buy_quantity": buy_qty,
                             "sell_quantity": sell_qty,
-                            "segment": "EQ",  # Tradeboard format for CASH segment
-                            # Specific Groww fields (renamed to match Tradeboard expectations)
+                            "segment": "EQ",  # TradeBoard format for CASH segment
+                            # Specific Groww fields (renamed to match TradeBoard expectations)
                             "buy_price": position.get("credit_price", 0)
                             / 100,  # Convert paise to rupees
                             "sell_price": position.get("debit_price", 0) / 100
                             if position.get("debit_price", 0) > 0
                             else 0,
                             "symbol_isin": position.get("symbol_isin", ""),
-                            # Fields expected by Tradeboard's UI
+                            # Fields expected by TradeBoard's UI
                             "pnl": 0,  # Not provided in response, calculate if needed
                             "last_price": 0,  # Not provided in response
                             "close_price": 0,  # Not provided in response
@@ -1093,7 +1095,7 @@ def get_positions(auth):
 
                             # Get the trading symbol
                             groww_symbol = position.get("trading_symbol", "")
-                            tradeboard_symbol = groww_symbol
+                            TradeBoard_symbol = groww_symbol
                             symbol_converted = False
 
                             # Handle FNO symbol conversion
@@ -1106,21 +1108,21 @@ def get_positions(auth):
                                     try:
                                         from database.token_db import get_oa_symbol
                                     except ImportError:
-                                        from tradeboard.database.token_db import get_oa_symbol
+                                        from TradeBoard.database.token_db import get_oa_symbol
 
                                     # First try database lookup for this FNO symbol
                                     db_symbol = get_oa_symbol(groww_symbol, "NFO")
                                     if db_symbol:
-                                        tradeboard_symbol = db_symbol
+                                        TradeBoard_symbol = db_symbol
                                         logger.info(
-                                            f"Database: Converted Groww FNO symbol: {groww_symbol} -> {tradeboard_symbol}"
+                                            f"Database: Converted Groww FNO symbol: {groww_symbol} -> {TradeBoard_symbol}"
                                         )
                                         symbol_converted = True
                                     else:
                                         # Fallback to pattern matching if database lookup fails
-                                        # For Options: Convert from Groww format to Tradeboard format
+                                        # For Options: Convert from Groww format to TradeBoard format
                                         # Groww format: "NIFTY25051334000CE" or "BANKNIFTY25051332500PE"
-                                        # Tradeboard format: "NIFTY13MAY2534000CE" or "BANKNIFTY13MAY2532500PE"
+                                        # TradeBoard format: "NIFTY13MAY2534000CE" or "BANKNIFTY13MAY2532500PE"
                                         groww_pattern = re.compile(
                                             r"([A-Z]+)(\d{2})(\d{2})(\d{2})(\d+)([CP]E)"
                                         )
@@ -1153,10 +1155,10 @@ def get_positions(auth):
                                             else f"M{month_num}"
                                         )
 
-                                        # Format as Tradeboard expects: NIFTY15MAY2526650CE
-                                        tradeboard_symbol = f"{symbol_name}{day}{month_name}{year}{strike}{option_type}"
+                                        # Format as TradeBoard expects: NIFTY15MAY2526650CE
+                                        TradeBoard_symbol = f"{symbol_name}{day}{month_name}{year}{strike}{option_type}"
                                         logger.info(
-                                            f"Pattern: Converted Groww option position symbol: {groww_symbol} -> {tradeboard_symbol}"
+                                            f"Pattern: Converted Groww option position symbol: {groww_symbol} -> {TradeBoard_symbol}"
                                         )
                                         symbol_converted = True
 
@@ -1192,41 +1194,41 @@ def get_positions(auth):
                                                 else f"M{month_num}"
                                             )
 
-                                            # Format as Tradeboard expects: NIFTY29MAY25FUT
-                                            tradeboard_symbol = (
+                                            # Format as TradeBoard expects: NIFTY29MAY25FUT
+                                            TradeBoard_symbol = (
                                                 f"{symbol_name}{day}{month_name}{year}FUT"
                                             )
                                             logger.info(
-                                                f"Pattern: Converted Groww futures position symbol: {groww_symbol} -> {tradeboard_symbol}"
+                                                f"Pattern: Converted Groww futures position symbol: {groww_symbol} -> {TradeBoard_symbol}"
                                             )
                                             symbol_converted = True
                                 except Exception as e:
                                     logger.error(f"Error converting position symbol: {e}")
                                     # Fall back to original symbol if conversion fails
 
-                            # Map exchange to Tradeboard format
+                            # Map exchange to TradeBoard format
                             exchange = position.get("exchange", "")
                             if exchange == "NSE":
-                                tradeboard_exchange = "NSE"
+                                TradeBoard_exchange = "NSE"
                             elif exchange == "BSE":
-                                tradeboard_exchange = "BSE"
+                                TradeBoard_exchange = "BSE"
                             elif exchange == "NFO":
-                                tradeboard_exchange = "NSE_FO"
+                                TradeBoard_exchange = "NSE_FO"
                             else:
-                                tradeboard_exchange = exchange
+                                TradeBoard_exchange = exchange
 
                             # Create position object with segment set to FNO
                             transformed_position = {
-                                "symbol": tradeboard_symbol,
-                                "tradingsymbol": tradeboard_symbol,
-                                "exchange": tradeboard_exchange,
+                                "symbol": TradeBoard_symbol,
+                                "tradingsymbol": TradeBoard_symbol,
+                                "exchange": TradeBoard_exchange,
                                 "product": position.get("product", ""),
                                 "quantity": net_qty,
                                 "net_quantity": net_qty,
                                 "average_price": avg_price,
                                 "buy_quantity": buy_qty,
                                 "sell_quantity": sell_qty,
-                                "segment": "FO",  # Tradeboard format for FNO segment
+                                "segment": "FO",  # TradeBoard format for FNO segment
                                 "buy_price": position.get("credit_price", 0) / 100,
                                 "sell_price": position.get("debit_price", 0) / 100
                                 if position.get("debit_price", 0) > 0
@@ -1342,7 +1344,7 @@ def get_holdings(auth):
                             "day_change_percentage": holding.get("day_change_percentage", 0),
                             "value": holding.get("value", 0),
                             "company_name": holding.get("company_name", ""),
-                            # Using the key names Tradeboard expects
+                            # Using the key names TradeBoard expects
                             "tradingsymbol": holding.get("trading_symbol", ""),
                             "instrument_token": holding.get("token", ""),
                             "t1_quantity": holding.get("t1_quantity", 0),
@@ -1404,14 +1406,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -1459,7 +1461,7 @@ def get_open_position(tradingsymbol, exchange, product, auth):
     Returns:
         str: Net quantity
     """
-    # Convert Trading Symbol from Tradeboard Format to Broker Format Before Search
+    # Convert Trading Symbol from TradeBoard Format to Broker Format Before Search
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
     positions_data = _get_cached_positions(auth)
     net_qty = "0"
@@ -1480,7 +1482,7 @@ def get_open_position(tradingsymbol, exchange, product, auth):
         else:
             positions_list = []
 
-        # Accept both Tradeboard-standard exchange codes and the segment-suffixed
+        # Accept both TradeBoard-standard exchange codes and the segment-suffixed
         # variants stored by get_positions() (NSE_EQ/BSE_EQ for CASH, NSE_FO/BSE_FO for FNO).
         exchange_variants = {
             "NSE": {"NSE", "NSE_EQ"},
@@ -1488,7 +1490,9 @@ def get_open_position(tradingsymbol, exchange, product, auth):
             "NFO": {"NFO", "NSE_FO", "NSE"},
             "BFO": {"BFO", "BSE_FO", "BSE"},
         }
-        expected_exchanges = exchange_variants.get(exchange, {map_exchange_type(exchange), exchange})
+        expected_exchanges = exchange_variants.get(
+            exchange, {map_exchange_type(exchange), exchange}
+        )
 
         for position in positions_list:
             # Check for matching position - compare with both tradingsymbol and symbol fields
@@ -1517,7 +1521,7 @@ def direct_place_order_api(data, auth):
     Place an order with Groww using direct API (no SDK)
 
     Args:
-        data (dict): Order data in Tradeboard format
+        data (dict): Order data in TradeBoard format
         auth (str): Authentication token
 
     Returns:
@@ -1552,7 +1556,7 @@ def direct_place_order_api(data, auth):
             logger.info(f"Using brsymbol from database: {original_symbol} -> {trading_symbol}")
         else:
             # If not found in database, try format conversion as fallback
-            trading_symbol = format_tradeboard_to_groww_symbol(original_symbol, original_exchange)
+            trading_symbol = format_TradeBoard_to_groww_symbol(original_symbol, original_exchange)
             logger.info(
                 f"Symbol not found in database, using conversion: {original_symbol} -> {trading_symbol}"
             )
@@ -1719,7 +1723,7 @@ def direct_place_order_api(data, auth):
                     ),
                     "remark": payload_data.get("remark", "Order placed successfully"),
                     "trading_symbol": trading_symbol,
-                    "symbol": original_symbol,  # Add original Tradeboard symbol to response
+                    "symbol": original_symbol,  # Add original TradeBoard symbol to response
                 }
 
                 res = ResponseObject(200)
@@ -1802,7 +1806,7 @@ def place_order_api(data, auth):
     Place an order with Groww using direct API only (no SDK fallback)
 
     Args:
-        data (dict): Order data in Tradeboard format
+        data (dict): Order data in TradeBoard format
         auth (str): Authentication token
 
     Returns:
@@ -1892,7 +1896,7 @@ def place_smartorder_api(data, auth):
     Place a smart order with position management using direct API implementation
 
     Args:
-        data (dict): Order data in Tradeboard format
+        data (dict): Order data in TradeBoard format
         auth (str): Authentication token
 
     Returns:
@@ -1943,10 +1947,12 @@ def place_smartorder_api(data, auth):
             try:
                 from database.token_db import get_br_symbol
             except ImportError:
-                from tradeboard.database.token_db import get_br_symbol
+                from TradeBoard.database.token_db import get_br_symbol
 
             # Get current open position for the symbol
-            position_str = get_open_position(symbol, exchange, map_product_type(product), AUTH_TOKEN)
+            position_str = get_open_position(
+                symbol, exchange, map_product_type(product), AUTH_TOKEN
+            )
             logger.info(
                 f"Raw position from get_open_position: '{position_str}' (type: {type(position_str)})"
             )
@@ -2143,7 +2149,7 @@ def get_holdings(auth):
             logger.error(error_msg)
             return None, {"status": "error", "message": error_msg}
 
-        # Transform holdings to Tradeboard format
+        # Transform holdings to TradeBoard format
         holdings = response_data.get("payload", {}).get("holdings", [])
         formatted_holdings = []
 
@@ -2185,7 +2191,7 @@ def close_all_positions(token=None, auth=None):
     try:
         from database.token_db import get_br_symbol
     except ImportError:
-        from tradeboard.database.token_db import get_br_symbol
+        from TradeBoard.database.token_db import get_br_symbol
     """
     Close all open positions for the authenticated user
     """
@@ -2351,16 +2357,16 @@ def cancel_order(orderid, auth, segment=None, symbol=None, exchange=None):
         orderid (str): Order ID to cancel
         auth (str): Authentication token
         segment (str, optional): Order segment (e.g., SEGMENT_CASH). If None, will be detected from order book.
-        symbol (str, optional): Trading symbol in Tradeboard format
+        symbol (str, optional): Trading symbol in TradeBoard format
         exchange (str, optional): Exchange code
 
     Returns:
         tuple: (response data, status code)
     """
     try:
-        # If symbol is provided, convert it from Tradeboard to Groww format
+        # If symbol is provided, convert it from TradeBoard to Groww format
         if symbol and exchange:
-            groww_symbol = format_tradeboard_to_groww_symbol(symbol, exchange)
+            groww_symbol = format_TradeBoard_to_groww_symbol(symbol, exchange)
             logger.info(f"Symbol conversion for cancel order: {symbol} -> {groww_symbol}")
 
         # If segment is not provided, try to determine it from order book
@@ -2557,11 +2563,11 @@ def cancel_order(orderid, auth, segment=None, symbol=None, exchange=None):
                 else:
                     logger.warning(f"Unexpected payload format: {payload}")
 
-            # If symbol is provided, include it in Tradeboard format in the response
+            # If symbol is provided, include it in TradeBoard format in the response
             if symbol:
-                # Add the original Tradeboard format symbol to the response
+                # Add the original TradeBoard format symbol to the response
                 response["symbol"] = symbol
-                logger.info(f"Including Tradeboard symbol in cancel response: {symbol}")
+                logger.info(f"Including TradeBoard symbol in cancel response: {symbol}")
 
             # Log the success
             logger.info(f"Successfully processed cancel request for order {orderid}")
@@ -2611,9 +2617,7 @@ def cancel_order(orderid, auth, segment=None, symbol=None, exchange=None):
             }
 
             # Log the response we're returning for debugging
-            logger.info(
-                f"Returning error response: {json.dumps(response, indent=2)}"
-            )
+            logger.info(f"Returning error response: {json.dumps(response, indent=2)}")
 
         # Return the error response with 200 status code for consistency
         return response, 200
@@ -2812,10 +2816,10 @@ def direct_modify_order(data, auth):
                 response = {"status": "error", "orderid": groww_order_id, "message": error_message}
                 return ResponseObject(400), response
 
-            # If symbol was provided in the original request, include it in Tradeboard format
+            # If symbol was provided in the original request, include it in TradeBoard format
             if "symbol" in data and data["symbol"]:
                 response["symbol"] = data["symbol"]
-                logger.info(f"Including Tradeboard symbol in modify response: {data['symbol']}")
+                logger.info(f"Including TradeBoard symbol in modify response: {data['symbol']}")
 
             # Log the success
             logger.info(f"Successfully submitted modification for order {groww_order_id}")
@@ -3071,28 +3075,28 @@ def cancel_all_orders_api(data, auth):
                             "message": cancel_response.get("message", "Successfully cancelled"),
                         }
 
-                        # Get and include symbol in the Tradeboard format
+                        # Get and include symbol in the TradeBoard format
                         if "symbol" in order:
                             broker_symbol = order.get("symbol", "")
 
-                            # For NFO symbols that have spaces, convert to Tradeboard format
+                            # For NFO symbols that have spaces, convert to TradeBoard format
                             exchange = order.get("exchange", "NSE")
                             if exchange == "NFO" and " " in broker_symbol:
                                 try:
                                     from broker.groww.database.master_contract_db import (
-                                        format_groww_to_tradeboard_symbol,
+                                        format_groww_to_TradeBoard_symbol,
                                     )
 
-                                    tradeboard_symbol = format_groww_to_tradeboard_symbol(
+                                    TradeBoard_symbol = format_groww_to_TradeBoard_symbol(
                                         broker_symbol, exchange
                                     )
-                                    if tradeboard_symbol:
-                                        cancelled_item["symbol"] = tradeboard_symbol
+                                    if TradeBoard_symbol:
+                                        cancelled_item["symbol"] = TradeBoard_symbol
                                         cancelled_item["brsymbol"] = (
                                             broker_symbol  # Keep original broker symbol for reference
                                         )
                                         logger.info(
-                                            f"Transformed cancelled order symbol for UI: {broker_symbol} -> {tradeboard_symbol}"
+                                            f"Transformed cancelled order symbol for UI: {broker_symbol} -> {TradeBoard_symbol}"
                                         )
                                 except Exception as e:
                                     logger.error(

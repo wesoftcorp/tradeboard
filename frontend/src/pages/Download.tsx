@@ -1,4 +1,4 @@
-import { Apple, Download as DownloadIcon, Monitor } from 'lucide-react'
+﻿import { Apple, Download as DownloadIcon, Monitor } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -31,13 +31,13 @@ const downloads: Record<string, DownloadItem[]> = {
     {
       platform: 'Mac Universal',
       version: 'v0.1.0',
-      url: 'https://github.com/marketcalls/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_universal.dmg',
+      url: 'https://github.com/wesoftcorp/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_universal.dmg',
       label: 'Download DMG',
     },
     {
       platform: 'Mac Universal (Portable)',
       version: 'v0.1.0',
-      url: 'https://github.com/marketcalls/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_universal_mac.zip',
+      url: 'https://github.com/wesoftcorp/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_universal_mac.zip',
       label: 'Download ZIP',
     },
   ],
@@ -45,19 +45,19 @@ const downloads: Record<string, DownloadItem[]> = {
     {
       platform: 'Ubuntu / Debian',
       version: 'v0.1.0',
-      url: 'https://github.com/marketcalls/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_amd64.deb',
+      url: 'https://github.com/wesoftcorp/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_amd64.deb',
       label: 'Download DEB',
     },
     {
       platform: 'Fedora / Red Hat',
       version: 'v0.1.0',
-      url: 'https://github.com/marketcalls/fastscalper-tauri/releases/download/v0.1.0/fastscalper-0.1.0-1.x86_64.rpm',
+      url: 'https://github.com/wesoftcorp/fastscalper-tauri/releases/download/v0.1.0/fastscalper-0.1.0-1.x86_64.rpm',
       label: 'Download RPM',
     },
     {
       platform: 'AppImage',
       version: 'v0.1.0',
-      url: 'https://github.com/marketcalls/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_amd64.AppImage',
+      url: 'https://github.com/wesoftcorp/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_amd64.AppImage',
       label: 'Download AppImage',
     },
   ],
@@ -65,13 +65,13 @@ const downloads: Record<string, DownloadItem[]> = {
     {
       platform: 'Windows (MSI)',
       version: 'v0.1.0',
-      url: 'https://github.com/marketcalls/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_x64_en-US.msi',
+      url: 'https://github.com/wesoftcorp/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_x64_en-US.msi',
       label: 'Download MSI',
     },
     {
       platform: 'Windows (EXE)',
       version: 'v0.1.0',
-      url: 'https://github.com/marketcalls/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_x64-setup.exe',
+      url: 'https://github.com/wesoftcorp/fastscalper-tauri/releases/download/v0.1.0/fastscalper_0.1.0_x64-setup.exe',
       label: 'Download EXE',
     },
   ],

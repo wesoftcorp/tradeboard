@@ -1,8 +1,8 @@
-# 36 - Rate Limiting Guide
+﻿# 36 - Rate Limiting Guide
 
 ## Overview
 
-Tradeboard uses Flask-Limiter with a moving-window strategy to protect endpoints from abuse. Different rate limits apply to different endpoint categories based on their sensitivity and resource usage.
+TradeBoard uses Flask-Limiter with a moving-window strategy to protect endpoints from abuse. Different rate limits apply to different endpoint categories based on their sensitivity and resource usage.
 
 ## Architecture Diagram
 

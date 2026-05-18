@@ -1,6 +1,6 @@
-# Changelog
+﻿# Changelog
 
-All notable changes to Tradeboard will be documented in this file.
+All notable changes to TradeBoard will be documented in this file.
 
 ## [2.0.0.0] - 2026-01-22
 
@@ -224,7 +224,7 @@ This is a major release featuring a complete rewrite of the frontend from Flask/
 - Position filtering for session boundaries
 - Show closed positions that were traded today
 - Expired F&O contract cleanup on startup
-- Order field names aligned with Tradeboard schema
+- Order field names aligned with TradeBoard schema
 
 ### Broker Integrations
 - AliceBlue holdings symbol field fix
@@ -255,7 +255,7 @@ This is a major release featuring a complete rewrite of the frontend from Flask/
 ## Documentation
 
 ### User Guide (30 Modules)
-- What is Tradeboard, Key Concepts, System Requirements
+- What is TradeBoard, Key Concepts, System Requirements
 - Installation Guide, First-Time Setup
 - Broker Connection, Dashboard Overview
 - Understanding Interface, API Key Management
@@ -283,7 +283,7 @@ This is a major release featuring a complete rewrite of the frontend from Flask/
 
 ### API Documentation
 - All REST endpoints documented
-- Tradeboard symbol format reference
+- TradeBoard symbol format reference
 - Manual testing guide
 - Bruno collections for all APIs
 
@@ -296,7 +296,7 @@ This is a major release featuring a complete rewrite of the frontend from Flask/
 - Latency Audit
 
 ### Other Documentation
-- Why Build with Tradeboard guide
+- Why Build with TradeBoard guide
 - Ubuntu Server deployment
 - Docker deployment guide
 - Security Policy
@@ -307,7 +307,7 @@ This is a major release featuring a complete rewrite of the frontend from Flask/
 ## Infrastructure
 
 ### Database Architecture (5 Databases)
-- `db/tradeboard.db` - Main database (users, orders, settings)
+- `db/TradeBoard.db` - Main database (users, orders, settings)
 - `db/logs.db` - Traffic and API logs
 - `db/latency.db` - Latency monitoring data
 - `db/sandbox.db` - Analyzer/sandbox mode (isolated)
@@ -416,6 +416,6 @@ See [GitHub Releases](https://github.com/wesoftcorp/tradeboard/releases) for pre
 ## Links
 
 - **Repository**: https://github.com/wesoftcorp/tradeboard
-- **Documentation**: https://docs.wesoftcorp.com
-- **Discord**: https://www.wesoftcorp.com/discord
-- **YouTube**: https://www.youtube.com/@tradeboard
+- **Documentation**: https://docs.TradeBoard.in
+- **Discord**: https://www.TradeBoard.in/discord
+- **YouTube**: https://www.youtube.com/@TradeBoard

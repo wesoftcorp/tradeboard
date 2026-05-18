@@ -1,8 +1,8 @@
-# 27 - Service Layer
+﻿# 27 - Service Layer
 
 ## Overview
 
-The services layer contains the core business logic of Tradeboard, acting as an intermediary between API endpoints and broker/database operations.
+The services layer contains the core business logic of TradeBoard, acting as an intermediary between API endpoints and broker/database operations.
 
 ## Architecture Diagram
 

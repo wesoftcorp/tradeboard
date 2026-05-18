@@ -1,5 +1,5 @@
 """
-Fyers WebSocket Adapter for Tradeboard
+Fyers WebSocket Adapter for TradeBoard
 Handles WebSocket streaming for all exchanges: NSE, NFO, BSE, BFO, MCX
 Uses HSM binary protocol for real-time data
 """
@@ -20,8 +20,8 @@ from .fyers_token_converter import FyersTokenConverter
 
 class FyersAdapter:
     """
-    Fyers WebSocket adapter for Tradeboard streaming service
-    Follows Tradeboard adapter pattern similar to Angel, Zerodha etc.
+    Fyers WebSocket adapter for TradeBoard streaming service
+    Follows TradeBoard adapter pattern similar to Angel, Zerodha etc.
     """
 
     def __init__(self, access_token: str, userid: str):
@@ -201,12 +201,12 @@ class FyersAdapter:
                     return False
 
                 self.logger.debug(
-                    f"Converting {len(valid_symbols)} Tradeboard symbols to HSM format using database lookup..."
+                    f"Converting {len(valid_symbols)} TradeBoard symbols to HSM format using database lookup..."
                 )
 
-                # Convert Tradeboard symbols directly to HSM tokens using database lookup
+                # Convert TradeBoard symbols directly to HSM tokens using database lookup
                 hsm_tokens, token_mappings, invalid_symbols = (
-                    self.token_converter.convert_tradeboard_symbols_to_hsm(valid_symbols, data_type)
+                    self.token_converter.convert_TradeBoard_symbols_to_hsm(valid_symbols, data_type)
                 )
 
                 if invalid_symbols:
@@ -216,7 +216,7 @@ class FyersAdapter:
                     self.logger.error("No valid HSM tokens generated")
                     return False
 
-                # Build the HSM<->Tradeboard mapping by JOINING through brsymbol.
+                # Build the HSM<->TradeBoard mapping by JOINING through brsymbol.
                 #
                 # The previous implementation paired hsm_tokens[i] with
                 # valid_symbols[i] positionally, on the assumption that Fyers'
@@ -229,15 +229,15 @@ class FyersAdapter:
                 #
                 # `token_mappings` is correctly keyed per-token (hsm_token ->
                 # brsymbol). Building a brsymbol -> (exchange, symbol) reverse
-                # map from valid_symbols lets us recover the correct Tradeboard
+                # map from valid_symbols lets us recover the correct TradeBoard
                 # identity for each HSM token regardless of API ordering.
                 self.logger.debug(f"Creating HSM mappings for {len(hsm_tokens)} tokens...")
 
-                brsymbol_to_tradeboard: dict[str, tuple[str, str]] = {}
+                brsymbol_to_TradeBoard: dict[str, tuple[str, str]] = {}
                 for s in valid_symbols:
                     br = get_br_symbol(s["symbol"], s["exchange"])
                     if br:
-                        brsymbol_to_tradeboard[br] = (s["exchange"], s["symbol"])
+                        brsymbol_to_TradeBoard[br] = (s["exchange"], s["symbol"])
 
                 mapped_count = 0
                 for hsm_token in hsm_tokens:
@@ -247,20 +247,16 @@ class FyersAdapter:
                             f"No brsymbol in token_mappings for HSM token {hsm_token}"
                         )
                         continue
-                    pair = brsymbol_to_tradeboard.get(brsym)
+                    pair = brsymbol_to_TradeBoard.get(brsym)
                     if not pair:
-                        self.logger.warning(
-                            f"brsymbol {brsym} did not match any input symbol"
-                        )
+                        self.logger.warning(f"brsymbol {brsym} did not match any input symbol")
                         continue
                     exch, sym = pair
                     full_symbol = f"{exch}:{sym}"
                     self.symbol_to_hsm[full_symbol] = hsm_token
                     self.hsm_to_symbol[hsm_token] = full_symbol
                     mapped_count += 1
-                    self.logger.debug(
-                        f"Mapped {full_symbol} <-> {hsm_token} (brsymbol: {brsym})"
-                    )
+                    self.logger.debug(f"Mapped {full_symbol} <-> {hsm_token} (brsymbol: {brsym})")
 
                 # Sanity check: every input symbol should have ended up mapped.
                 unmapped_subs = [
@@ -344,7 +340,7 @@ class FyersAdapter:
             fyers_type = fyers_data.get("type", "sf")
             update_type = fyers_data.get("update_type", "snapshot")
 
-            # Map to Tradeboard format first to get symbol info
+            # Map to TradeBoard format first to get symbol info
             mapped_data = self.data_mapper.map_fyers_data(fyers_data, "Quote")
             if not mapped_data:
                 return
@@ -356,7 +352,7 @@ class FyersAdapter:
 
             # Find matching subscription using HSM token or original symbol
             callback = None
-            tradeboard_data_type = "Quote"  # Default
+            TradeBoard_data_type = "Quote"  # Default
             matched_subscription = None
 
             # Try to match using HSM token first (most reliable)
@@ -527,11 +523,11 @@ class FyersAdapter:
                     return
             self.last_data[symbol_key] = {"ltp": current_ltp, "timestamp": now}
 
-            for cb, tradeboard_data_type in dispatches:
+            for cb, TradeBoard_data_type in dispatches:
                 # Re-map per side. The Quote map already happened above; only
                 # rebuild for Depth to keep the cost of equity/futures (the
                 # common case, single dispatch) unchanged.
-                if tradeboard_data_type == "Depth":
+                if TradeBoard_data_type == "Depth":
                     side_data = self.data_mapper.map_fyers_data(fyers_data, "Depth")
                     if not side_data:
                         continue
@@ -543,7 +539,7 @@ class FyersAdapter:
                 side_data["update_type"] = update_type
                 side_data["timestamp"] = now
 
-                if tradeboard_data_type == "Depth":
+                if TradeBoard_data_type == "Depth":
                     depth = side_data.get("depth", {})
                     buy_levels = depth.get("buy", [])
                     sell_levels = depth.get("sell", [])

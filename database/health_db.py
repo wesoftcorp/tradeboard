@@ -16,7 +16,7 @@ Follows industry standards (draft-inadarei-api-health-check):
 
 import logging
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 
 from sqlalchemy import JSON, Boolean, Column, DateTime, Float, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -41,9 +41,7 @@ else:
         HEALTH_DATABASE_URL, pool_size=50, max_overflow=100, pool_timeout=10
     )
 
-health_session = scoped_session(
-    sessionmaker(autocommit=False, autoflush=False, bind=health_engine)
-)
+health_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=health_engine))
 HealthBase = declarative_base()
 HealthBase.query = health_session.query_property()
 
@@ -73,7 +71,7 @@ class HealthMetric(HealthBase):
 
     # Database Connections
     db_connections_total = Column(Integer)
-    db_connections = Column(JSON)  # {"tradeboard": 2, "logs": 1, ...}
+    db_connections = Column(JSON)  # {"TradeBoard": 2, "logs": 1, ...}
     db_status = Column(String(20))  # pass | warn | fail
 
     # WebSocket Connections
@@ -184,9 +182,7 @@ class HealthMetric(HealthBase):
     def get_recent_metrics(limit=100):
         """Get recent metrics ordered by timestamp"""
         try:
-            return (
-                HealthMetric.query.order_by(HealthMetric.timestamp.desc()).limit(limit).all()
-            )
+            return HealthMetric.query.order_by(HealthMetric.timestamp.desc()).limit(limit).all()
         except Exception as e:
             logger.exception(f"Error getting recent metrics: {str(e)}")
             return []
@@ -195,7 +191,7 @@ class HealthMetric(HealthBase):
     def get_metrics_history(hours=24):
         """Get metrics for the specified number of hours"""
         try:
-            cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+            cutoff = datetime.now(UTC) - timedelta(hours=hours)
             return (
                 HealthMetric.query.filter(HealthMetric.timestamp >= cutoff)
                 .order_by(HealthMetric.timestamp.asc())
@@ -209,7 +205,7 @@ class HealthMetric(HealthBase):
     def get_stats(hours=24):
         """Get aggregated statistics for the specified time period"""
         try:
-            cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+            cutoff = datetime.now(UTC) - timedelta(hours=hours)
 
             # Get metrics for the time period
             metrics = (
@@ -344,7 +340,7 @@ class HealthAlert(HealthBase):
 
             if existing:
                 # Update existing alert timestamp
-                existing.timestamp = datetime.now(timezone.utc)
+                existing.timestamp = datetime.now(UTC)
                 existing.metric_value = metric_value
                 health_session.commit()
                 return existing
@@ -387,7 +383,7 @@ class HealthAlert(HealthBase):
             alert = HealthAlert.query.get(alert_id)
             if alert:
                 alert.acknowledged = True
-                alert.acknowledged_at = datetime.now(timezone.utc)
+                alert.acknowledged_at = datetime.now(UTC)
                 health_session.commit()
                 return True
             return False
@@ -403,7 +399,7 @@ class HealthAlert(HealthBase):
             alert = HealthAlert.query.get(alert_id)
             if alert:
                 alert.resolved = True
-                alert.resolved_at = datetime.now(timezone.utc)
+                alert.resolved_at = datetime.now(UTC)
                 health_session.commit()
                 logger.info(f"Alert resolved: {alert.message}")
                 return True
@@ -424,7 +420,7 @@ class HealthAlert(HealthBase):
                 # Resolve if current value is below healthy threshold
                 if current_value < healthy_threshold:
                     alert.resolved = True
-                    alert.resolved_at = datetime.now(timezone.utc)
+                    alert.resolved_at = datetime.now(UTC)
                     logger.info(
                         f"Auto-resolved alert: {alert.message} "
                         f"(current: {current_value}, threshold: {healthy_threshold})"
@@ -455,7 +451,7 @@ def purge_old_metrics(days=7):
     Keep alerts forever for historical analysis.
     """
     try:
-        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+        cutoff = datetime.now(UTC) - timedelta(days=days)
 
         # Delete old metrics
         deleted = (

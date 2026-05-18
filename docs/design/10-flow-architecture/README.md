@@ -1,8 +1,8 @@
-# 10 - Flow Architecture
+﻿# 10 - Flow Architecture
 
 ## Overview
 
-Flow is Tradeboard's visual workflow automation system built with XYFlow (React Flow). It enables users to create trading strategies as visual node graphs without coding, supporting scheduled execution, webhook triggers, and price alerts.
+Flow is TradeBoard's visual workflow automation system built with XYFlow (React Flow). It enables users to create trading strategies as visual node graphs without coding, supporting scheduled execution, webhook triggers, and price alerts.
 
 ## Architecture Diagram
 
@@ -37,7 +37,7 @@ Flow is Tradeboard's visual workflow automation system built with XYFlow (React 
 │                                                                              │
 │  WorkflowContext ─── Variables, Conditions, Interpolation                   │
 │  NodeExecutor ────── 60+ Node Type Handlers                                 │
-│  FlowTradeboardClient ─ Tradeboard API Wrapper                                  │
+│  FlowTradeBoardClient ─ TradeBoard API Wrapper                                  │
 └─────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -370,7 +370,7 @@ Polling-based monitor for price alert triggers.
 | `services/flow_executor_service.py` | Execution engine (WorkflowContext, NodeExecutor) |
 | `services/flow_scheduler_service.py` | APScheduler integration |
 | `services/flow_price_monitor_service.py` | Price alert monitoring |
-| `services/flow_tradeboard_client.py` | Tradeboard API client wrapper |
+| `services/flow_TradeBoard_client.py` | TradeBoard API client wrapper |
 | `frontend/src/pages/FlowIndex.tsx` | Workflow list UI |
 | `frontend/src/pages/FlowEditor.tsx` | Visual editor (XYFlow) |
 | `frontend/src/components/flow/nodes/` | Custom node components |

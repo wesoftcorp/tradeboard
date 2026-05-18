@@ -1,8 +1,8 @@
-# 08 - Historify
+﻿# 08 - Historify
 
 ## Overview
 
-Historify is Tradeboard's historical market data manager built on DuckDB. It downloads OHLCV data from brokers and stores it locally for backtesting and analysis.
+Historify is TradeBoard's historical market data manager built on DuckDB. It downloads OHLCV data from brokers and stores it locally for backtesting and analysis.
 
 ## Architecture
 

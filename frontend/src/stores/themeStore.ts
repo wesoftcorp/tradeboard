@@ -1,4 +1,4 @@
-import { create } from 'zustand'
+﻿import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 export type ThemeMode = 'light' | 'dark'
@@ -170,7 +170,7 @@ export const useThemeStore = create<ThemeStore>()(
       },
     }),
     {
-      name: 'tradeboard-theme',
+      name: 'TradeBoard-theme',
       partialize: (state) => ({
         mode: state.mode,
         color: state.color,

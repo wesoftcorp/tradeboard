@@ -1,6 +1,6 @@
-@echo off
+﻿@echo off
 REM ============================================================================
-REM Tradeboard Docker Runner for Windows
+REM TradeBoard Docker Runner for Windows
 REM ============================================================================
 REM
 REM Quick Start (2 commands):
@@ -8,7 +8,7 @@ REM   1. Download: curl.exe -O https://raw.githubusercontent.com/wesoftcorp/trad
 REM   2. Run:      docker-run.bat
 REM
 REM Commands:
-REM   start    - Start Tradeboard container (default, runs setup if needed)
+REM   start    - Start TradeBoard container (default, runs setup if needed)
 REM   stop     - Stop and remove container
 REM   restart  - Restart container
 REM   logs     - View container logs (live)
@@ -27,13 +27,13 @@ setlocal enabledelayedexpansion
 
 REM Configuration
 set IMAGE=wesoftcorp/tradeboard:latest
-set CONTAINER=tradeboard
+set CONTAINER=TradeBoard
 set ENV_FILE=.env
 set SAMPLE_ENV_URL=https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/.sample.env
 REM Use the directory where the script is located
-set TRADEBOARD_DIR=%~dp0
+set TradeBoard_DIR=%~dp0
 REM Remove trailing backslash
-if "%TRADEBOARD_DIR:~-1%"=="\" set TRADEBOARD_DIR=%TRADEBOARD_DIR:~0,-1%
+if "%TradeBoard_DIR:~-1%"=="\" set TradeBoard_DIR=%TradeBoard_DIR:~0,-1%
 set SETUP_FAILED=0
 
 REM XTS Brokers that require market data credentials
@@ -45,7 +45,7 @@ set VALID_BROKERS=fivepaisa,fivepaisaxts,aliceblue,angel,compositedge,definedge,
 REM Banner
 echo.
 echo   ========================================
-echo        Tradeboard Docker Runner
+echo        TradeBoard Docker Runner
 echo        Windows Desktop Edition
 echo   ========================================
 echo.
@@ -81,13 +81,13 @@ if /i "%CMD%"=="help" goto help
 goto help
 
 :setup
-echo [INFO] Setting up Tradeboard in %TRADEBOARD_DIR%...
+echo [INFO] Setting up TradeBoard in %TradeBoard_DIR%...
 echo.
 
 REM Create db directory
-if not exist "%TRADEBOARD_DIR%\db\" (
+if not exist "%TradeBoard_DIR%\db\" (
     echo [INFO] Creating database directory...
-    md "%TRADEBOARD_DIR%\db" 2>nul
+    md "%TradeBoard_DIR%\db" 2>nul
     if errorlevel 1 (
         echo [ERROR] Failed to create database directory
         set SETUP_FAILED=1
@@ -96,8 +96,8 @@ if not exist "%TRADEBOARD_DIR%\db\" (
 )
 
 REM Check if .env already exists
-if exist "%TRADEBOARD_DIR%\%ENV_FILE%" (
-    echo [WARNING] .env file already exists at %TRADEBOARD_DIR%\%ENV_FILE%
+if exist "%TradeBoard_DIR%\%ENV_FILE%" (
+    echo [WARNING] .env file already exists at %TradeBoard_DIR%\%ENV_FILE%
     set /p OVERWRITE="Do you want to overwrite it? (y/n): "
     if /i not "!OVERWRITE!"=="y" (
         echo [INFO] Setup cancelled. Using existing .env file.
@@ -112,19 +112,19 @@ REM Try curl.exe first (Windows 10/11 has this)
 where curl.exe >nul 2>&1
 if errorlevel 1 (
     echo [INFO] curl.exe not found, trying PowerShell...
-    powershell -Command "Invoke-WebRequest -Uri '%SAMPLE_ENV_URL%' -OutFile '%TRADEBOARD_DIR%\%ENV_FILE%'" 2>nul
+    powershell -Command "Invoke-WebRequest -Uri '%SAMPLE_ENV_URL%' -OutFile '%TradeBoard_DIR%\%ENV_FILE%'" 2>nul
 ) else (
-    curl.exe -sL "%SAMPLE_ENV_URL%" -o "%TRADEBOARD_DIR%\%ENV_FILE%" 2>nul
+    curl.exe -sL "%SAMPLE_ENV_URL%" -o "%TradeBoard_DIR%\%ENV_FILE%" 2>nul
 )
 
 REM Check if download succeeded
-if not exist "%TRADEBOARD_DIR%\%ENV_FILE%" (
+if not exist "%TradeBoard_DIR%\%ENV_FILE%" (
     echo [ERROR] Failed to download configuration template!
     echo Please check your internet connection.
     echo.
     echo Manual setup:
     echo   1. Download .sample.env from https://github.com/wesoftcorp/tradeboard
-    echo   2. Save it as %TRADEBOARD_DIR%\.env
+    echo   2. Save it as %TradeBoard_DIR%\.env
     echo   3. Run this script again
     set SETUP_FAILED=1
     goto setup_end
@@ -145,8 +145,8 @@ if errorlevel 1 (
 
 REM Update .env file with generated keys
 echo [INFO] Updating configuration with secure keys...
-powershell -Command "(Get-Content '%TRADEBOARD_DIR%\%ENV_FILE%') -replace 'TRADEBOARD_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE', '%APP_KEY%' | Set-Content '%TRADEBOARD_DIR%\%ENV_FILE%'"
-powershell -Command "(Get-Content '%TRADEBOARD_DIR%\%ENV_FILE%') -replace 'TRADEBOARD_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE', '%API_KEY_PEPPER%' | Set-Content '%TRADEBOARD_DIR%\%ENV_FILE%'"
+powershell -Command "(Get-Content '%TradeBoard_DIR%\%ENV_FILE%') -replace 'TradeBoard_PLACEHOLDER_APP_KEY_REGENERATE_BEFORE_USE', '%APP_KEY%' | Set-Content '%TradeBoard_DIR%\%ENV_FILE%'"
+powershell -Command "(Get-Content '%TradeBoard_DIR%\%ENV_FILE%') -replace 'TradeBoard_PLACEHOLDER_API_KEY_PEPPER_REGENERATE_BEFORE_USE', '%API_KEY_PEPPER%' | Set-Content '%TradeBoard_DIR%\%ENV_FILE%'"
 echo [OK] Secure keys generated and saved.
 
 REM Get broker configuration
@@ -222,16 +222,16 @@ echo.
 echo [INFO] Updating broker configuration...
 
 REM Update broker credentials
-powershell -Command "(Get-Content '%TRADEBOARD_DIR%\%ENV_FILE%') -replace 'BROKER_API_KEY = ''YOUR_BROKER_API_KEY''', 'BROKER_API_KEY = ''%BROKER_API_KEY%''' | Set-Content '%TRADEBOARD_DIR%\%ENV_FILE%'"
-powershell -Command "(Get-Content '%TRADEBOARD_DIR%\%ENV_FILE%') -replace 'BROKER_API_SECRET = ''YOUR_BROKER_API_SECRET''', 'BROKER_API_SECRET = ''%BROKER_API_SECRET%''' | Set-Content '%TRADEBOARD_DIR%\%ENV_FILE%'"
+powershell -Command "(Get-Content '%TradeBoard_DIR%\%ENV_FILE%') -replace 'BROKER_API_KEY = ''YOUR_BROKER_API_KEY''', 'BROKER_API_KEY = ''%BROKER_API_KEY%''' | Set-Content '%TradeBoard_DIR%\%ENV_FILE%'"
+powershell -Command "(Get-Content '%TradeBoard_DIR%\%ENV_FILE%') -replace 'BROKER_API_SECRET = ''YOUR_BROKER_API_SECRET''', 'BROKER_API_SECRET = ''%BROKER_API_SECRET%''' | Set-Content '%TradeBoard_DIR%\%ENV_FILE%'"
 
 REM Update redirect URL with broker name (replace <broker> placeholder)
-powershell -Command "(Get-Content '%TRADEBOARD_DIR%\%ENV_FILE%') -replace '<broker>', '%BROKER_NAME%' | Set-Content '%TRADEBOARD_DIR%\%ENV_FILE%'"
+powershell -Command "(Get-Content '%TradeBoard_DIR%\%ENV_FILE%') -replace '<broker>', '%BROKER_NAME%' | Set-Content '%TradeBoard_DIR%\%ENV_FILE%'"
 
 REM Update XTS market data credentials if applicable
 if "%IS_XTS%"=="1" (
-    powershell -Command "(Get-Content '%TRADEBOARD_DIR%\%ENV_FILE%') -replace 'BROKER_API_KEY_MARKET = ''YOUR_BROKER_MARKET_API_KEY''', 'BROKER_API_KEY_MARKET = ''!BROKER_API_KEY_MARKET!''' | Set-Content '%TRADEBOARD_DIR%\%ENV_FILE%'"
-    powershell -Command "(Get-Content '%TRADEBOARD_DIR%\%ENV_FILE%') -replace 'BROKER_API_SECRET_MARKET = ''YOUR_BROKER_MARKET_API_SECRET''', 'BROKER_API_SECRET_MARKET = ''!BROKER_API_SECRET_MARKET!''' | Set-Content '%TRADEBOARD_DIR%\%ENV_FILE%'"
+    powershell -Command "(Get-Content '%TradeBoard_DIR%\%ENV_FILE%') -replace 'BROKER_API_KEY_MARKET = ''YOUR_BROKER_MARKET_API_KEY''', 'BROKER_API_KEY_MARKET = ''!BROKER_API_KEY_MARKET!''' | Set-Content '%TradeBoard_DIR%\%ENV_FILE%'"
+    powershell -Command "(Get-Content '%TradeBoard_DIR%\%ENV_FILE%') -replace 'BROKER_API_SECRET_MARKET = ''YOUR_BROKER_MARKET_API_SECRET''', 'BROKER_API_SECRET_MARKET = ''!BROKER_API_SECRET_MARKET!''' | Set-Content '%TradeBoard_DIR%\%ENV_FILE%'"
 )
 
 echo [OK] Broker configuration saved.
@@ -244,70 +244,70 @@ echo   Broker:         %BROKER_NAME%
 if "%IS_XTS%"=="1" (
     echo   Type:           XTS API [with market data]
 )
-echo   Data directory: %TRADEBOARD_DIR%
-echo   Config file:    %TRADEBOARD_DIR%\%ENV_FILE%
-echo   Database:       %TRADEBOARD_DIR%\db\
-echo   Strategies:     %TRADEBOARD_DIR%\strategies\
-echo   Logs:           %TRADEBOARD_DIR%\log\
+echo   Data directory: %TradeBoard_DIR%
+echo   Config file:    %TradeBoard_DIR%\%ENV_FILE%
+echo   Database:       %TradeBoard_DIR%\db\
+echo   Strategies:     %TradeBoard_DIR%\strategies\
+echo   Logs:           %TradeBoard_DIR%\log\
 echo.
 echo   Redirect URL for broker portal:
 echo   http://127.0.0.1:5000/%BROKER_NAME%/callback
 echo.
-echo   Documentation: https://docs.wesoftcorp.com
+echo   Documentation: https://docs.TradeBoard.in
 echo.
 set /p OPEN_ENV="Open .env in Notepad for review? (y/n): "
 if /i "%OPEN_ENV%"=="y" (
-    start notepad "%TRADEBOARD_DIR%\%ENV_FILE%"
+    start notepad "%TradeBoard_DIR%\%ENV_FILE%"
 )
 echo.
-echo [OK] Setup complete! Run 'docker-run.bat start' to launch Tradeboard.
+echo [OK] Setup complete! Run 'docker-run.bat start' to launch TradeBoard.
 
 :setup_end
 exit /b %SETUP_FAILED%
 
 :start
-echo [INFO] Starting Tradeboard...
+echo [INFO] Starting TradeBoard...
 echo.
 
 REM Check if setup is needed
-if not exist "%TRADEBOARD_DIR%\%ENV_FILE%" (
+if not exist "%TradeBoard_DIR%\%ENV_FILE%" (
     echo [INFO] First time setup detected. Running setup...
     echo.
     call :setup
     if errorlevel 1 (
         echo.
-        echo [ERROR] Setup failed. Cannot start Tradeboard.
+        echo [ERROR] Setup failed. Cannot start TradeBoard.
         echo Please fix the issues above and try again.
         goto end
     )
     echo.
-    echo [INFO] Starting Tradeboard after setup...
+    echo [INFO] Starting TradeBoard after setup...
     echo.
 )
 
 REM Create db, strategies, log, keys, and tmp directories if not exist
-if not exist "%TRADEBOARD_DIR%\db\" (
+if not exist "%TradeBoard_DIR%\db\" (
     echo [INFO] Creating database directory...
-    md "%TRADEBOARD_DIR%\db" 2>nul
+    md "%TradeBoard_DIR%\db" 2>nul
 )
-if not exist "%TRADEBOARD_DIR%\strategies\" (
+if not exist "%TradeBoard_DIR%\strategies\" (
     echo [INFO] Creating strategies directory...
-    md "%TRADEBOARD_DIR%\strategies" 2>nul
-    md "%TRADEBOARD_DIR%\strategies\scripts" 2>nul
-    md "%TRADEBOARD_DIR%\strategies\examples" 2>nul
+    md "%TradeBoard_DIR%\strategies" 2>nul
+    md "%TradeBoard_DIR%\strategies\scripts" 2>nul
+    md "%TradeBoard_DIR%\strategies\examples" 2>nul
 )
-if not exist "%TRADEBOARD_DIR%\log\" (
+if not exist "%TradeBoard_DIR%\log\" (
     echo [INFO] Creating log directory...
-    md "%TRADEBOARD_DIR%\log" 2>nul
-    md "%TRADEBOARD_DIR%\log\strategies" 2>nul
+    md "%TradeBoard_DIR%\log" 2>nul
+    md "%TradeBoard_DIR%\log\strategies" 2>nul
 )
-if not exist "%TRADEBOARD_DIR%\keys\" (
+if not exist "%TradeBoard_DIR%\keys\" (
     echo [INFO] Creating keys directory...
-    md "%TRADEBOARD_DIR%\keys" 2>nul
+    md "%TradeBoard_DIR%\keys" 2>nul
 )
-if not exist "%TRADEBOARD_DIR%\tmp\" (
+if not exist "%TradeBoard_DIR%\tmp\" (
     echo [INFO] Creating temp directory...
-    md "%TRADEBOARD_DIR%\tmp" 2>nul
+    md "%TradeBoard_DIR%\tmp" 2>nul
 )
 
 REM Pull latest image
@@ -376,12 +376,12 @@ docker run -d ^
     -e "NUMBA_NUM_THREADS=%THREAD_LIMIT%" ^
     -e "STRATEGY_MEMORY_LIMIT_MB=%STRATEGY_MEM_LIMIT%" ^
     -e "TZ=Asia/Kolkata" ^
-    -v "%TRADEBOARD_DIR%\db:/app/db" ^
-    -v "%TRADEBOARD_DIR%\strategies:/app/strategies" ^
-    -v "%TRADEBOARD_DIR%\log:/app/log" ^
-    -v "%TRADEBOARD_DIR%\keys:/app/keys" ^
-    -v "%TRADEBOARD_DIR%\tmp:/app/tmp" ^
-    -v "%TRADEBOARD_DIR%\.env:/app/.env" ^
+    -v "%TradeBoard_DIR%\db:/app/db" ^
+    -v "%TradeBoard_DIR%\strategies:/app/strategies" ^
+    -v "%TradeBoard_DIR%\log:/app/log" ^
+    -v "%TradeBoard_DIR%\keys:/app/keys" ^
+    -v "%TradeBoard_DIR%\tmp:/app/tmp" ^
+    -v "%TradeBoard_DIR%\.env:/app/.env" ^
     --restart unless-stopped ^
     %IMAGE%
 
@@ -392,40 +392,40 @@ if errorlevel 1 (
     echo Troubleshooting:
     echo   1. Check if ports 5000 and 8765 are available
     echo   2. Ensure Docker Desktop is running
-    echo   3. Check .env file: %TRADEBOARD_DIR%\%ENV_FILE%
+    echo   3. Check .env file: %TradeBoard_DIR%\%ENV_FILE%
     echo.
     goto end
 )
 
 echo.
-echo [SUCCESS] Tradeboard started successfully!
+echo [SUCCESS] TradeBoard started successfully!
 echo.
 echo   ========================================
 echo   Web UI:     http://127.0.0.1:5000
 echo   WebSocket:  ws://127.0.0.1:8765
 echo   ========================================
 echo.
-echo   Data directory: %TRADEBOARD_DIR%
+echo   Data directory: %TradeBoard_DIR%
 echo.
 echo   Useful commands:
 echo     docker-run.bat logs     - View logs
-echo     docker-run.bat stop     - Stop Tradeboard
-echo     docker-run.bat restart  - Restart Tradeboard
+echo     docker-run.bat stop     - Stop TradeBoard
+echo     docker-run.bat restart  - Restart TradeBoard
 echo.
 goto end
 
 :stop
-echo [INFO] Stopping Tradeboard...
+echo [INFO] Stopping TradeBoard...
 docker stop %CONTAINER% >nul 2>&1
 docker rm %CONTAINER% >nul 2>&1
-echo [OK] Tradeboard stopped.
+echo [OK] TradeBoard stopped.
 goto end
 
 :restart
-echo [INFO] Restarting Tradeboard...
+echo [INFO] Restarting TradeBoard...
 docker stop %CONTAINER% >nul 2>&1
 docker rm %CONTAINER% >nul 2>&1
-echo [OK] Tradeboard stopped.
+echo [OK] TradeBoard stopped.
 echo.
 goto start
 
@@ -454,14 +454,14 @@ echo.
 REM Check if container is running
 docker ps --filter "name=%CONTAINER%" --filter "status=running" | findstr %CONTAINER% >nul
 if errorlevel 1 (
-    echo [STATUS] Tradeboard is NOT running.
+    echo [STATUS] TradeBoard is NOT running.
 ) else (
-    echo [STATUS] Tradeboard is running.
+    echo [STATUS] TradeBoard is running.
     echo.
     echo   Web UI: http://127.0.0.1:5000
 )
 echo.
-echo   Data directory: %TRADEBOARD_DIR%
+echo   Data directory: %TradeBoard_DIR%
 goto end
 
 :shell
@@ -484,7 +484,7 @@ echo.
 echo Usage: docker-run.bat [command]
 echo.
 echo Commands:
-echo   start    Start Tradeboard (runs setup if needed, default)
+echo   start    Start TradeBoard (runs setup if needed, default)
 echo   stop     Stop and remove container
 echo   restart  Restart container
 echo   logs     View container logs (live)
@@ -501,11 +501,11 @@ echo   2. Download this script (use PowerShell):
 echo      curl.exe -O https://raw.githubusercontent.com/wesoftcorp/tradeboard/main/install/docker-run.bat
 echo   3. Run: docker-run.bat
 echo.
-echo Data Location: %TRADEBOARD_DIR%
-echo   - Config:     %TRADEBOARD_DIR%\.env
-echo   - Database:   %TRADEBOARD_DIR%\db\
-echo   - Strategies: %TRADEBOARD_DIR%\strategies\
-echo   - Logs:       %TRADEBOARD_DIR%\log\
+echo Data Location: %TradeBoard_DIR%
+echo   - Config:     %TradeBoard_DIR%\.env
+echo   - Database:   %TradeBoard_DIR%\db\
+echo   - Strategies: %TradeBoard_DIR%\strategies\
+echo   - Logs:       %TradeBoard_DIR%\log\
 echo.
 echo XTS Brokers (require market data credentials):
 echo   fivepaisaxts, compositedge, ibulls, iifl, jainamxts, rmoney, wisdom

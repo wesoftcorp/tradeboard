@@ -1,10 +1,10 @@
 """
-Tradeboard WebSocket Market Depth Example
+TradeBoard WebSocket Market Depth Example
 """
 
 import time
 
-from tradeboard import api
+from TradeBoard import api
 
 # Initialize feed client with explicit parameters
 client = api(

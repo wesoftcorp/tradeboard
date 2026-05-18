@@ -1,17 +1,17 @@
-# 16 - TradingView Integration
+﻿# 16 - TradingView Integration
 
 ## Introduction
 
-TradingView is a popular charting platform with powerful Pine Script strategy capabilities. Tradeboard connects TradingView alerts to your broker for automated order execution.
+TradingView is a popular charting platform with powerful Pine Script strategy capabilities. TradeBoard connects TradingView alerts to your broker for automated order execution.
 
 ## How It Works
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    TradingView → Tradeboard Flow                              │
+│                    TradingView → TradeBoard Flow                              │
 │                                                                              │
 │  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌──────────┐  │
-│  │ TradingView │     │   Webhook   │     │  Tradeboard   │     │  Broker  │  │
+│  │ TradingView │     │   Webhook   │     │  TradeBoard   │     │  Broker  │  │
 │  │   Alert     │────▶│   Request   │────▶│   Server    │────▶│   API    │  │
 │  │  Triggers   │     │             │     │             │     │          │  │
 │  └─────────────┘     └─────────────┘     └─────────────┘     └──────────┘  │
@@ -25,17 +25,17 @@ TradingView is a popular charting platform with powerful Pine Script strategy ca
 ## Prerequisites
 
 1. TradingView account (free or paid)
-2. Tradeboard running and accessible via internet
-3. API key generated in Tradeboard
+2. TradeBoard running and accessible via internet
+3. API key generated in TradeBoard
 4. Broker connected and logged in
 
-## Making Tradeboard Accessible for Webhooks
+## Making TradeBoard Accessible for Webhooks
 
-TradingView webhooks need to reach your Tradeboard server from the internet.
+TradingView webhooks need to reach your TradeBoard server from the internet.
 
 ### Recommended: Production Server with Domain
 
-Deploy Tradeboard on an Ubuntu server using `install.sh` (see [Installation Guide](../04-installation/README.md)):
+Deploy TradeBoard on an Ubuntu server using `install.sh` (see [Installation Guide](../04-installation/README.md)):
 
 ```
 Webhook URL: https://yourdomain.com/api/v1/placeorder
@@ -79,7 +79,7 @@ cloudflared tunnel --url http://localhost:5000
 # Copy the https URL provided
 ```
 
-**Important**: Tunnel services are **only for webhooks**, not for running the full application. Always run Tradeboard on your own server for production use.
+**Important**: Tunnel services are **only for webhooks**, not for running the full application. Always run TradeBoard on your own server for production use.
 
 | Aspect | Domain (Recommended) | Tunnel Services |
 |--------|---------------------|-----------------|
@@ -97,7 +97,7 @@ In TradingView Pine Script:
 
 ```pine
 //@version=5
-strategy("My Tradeboard Strategy", overlay=true)
+strategy("My TradeBoard Strategy", overlay=true)
 
 // Simple moving average crossover
 fastMA = ta.sma(close, 9)
@@ -126,12 +126,12 @@ if (shortCondition)
 ### Step 3: Configure Webhook URL
 
 ```
-https://your-tradeboard-url/api/v1/placesmartorder
+https://your-TradeBoard-url/api/v1/placesmartorder
 ```
 
 Or for regular orders:
 ```
-https://your-tradeboard-url/api/v1/placeorder
+https://your-TradeBoard-url/api/v1/placeorder
 ```
 
 ### Step 4: Configure Alert Message
@@ -243,7 +243,7 @@ Use this JSON template in the **Message** field:
 
 TradingView symbols map directly:
 
-| TradingView | Tradeboard |
+| TradingView | TradeBoard |
 |-------------|----------|
 | SBIN | SBIN |
 | RELIANCE | RELIANCE |
@@ -251,7 +251,7 @@ TradingView symbols map directly:
 
 ### Index Symbols
 
-| TradingView | Tradeboard Exchange |
+| TradingView | TradeBoard Exchange |
 |-------------|-------------------|
 | NIFTY | NSE (use INDEX product) |
 | BANKNIFTY | NSE (use INDEX product) |
@@ -275,7 +275,7 @@ Examples:
 
 Before live trading, test in Analyzer Mode:
 
-1. Go to **Analyzer** page in Tradeboard
+1. Go to **Analyzer** page in TradeBoard
 2. Enable **Analyzer Mode**
 3. This routes orders to sandbox
 
@@ -286,7 +286,7 @@ In TradingView:
 2. Set condition to trigger immediately (for testing)
 3. Or manually trigger: Right-click alert → **Trigger**
 
-### Step 3: Verify in Tradeboard
+### Step 3: Verify in TradeBoard
 
 Check:
 1. **Order Book** - Order should appear
@@ -377,7 +377,7 @@ Use smart order for automatic reversal:
 
 ### Checking Logs
 
-1. Go to **Traffic Logs** in Tradeboard
+1. Go to **Traffic Logs** in TradeBoard
 2. Filter by "webhook"
 3. Check request body and response
 
@@ -427,7 +427,7 @@ Create separate alerts for each symbol or use dynamic symbols:
 
 ### 5. Monitor Execution
 
-- Keep Tradeboard dashboard open
+- Keep TradeBoard dashboard open
 - Check order book regularly
 - Set up Telegram notifications
 

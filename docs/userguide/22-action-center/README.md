@@ -1,14 +1,14 @@
-# 22 - Action Center
+﻿# 22 - Action Center
 
 ## Introduction
 
-The Action Center is Tradeboard's order approval system for managed trading environments. It allows you to review, approve, modify, or reject orders before they're sent to your broker.
+The Action Center is TradeBoard's order approval system for managed trading environments. It allows you to review, approve, modify, or reject orders before they're sent to your broker.
 
 ## When to Use Action Center
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Trading Modes in Tradeboard                                │
+│                    Trading Modes in TradeBoard                                │
 │                                                                              │
 │  AUTO MODE                              SEMI-AUTO MODE (Action Center)      │
 │  ─────────                              ─────────────────────────────       │
@@ -40,7 +40,7 @@ The Action Center is Tradeboard's order approval system for managed trading envi
 
 ### Step 1: Access Settings
 
-1. Go to **Settings** in Tradeboard
+1. Go to **Settings** in TradeBoard
 2. Find **Order Mode** section
 
 ### Step 2: Select Semi-Auto Mode

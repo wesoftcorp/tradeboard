@@ -1,8 +1,8 @@
-# 15 - Basic UI Elements
+﻿# 15 - Basic UI Elements
 
 ## Overview
 
-Tradeboard provides core trading UI components including Dashboard, OrderBook, TradeBook, Positions, and Holdings, along with advanced analytics tools (GEX Dashboard, IV Smile, OI Profile, Volatility Surface, etc.). These components display real-time data with auto-refresh via the React frontend.
+TradeBoard provides core trading UI components including Dashboard, OrderBook, TradeBook, Positions, and Holdings, along with advanced analytics tools (GEX Dashboard, IV Smile, OI Profile, Volatility Surface, etc.). These components display real-time data with auto-refresh via the React frontend.
 
 ## Architecture Diagram
 
@@ -234,7 +234,7 @@ export function usePositions() {
 
 ## Analytics Tools
 
-Tradeboard includes a suite of options analytics tools accessible from the **Tools** hub page (`/tools`). These tools use Plotly.js for interactive charting and visualization.
+TradeBoard includes a suite of options analytics tools accessible from the **Tools** hub page (`/tools`). These tools use Plotly.js for interactive charting and visualization.
 
 ### Tools Hub (`/tools`)
 

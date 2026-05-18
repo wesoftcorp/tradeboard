@@ -1,6 +1,7 @@
 import importlib
 import os
-from datetime import UTC, datetime, timedelta, timezone, date
+from datetime import UTC, date, datetime, timedelta, timezone
+from types import ModuleType
 
 import pandas as pd
 import pytz
@@ -13,10 +14,6 @@ from limiter import limiter
 from utils.logging import get_logger
 
 from .data_schemas import TickerSchema
-
-from types import ModuleType
-
-
 
 API_RATE_LIMIT = os.getenv("API_RATE_LIMIT", "10 per second")
 api = Namespace("ticker", description="Stock Ticker Data API")
@@ -187,12 +184,12 @@ class Ticker(Resource):
             AUTH_TOKEN, broker = get_auth_token_broker(api_key)
             if AUTH_TOKEN is None:
                 if response_format == "txt":
-                    response = TextResponse("Invalid tradeboard apikey\n")
+                    response = TextResponse("Invalid TradeBoard apikey\n")
                     response.content_type = "text/plain"
                     response.json = {"request_id": f"ticker_{symbol}_{history_data['interval']}"}
                     return response, 403
                 return make_response(
-                    jsonify({"status": "error", "message": "Invalid tradeboard apikey"}), 403
+                    jsonify({"status": "error", "message": "Invalid TradeBoard apikey"}), 403
                 )
 
             broker_module = import_broker_module(broker)

@@ -1,27 +1,27 @@
-# Python
+﻿# Python
 
-To install the Tradeboard Python library, use pip:
+To install the TradeBoard Python library, use pip:
 
 ```bash
 # Trading API only  
-pip install tradeboard 
+pip install TradeBoard 
 
 # JIT-accelerated indicators                                                                 
-pip install tradeboard[indicators]  
+pip install TradeBoard[indicators]  
 ```
 
-### Get the Tradeboard apikey
+### Get the TradeBoard apikey
 
-Make Sure that your Tradeboard Application is running. Login to Tradeboard Application with valid credentials and get the Tradeboard apikey
+Make Sure that your TradeBoard Application is running. Login to TradeBoard Application with valid credentials and get the TradeBoard apikey
 
-For detailed function parameters refer to the [API Documentation](https://docs.wesoftcorp.com/api-documentation/v1)
+For detailed function parameters refer to the [API Documentation](https://docs.TradeBoard.in/api-documentation/v1)
 
-### Getting Started with Tradeboard
+### Getting Started with TradeBoard
 
-First, import the `api` class from the Tradeboard library and initialize it with your API key:
+First, import the `api` class from the TradeBoard library and initialize it with your API key:
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 
 # Replace 'your_api_key_here' with your actual API key
 # Specify the host URL with your hosted domain or ngrok domain. 
@@ -30,16 +30,16 @@ client = api(api_key='your_api_key_here', host='http://127.0.0.1:5000')
 
 ```
 
-### Check Tradeboard Version
+### Check TradeBoard Version
 
 ```python
-import tradeboard 
-tradeboard.__version__
+import TradeBoard 
+TradeBoard.__version__
 ```
 
 ### Examples
 
-Please refer to the documentation on [order constants](https://docs.wesoftcorp.com/api-documentation/v1/order-constants), and consult the API reference for details on optional parameters
+Please refer to the documentation on [order constants](https://docs.TradeBoard.in/api-documentation/v1/order-constants), and consult the API reference for details on optional parameters
 
 ### PlaceOrder example
 
@@ -1398,7 +1398,7 @@ Instruments **Response**
 
 ```python
 response = client.telegram(
-      username="<tradeboard_loginid>",
+      username="<TradeBoard_loginid>",
       message="NIFTY crossed 26000!"
   )
 
@@ -1412,6 +1412,110 @@ print(response)
   "message": "Notification sent successfully",
   "status": "success"
 }
+```
+
+### WhatsApp Alert Example
+
+Prerequisites: open `/whatsapp` in the TradeBoard web UI, click **Pair**, scan the QR with your phone. Pairing is admin-only on purpose — the REST API exposes only the send endpoint so a leaked API key cannot re-pair the device. Once paired, the bot auto-reconnects on every server boot from the encrypted session blob stored in `TradeBoard.db`.
+
+One unified call handles every common case — text, image, document, self-send, single recipient, or small broadcast (max 5).
+
+#### Send to yourself (simplest case)
+
+```python
+response = client.whatsapp("NIFTY crossed 26000!")
+print(response)
+```
+
+**WhatsApp Alert Response (`wait_for_delivery=True`, the default):**
+
+```json
+{
+  "status": "success",
+  "message": "Delivered to 1, failed 0",
+  "data": {
+    "sent":    ["<self>"],
+    "failed":  [],
+    "skipped": 0
+  }
+}
+```
+
+#### Send to a single phone number
+
+```python
+response = client.whatsapp(
+    "Order placed: BUY RELIANCE x 10 @ MARKET",
+    to="919876543210",
+)
+```
+
+#### Small broadcast (up to 5 recipients)
+
+```python
+response = client.whatsapp(
+    "Server maintenance starting in 10 minutes",
+    to=["919876543210", "919812345678", "919900112233"],
+)
+```
+
+#### Send an image with caption
+
+The path is read from the TradeBoard server's filesystem. It must lie under `WHATSAPP_ATTACHMENT_ROOTS` (defaults to `<TradeBoard>/db/attachments/`).
+
+```python
+response = client.whatsapp(
+    to="919876543210",
+    image="/srv/charts/nifty_eod.png",
+    caption="NIFTY end-of-day chart",
+)
+```
+
+#### Send a document (PDF, CSV, ...)
+
+```python
+response = client.whatsapp(
+    "Daily P&L report attached.",
+    to="919876543210",
+    document="/srv/reports/2026-05-17.pdf",
+    filename="DailyPnL.pdf",
+)
+```
+
+#### Fire-and-forget (skip the delivery report)
+
+```python
+response = client.whatsapp(
+    "Stop-loss hit on BANKNIFTY!",
+    wait_for_delivery=False,
+)
+```
+
+#### Send to a linked TradeBoard user (legacy multi-recipient path)
+
+```python
+response = client.whatsapp(
+    "Position update: BANKNIFTY 48000 CE now at +21% P&L.",
+    username="alice",
+)
+```
+
+#### Receiving messages (bot commands)
+
+Type slash-commands from your own phone in the **"Message yourself"** chat — the TradeBoard linked device sees those as `is_from_me=True` and responds in the same chat. Random contacts who message your number cannot drive the bot.
+
+```
+/help                   List all commands
+/status                 Bot connection + paired status
+/orderbook              Today's orders
+/tradebook              Today's trades
+/positions              Open positions
+/holdings               Holdings
+/funds                  Available cash / margin
+/pnl                    Net P&L
+/quote RELIANCE NSE     Last traded price
+/closeall               Square off all positions
+/mode                   Live or analyze mode
 ```
 
 ### Funds Example
@@ -1759,12 +1863,12 @@ Analyzer Toggle Response
 ### LTP Data (Streaming Websocket)
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 import time
 
-# Initialize Tradeboard client
+# Initialize TradeBoard client
 client = api(
-    api_key="your_api_key",                  # Replace with your actual Tradeboard API key
+    api_key="your_api_key",                  # Replace with your actual TradeBoard API key
     host="http://127.0.0.1:5000",            # REST API host
     ws_url="ws://127.0.0.1:8765"             # WebSocket host
 )
@@ -1796,12 +1900,12 @@ finally:
 ### Quotes (Streaming Websocket)
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 import time
 
-# Initialize Tradeboard client
+# Initialize TradeBoard client
 client = api(
-    api_key="your_api_key",                  # Replace with your actual Tradeboard API key
+    api_key="your_api_key",                  # Replace with your actual TradeBoard API key
     host="http://127.0.0.1:5000",            # REST API host
     ws_url="ws://127.0.0.1:8765"             # WebSocket host
 )
@@ -1833,12 +1937,12 @@ finally:
 ### Depth (Streaming Websocket)
 
 ```python
-from tradeboard import api
+from TradeBoard import api
 import time
 
-# Initialize Tradeboard client
+# Initialize TradeBoard client
 client = api(
-    api_key="your_api_key",                  # Replace with your actual Tradeboard API key
+    api_key="your_api_key",                  # Replace with your actual TradeBoard API key
     host="http://127.0.0.1:5000",            # REST API host
     ws_url="ws://127.0.0.1:8765"             # WebSocket host
 )
@@ -1877,7 +1981,7 @@ If you need additional information that is not directly available in this page, 
 Perform an HTTP GET request on the current page URL with the `ask` query parameter:
 
 ```
-GET https://docs.wesoftcorp.com/trading-platform/python.md?ask=<question>
+GET https://docs.TradeBoard.in/trading-platform/python.md?ask=<question>
 ```
 
 The question should be specific, self-contained, and written in natural language.

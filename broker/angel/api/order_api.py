@@ -71,11 +71,16 @@ def get_api_response(endpoint, auth, method="GET", payload="", max_retries=2):
         except json.JSONDecodeError:
             # Rate limit returns plain text like "Access denied because of exceeding access rate"
             if "exceeding access rate" in response.text.lower() and attempt < max_retries:
-                logger.warning(f"Rate limited on {endpoint}, retrying in 1s (attempt {attempt + 1}/{max_retries})")
+                logger.warning(
+                    f"Rate limited on {endpoint}, retrying in 1s (attempt {attempt + 1}/{max_retries})"
+                )
                 time.sleep(1)
                 continue
             logger.error(f"Failed to parse JSON response from {endpoint}: {response.text}")
-            return {"status": "error", "message": f"Invalid JSON response (HTTP {response.status_code})"}
+            return {
+                "status": "error",
+                "message": f"Invalid JSON response (HTTP {response.status_code})",
+            }
 
     return {"status": "error", "message": "Max retries exceeded"}
 
@@ -99,14 +104,14 @@ def get_holdings(auth):
 # --- Per-Symbol Smart Order Lock ---
 # Ensures only one smart order per symbol executes at a time.
 # Others queue and execute sequentially, each getting a fresh position book.
-_symbol_locks = {}          # {symbol_key: threading.Lock}
+_symbol_locks = {}  # {symbol_key: threading.Lock}
 _symbol_locks_lock = threading.Lock()
 
 # --- Position Book Cache ---
 # Caches get_positions() for 1 second. Invalidated after each smart order placement.
-_position_cache = {}        # {auth_token: {"data": ..., "timestamp": ...}}
+_position_cache = {}  # {auth_token: {"data": ..., "timestamp": ...}}
 _position_cache_lock = threading.Lock()
-_POSITION_CACHE_TTL = 1.0   # seconds
+_POSITION_CACHE_TTL = 1.0  # seconds
 
 
 def _get_symbol_lock(symbol, exchange, product):
@@ -141,9 +146,8 @@ def _invalidate_position_cache(auth):
         _position_cache.pop(auth, None)
 
 
-
 def get_open_position(tradingsymbol, exchange, producttype, auth):
-    # Convert Trading Symbol from Tradeboard Format to Broker Format Before Search in OpenPosition
+    # Convert Trading Symbol from TradeBoard Format to Broker Format Before Search in OpenPosition
     tradingsymbol = get_br_symbol(tradingsymbol, exchange)
     positions_data = _get_cached_positions(auth)
 
@@ -218,8 +222,15 @@ def place_order_api(data, auth):
     # Parse the JSON response
     response_data = response.json()
 
-    if response_data["status"] == True:
-        orderid = response_data["data"]["orderid"]
+    # Use .get() so a malformed / non-conforming response (gateway error
+    # envelope, partial response, network blip) returns a clean
+    # ``orderid = None`` instead of raising KeyError. Angel's documented
+    # success shape carries ``status: true`` and ``data.orderid``; anything
+    # else is treated as a failure and surfaced through the caller's
+    # existing None-orderid error path. See issue #846 for the original
+    # KeyError trace this hardening eliminates.
+    if response_data.get("status") is True:
+        orderid = response_data.get("data", {}).get("orderid")
     else:
         orderid = None
     return response, response_data, orderid
@@ -337,7 +348,7 @@ def close_all_positions(current_api_key, auth):
             action = "SELL" if int(position["netqty"]) > 0 else "BUY"
             quantity = abs(int(position["netqty"]))
 
-            # get tradeboard symbol to send to placeorder function
+            # get TradeBoard symbol to send to placeorder function
             symbol = get_symbol(position["symboltoken"], position["exchange"])
             logger.info(f"The Symbol is {symbol}")
 

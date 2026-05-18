@@ -1,8 +1,8 @@
-# Tradeboard Installation Guide
+﻿# TradeBoard Installation Guide
 
 ## Prerequisites
 
-Before installing Tradeboard, ensure you have the following prerequisites installed:
+Before installing TradeBoard, ensure you have the following prerequisites installed:
 
 - **Visual Studio Code (VS Code)** installed on Windows.
 - **Python** version 3.10 or 3.11 installed.
@@ -17,7 +17,7 @@ Before installing Tradeboard, ensure you have the following prerequisites instal
    - Install the Python, Pylance, and Jupyter extensions
 
 2. **Clone the Repository**: 
-   Open the VS Code Terminal and clone the Tradeboard repository:
+   Open the VS Code Terminal and clone the TradeBoard repository:
    ```bash
    git clone https://github.com/wesoftcorp/tradeboard
    ```
@@ -36,12 +36,12 @@ Before installing Tradeboard, ensure you have the following prerequisites instal
 
 4. **Install Node.js Dependencies**: 
    ```bash
-   cd tradeboard
+   cd TradeBoard
    npm install
    ```
 
 5. **Configure Environment Variables**: 
-   - Rename `.sample.env` to `.env` in the `tradeboard` folder
+   - Rename `.sample.env` to `.env` in the `TradeBoard` folder
    - Update the `.env` file with your specific configurations
 
 ## CSS Compilation Setup
@@ -113,4 +113,4 @@ If you encounter any issues during installation:
    - Check if your firewall allows WebSocket connections
    - Verify Socket.IO client version matches server version
 
-For more detailed configuration instructions, visit [https://docs.wesoftcorp.com](https://docs.wesoftcorp.com)
+For more detailed configuration instructions, visit [https://docs.TradeBoard.in](https://docs.TradeBoard.in)

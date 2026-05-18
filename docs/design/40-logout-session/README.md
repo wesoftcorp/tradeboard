@@ -1,8 +1,8 @@
-# 40 - Logout & Session Expiry
+﻿# 40 - Logout & Session Expiry
 
 ## Overview
 
-Tradeboard implements automatic session expiry at a configurable time daily (default 3:00 AM IST) to ensure security and force re-authentication. When a session expires or user logs out, multiple caches are cleared and tokens are revoked.
+TradeBoard implements automatic session expiry at a configurable time daily (default 3:00 AM IST) to ensure security and force re-authentication. When a session expires or user logs out, multiple caches are cleared and tokens are revoked.
 
 ## Session Expiry Flow
 

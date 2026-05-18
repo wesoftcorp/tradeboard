@@ -1,8 +1,8 @@
-# 23 - IP Security
+﻿# 23 - IP Security
 
 ## Overview
 
-Tradeboard implements IP-based security measures to protect against brute-force attacks, bot abuse, and unauthorized access through automatic detection and banning mechanisms.
+TradeBoard implements IP-based security measures to protect against brute-force attacks, bot abuse, and unauthorized access through automatic detection and banning mechanisms.
 
 ## Architecture Diagram
 

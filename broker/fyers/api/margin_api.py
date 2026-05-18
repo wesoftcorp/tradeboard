@@ -20,7 +20,7 @@ def calculate_margin_api(positions, auth):
     (SPAN/Exposure) and only returns total margin values.
 
     Args:
-        positions: List of positions in Tradeboard format
+        positions: List of positions in TradeBoard format
         auth: Authentication token for Fyers
 
     Returns:
@@ -84,11 +84,11 @@ def calculate_margin_api(positions, auth):
         logger.info(f"Full Response: {json.dumps(response_data, indent=2)}")
         logger.info("=" * 80)
 
-        # Parse and standardize the response to Tradeboard format
+        # Parse and standardize the response to TradeBoard format
         standardized_response = parse_margin_response(response_data)
 
         # Log the standardized response
-        logger.info("STANDARDIZED OPENALGO RESPONSE")
+        logger.info("STANDARDIZED TradeBoard RESPONSE")
         logger.info("=" * 80)
         logger.info(f"Standardized Response: {json.dumps(standardized_response, indent=2)}")
         logger.info("=" * 80)

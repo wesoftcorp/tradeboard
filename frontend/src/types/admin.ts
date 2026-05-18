@@ -1,4 +1,4 @@
-// Admin types for Freeze Qty, Holidays, and Market Timings
+﻿// Admin types for Freeze Qty, Holidays, and Market Timings
 
 export interface FreezeQty {
   id: number
@@ -155,8 +155,8 @@ export interface SystemHardware {
 }
 
 export interface SystemBuild {
-  tradeboard_version?: string | null
-  tradeboard_sdk_version?: string | null
+  TradeBoard_version?: string | null
+  TradeBoard_sdk_version?: string | null
   git_branch?: string | null
   git_commit?: string | null
   frontend_build_time?: string | null
@@ -174,6 +174,13 @@ export interface SystemConfig {
   api_rate_limit: string
   flask_debug: boolean
   secrets_present: Record<string, boolean>
+  /**
+   * Per-secret randomization status. True = the value is plausibly
+   * install-specific (random hex of sufficient length, not the publicly-
+   * known sample placeholder). False = the value is a default/placeholder
+   * — i.e. functionally no protection. See blueprints/admin.py:_secret_strength_status.
+   */
+  secret_strength?: Record<string, boolean>
 }
 
 export interface SystemBrokers {

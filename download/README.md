@@ -1,12 +1,12 @@
-# IEOD Data Downloader
+﻿# IEOD Data Downloader
 
-This tool allows you to download Intraday End of Day (IEOD) data for specified stock symbols from the Tradeboard API.
+This tool allows you to download Intraday End of Day (IEOD) data for specified stock symbols from the TradeBoard API.
 
 ## Prerequisites
 
 - Python 3.x
-- Valid Tradeboard API key
-- Access to Tradeboard API endpoint (ensure tradeboard is running)
+- Valid TradeBoard API key
+- Access to TradeBoard API endpoint (ensure TradeBoard is running)
 
 ## File Structure
 
@@ -17,7 +17,7 @@ This tool allows you to download Intraday End of Day (IEOD) data for specified s
 
 ## Setup
 
-1. Ensure you have a valid API key from Tradeboard
+1. Ensure you have a valid API key from TradeBoard
 2. Place your stock symbols in `symbols.csv` (one symbol per line)
 3. The script will automatically create necessary folders and files
 

@@ -1,8 +1,8 @@
-# Docker Fix for Numba/LLVMLITE/SciPy Errors
+﻿# Docker Fix for Numba/LLVMLITE/SciPy Errors
 
 ## Problem Summary
 
-When running Tradeboard strategies in Docker that use numba/llvmlite (for indicators like Supertrend, EMA, TEMA), you may encounter these errors:
+When running TradeBoard strategies in Docker that use numba/llvmlite (for indicators like Supertrend, EMA, TEMA), you may encounter these errors:
 
 ```
 KeyError: 'LLVMPY_AddSymbol'
@@ -91,7 +91,7 @@ docker-compose build --no-cache
 docker-compose up -d
 
 # Verify the fix
-docker-compose exec tradeboard python -c "import numba; import llvmlite; import scipy; print('✓ All imports successful')"
+docker-compose exec TradeBoard python -c "import numba; import llvmlite; import scipy; print('✓ All imports successful')"
 ```
 
 ### Option 2: Using Docker Run
@@ -100,24 +100,24 @@ If you're using `docker run` directly:
 
 ```bash
 # Stop and remove the old container
-docker stop tradeboard-web && docker rm tradeboard-web
+docker stop TradeBoard-web && docker rm TradeBoard-web
 
 # Rebuild the image
-docker build -t tradeboard:latest .
+docker build -t TradeBoard:latest .
 
 # Run with shared memory and tmpfs mount
 docker run -d \
-  --name tradeboard-web \
+  --name TradeBoard-web \
   --shm-size=2g \
   -p 5000:5000 \
   -p 8765:8765 \
-  -v tradeboard_db:/app/db \
-  -v tradeboard_log:/app/log \
-  -v tradeboard_strategies:/app/strategies \
-  -v tradeboard_keys:/app/keys \
+  -v TradeBoard_db:/app/db \
+  -v TradeBoard_log:/app/log \
+  -v TradeBoard_strategies:/app/strategies \
+  -v TradeBoard_keys:/app/keys \
   -v "$(pwd)/.env:/app/.env:ro" \
   --tmpfs /app/tmp:size=1g,mode=1777 \
-  tradeboard:latest
+  TradeBoard:latest
 ```
 
 ### Option 3: Using Docker Hub Image (When Available)
@@ -141,12 +141,12 @@ docker-compose up -d
 
 1. **Test Python imports:**
 ```bash
-docker-compose exec tradeboard python -c "import numba; import llvmlite; import scipy; print('✓ Success')"
+docker-compose exec TradeBoard python -c "import numba; import llvmlite; import scipy; print('✓ Success')"
 ```
 
 2. **Test numba JIT compilation:**
 ```bash
-docker-compose exec tradeboard python -c "
+docker-compose exec TradeBoard python -c "
 from numba import jit
 import numpy as np
 
@@ -165,7 +165,7 @@ print(f'✓ Numba JIT works: sum={result}')
 
 3. **Test scipy:**
 ```bash
-docker-compose exec tradeboard python -c "
+docker-compose exec TradeBoard python -c "
 from scipy import stats
 print('✓ SciPy works:', stats.norm.cdf(0))
 "
@@ -173,7 +173,7 @@ print('✓ SciPy works:', stats.norm.cdf(0))
 
 4. **Run your strategy:**
 ```bash
-docker-compose exec tradeboard uv run python /app/strategies/scripts/your_strategy.py
+docker-compose exec TradeBoard uv run python /app/strategies/scripts/your_strategy.py
 ```
 
 ## For CI/CD (GitHub Actions)
@@ -224,7 +224,7 @@ volumes:
 
 **Solution**: Check logs and rebuild completely:
 ```bash
-docker-compose logs tradeboard
+docker-compose logs TradeBoard
 docker-compose down -v  # WARNING: This removes volumes!
 docker-compose build --no-cache
 docker-compose up -d

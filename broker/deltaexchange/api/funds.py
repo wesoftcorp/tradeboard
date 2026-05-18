@@ -1,5 +1,5 @@
 # api/funds.py
-# Delta Exchange wallet balance → Tradeboard margin format
+# Delta Exchange wallet balance → TradeBoard margin format
 # Endpoints:
 #   GET /v2/wallet/balances      → available cash, blocked margin
 #   GET /v2/positions/margined   → realized + unrealized PnL per position
@@ -59,17 +59,11 @@ def _get_positions_pnl(api_key, api_secret):
             return 0.0, 0.0
         data = response.json()
         if not data.get("success"):
-            logger.warning(
-                f"[DeltaExchange] positions/margined API error: {data.get('error', {})}"
-            )
+            logger.warning(f"[DeltaExchange] positions/margined API error: {data.get('error', {})}")
             return 0.0, 0.0
         positions = data.get("result", [])
-        realized = sum(
-            _f(p.get("realized_pnl")) for p in positions if isinstance(p, dict)
-        )
-        unrealized = sum(
-            _f(p.get("unrealized_pnl")) for p in positions if isinstance(p, dict)
-        )
+        realized = sum(_f(p.get("realized_pnl")) for p in positions if isinstance(p, dict))
+        unrealized = sum(_f(p.get("unrealized_pnl")) for p in positions if isinstance(p, dict))
         return realized, unrealized
     except Exception as e:
         logger.warning(f"[DeltaExchange] Could not fetch positions P&L: {e}")
@@ -78,7 +72,7 @@ def _get_positions_pnl(api_key, api_secret):
 
 def get_margin_data(auth_token):
     """
-    Fetch wallet balance from Delta Exchange and return it in Tradeboard margin format.
+    Fetch wallet balance from Delta Exchange and return it in TradeBoard margin format.
 
     Endpoint: GET /v2/wallet/balances
     Authentication: HMAC-SHA256 signed headers (api-key + timestamp + signature)
@@ -91,16 +85,16 @@ def get_margin_data(auth_token):
         m2mrealized    ← sum of realized_pnl across all open positions
         m2munrealized  ← sum of unrealized_pnl across all open positions
 
-    Tradeboard field mapping:
+    TradeBoard field mapping:
         availablecash  ← sum of balance_inr across all wallets (spot + FNO combined in INR)
         collateral     ← sum of cross_locked_collateral across all wallets
         utiliseddebits ← blocked_margin
 
     Args:
-        auth_token (str): api_key stored in Tradeboard auth DB after login.
+        auth_token (str): api_key stored in TradeBoard auth DB after login.
 
     Returns:
-        dict: Tradeboard standard margin dict, or DEFAULT_MARGIN_RESPONSE on failure.
+        dict: TradeBoard standard margin dict, or DEFAULT_MARGIN_RESPONSE on failure.
     """
     api_key = auth_token
     api_secret = os.getenv("BROKER_API_SECRET", "")

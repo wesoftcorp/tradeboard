@@ -1,4 +1,4 @@
-# Search
+﻿# Search
 
 Search for symbols by name, strike price, expiry, or other criteria.
 
@@ -75,7 +75,7 @@ curl -X POST http://127.0.0.1:5000/api/v1/search \
 
 | Parameter | Description | Mandatory/Optional | Default Value |
 |-----------|-------------|-------------------|---------------|
-| apikey | Your Tradeboard API key | Mandatory | - |
+| apikey | Your TradeBoard API key | Mandatory | - |
 | query | Search query string | Mandatory | - |
 | exchange | Exchange code: NSE, BSE, NFO, BFO, CDS, BCD, MCX | Mandatory | - |
 
@@ -91,10 +91,10 @@ curl -X POST http://127.0.0.1:5000/api/v1/search \
 
 | Field | Type | Description |
 |-------|------|-------------|
-| symbol | string | Tradeboard standard symbol |
+| symbol | string | TradeBoard standard symbol |
 | brsymbol | string | Broker-specific symbol |
 | name | string | Underlying/symbol name |
-| exchange | string | Tradeboard exchange code |
+| exchange | string | TradeBoard exchange code |
 | brexchange | string | Broker-specific exchange code |
 | instrumenttype | string | CE, PE, FUT, EQ |
 | expiry | string | Expiry date (DD-MMM-YY) |

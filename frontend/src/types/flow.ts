@@ -1,4 +1,4 @@
-import type { Node as ReactFlowNode, Edge as ReactFlowEdge } from '@xyflow/react'
+﻿import type { Node as ReactFlowNode, Edge as ReactFlowEdge } from '@xyflow/react'
 
 // =============================================================================
 // TRIGGER NODE DATA TYPES
@@ -729,8 +729,8 @@ export interface WorkflowState {
 
 /** Settings State */
 export interface SettingsState {
-  tradeboard_host: string
-  tradeboard_ws_url: string
+  TradeBoard_host: string
+  TradeBoard_ws_url: string
   is_configured: boolean
   has_api_key: boolean
 }

@@ -180,7 +180,7 @@ def get_strategy_chart_data(
               {symbol, exchange, side, segment, active, price}.
               Only active OPTION legs are used.
         interval: Candle interval (e.g., "1m", "5m").
-        api_key: Tradeboard API key.
+        api_key: TradeBoard API key.
         days: Calendar-day lookback window.
 
     Returns:

@@ -1,6 +1,6 @@
-# Tradeboard API Documentation
+﻿# TradeBoard API Documentation
 
-Welcome to the Tradeboard REST API Documentation. This comprehensive guide covers all API endpoints available for algorithmic trading operations.
+Welcome to the TradeBoard REST API Documentation. This comprehensive guide covers all API endpoints available for algorithmic trading operations.
 
 ## Base URL
 
@@ -119,6 +119,17 @@ Real-time market data streaming.
 | [Quote](./websocket-streaming/quote.md) | Subscribe to quote updates |
 | [Depth](./websocket-streaming/depth.md) | Subscribe to market depth |
 
+### WhatsApp Services
+Send trade alerts via WhatsApp. **Send-only** public surface — pairing,
+start/stop, config, users, broadcast, stats, and preferences are all
+admin-only and live behind the session-authed `/whatsapp` web UI. A
+leaked API key cannot create, mutate, or enumerate the device session.
+
+| Endpoint | Description |
+|----------|-------------|
+| [Overview](./whatsapp-services/README.md) | Architecture, security model, command reference |
+| [Notify](./whatsapp-services/notify.md) | Send text / image / document to self, one user, or up to 5 recipients |
+
 ## Order Constants
 
 ### Exchange Codes
@@ -210,7 +221,7 @@ All API responses follow a consistent JSON format:
 
 ## Rate Limits
 
-Tradeboard implements differentiated rate limiting for various API operations:
+TradeBoard implements differentiated rate limiting for various API operations:
 
 | API Type | Rate Limit |
 |----------|------------|
@@ -223,14 +234,14 @@ For detailed rate limiting information including configuration options, see [Rat
 
 ## SDK Support
 
-Tradeboard provides official SDKs for popular programming languages:
+TradeBoard provides official SDKs for popular programming languages:
 
-- **Python**: `pip install tradeboard`
+- **Python**: `pip install TradeBoard`
 - **Node.js**: Coming soon
 - **Java**: Coming soon
 
 ## Support
 
-- Documentation: https://docs.wesoftcorp.com
+- Documentation: https://docs.TradeBoard.in
 - GitHub: https://github.com/wesoftcorp/tradeboard
-- Discord: https://www.wesoftcorp.com/discord
+- Discord: https://www.TradeBoard.in/discord
